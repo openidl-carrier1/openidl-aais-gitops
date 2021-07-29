@@ -1,0 +1,170 @@
+# This workflow installs and configures Terraform CLI version 1.0.0.
+# On pull request this will run terraform init, fmt, validate and plan.
+# On push event to master/main branch this will run terraform apply
+# Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
+# Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
+
+name: 'aais openidl-IaaC pipeline v1.0'
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - test
+    paths-ignore:
+      - 'tf_backend_setup/**'
+      - 'github_actions_codeset/**'
+  pull_request:
+    branches:
+      - main
+      - dev
+      - test
+    paths-ignore:
+      - 'tf_backend_setup/**'
+      - 'github_actions_codeset/**'
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    #default bash shell and working directory is set
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout Code
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+    # Option:1 Referencing hashicorp vault for secrets
+    - name: Import Secrets
+      uses: hashicorp/vault-action@v2.1.0
+      with:
+      # Auth option 1
+        url: ${{ secrets.VAULT_ADDRRESS }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        namespace: ${{ secrets.VAULT_NAMESPACE }}
+        exportToken: true
+        caCertificate: ${{ secrets.VAULT_CA }}
+
+      # Auth option 2
+        url: ${{ secrets.VAULT_ADDRRESS }}
+        method: token
+        namespace: ${{ secrets.VAULT_SECRET_ID }}
+        token: ${{ secrets.VAULT_TOKEN }}
+        caCertificate: ${{ secrets.VAULT_CA }}
+
+        secrets: |
+          <path/to_secret> access_key | AWS_ACCESS_KEY_ID ;
+          <path/to_secret> secret_key | AWS_SECRET_ACCESS_KEY ;
+          <path/to_secret>  iam_role | AWS_IAM_ROLE;
+        #  <path/to_secret> security_token | AWS_SESSION_TOKEN ;
+        #  <path/to_secret> <sensitive_input> | TF_VAR_variable_name ;
+
+    # Verify the secrets pulled from vault
+    - name: Verify secrets
+      run: |
+        if [ ${#AWS_ACCESS_KEY_ID} -lt 1 ]; then echo "error with aws access key" ; exit; fi
+        if [ ${#AWS_SECRET_ACCESS_KEY} -lt 1 ]; then echo "error with aws secret key" ; exit; fi
+        if [ ${#AWS_IAM_ROLE} -lt 1 ]; then echo "error with aws iam role" ; exit; fi
+      #  if [ ${#AWS_SESSION_TOKEN} -lt 1 ]; then echo "error with aws session token" ; exit; fi
+      #  if [ ${#TF_VAR_variablename} -lt 1 ]; then echo "error with tf_variablename" ; exit; fi
+
+    # Option:2 Configuring aws cli utilizing secrets from GIT SECRETS
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.region }}
+        role-to-assume: ${{ env.AWS_IAM_ROLE }}
+        role-external-id: <aws_externalid_defined>
+        role-duration-seconds: 1800 # session valid for 30 minutes
+        role-session-name: terraform-session
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
+      with:
+        terraform_version: 1.0.0
+        terraform_wrapper: true
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      id: format
+      run: terraform fmt -recursive
+      #continue-on-error: true
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      #run: terraform init
+      run: terraform init -backend-config=tf_backends/s3_backend
+
+    # Sets up terraform workspace
+    - name: Terraform Workspace if push event
+      id: workspace-push
+      if: github.event_name == 'push'
+      run: terraform workspace new ${GITHUB_REF##*/} || terraform workspace select ${GITHUB_REF##*/}
+
+    - name: Terraform Workspace if pull event
+      id: workspace-pull
+      if: github.event_name == 'pull_request'
+      run: terraform workspace new ${{github.base_ref}} || terraform workspace select ${{github.base_ref}}
+
+    # Checks that all Terraform configuration files adhere for syntax
+    - name: Terraform Syntax
+      id: validate
+      run: terraform validate -no-color -json
+      #continue-on-error: true
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == 'pull_request'
+      run: terraform plan -var-file=terraform.tfvars -out=plan.out && terraform show -json plan.out > plan.out.json
+      continue-on-error: true
+
+    - name: Update Terraform Plan results to Pull Request
+      uses: actions/github-script@a3e7071a34d7e1f219a8a4de9a5e0a34d1ee1293
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`${process.env.PLAN}\`\`\`
+
+          </details>
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    # Performs terraform apply
+    - name: Terraform Apply
+      id: apply
+      if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
+      env:
+        VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+        VAULT_NAMESPACE: ${{ secrets.VAULT_NAMESPACE }}
+      run: terraform apply -auto-approve -var-file=terraform.tfvars

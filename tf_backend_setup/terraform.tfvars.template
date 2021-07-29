@@ -1,0 +1,16 @@
+#aws account credential details
+aws_account_id = ""
+aws_access_key = ""
+aws_secret_key = ""
+aws_user_arn = ""
+aws_role_arn = ""
+
+#aws region to setup terraform background?
+aws_region = ""
+aws_external_id = ""
+
+#Unique s3 bucket name to store terraform state files
+tf_backend_s3_bucket = ""
+#Name of the dynamoDB table to manage terraform state files if required to have state locking
+tf_backend_dynamodb_table = ""
+

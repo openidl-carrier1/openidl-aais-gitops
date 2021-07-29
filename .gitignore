@@ -1,0 +1,11 @@
+./kubeconfig_file
+./tf_backend_setup/.terraform/*
+./tf_backend_setup/terraform.tfstate
+./tf_backend_setup/terraform.tfvars
+./tf_backend_setup/.terraform/.*
+./terraform.tfstate
+.idea/
+./.terraform/**
+./.terraform/.*
+terraform.tfstate.d/.*
+terraform.tfstate.d/**
