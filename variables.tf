@@ -24,9 +24,17 @@ variable "aws_secondary_account_number" {
   type        = list(string)
   description = "The aws account number on which carrier infra is to setup"
 }
+variable "aais" {
+  type = bool
+  description = "Is the setup for aais or carrier?"
+}
 variable "other_aws_account" {
   type        = bool
   description = "The app_cluster and blockchain_cluster are in same aws account"
+}
+variable "other_aws_region" {
+  type = bool
+  description = "Is the carrier node setup different from aais aws setup region?"
 }
 variable "aws_user_arn" {
   type        = string
@@ -42,49 +50,68 @@ variable "application_name" {
   description = "The name of the application"
 }
 #variables related to VPC
-variable "vpc_cidr" {
-  description = "The VPC network CIDR Block to be created"
-}
-variable "private_subnets" {
-  type        = list(string)
-  description = "The list of private subnet cidrs to be created"
-}
-variable "public_subnets" {
-  type        = list(string)
-  description = "The list of public subnet cidrs to be created"
-}
-variable "availability_zones" {
-  type        = list(string)
-  description = "The list of availability zones aligning to the numbers with public/private subnets defined"
-}
 variable "default_nacl_rules" {
   type        = map(any)
   description = "The list of default access rules to be allowed"
   default     = {}
 }
-variable "public_nacl_rules" {
-  type        = map(any)
-  description = "The list of network access rules to be allowed for public subnets"
-}
-variable "private_nacl_rules" {
-  type        = map(any)
-  description = "The list of network access rules to be allowed for private subnets"
-}
 variable "default_sg_rules" {
   type        = map(any)
   description = "The list of default traffic flow to be opened in security group"
 }
-#variable defines whether an app_cluster or blockchain_cluster
-variable "cluster_type" {
-  type        = string
-  description = "The cluster type should be setup in the environment (app_cluster/blockchain_cluster"
-  validation {
-    condition     = can(regex("app_cluster", var.cluster_type)) || can(regex("blockchain_cluster", var.cluster_type))
-    error_message = "The cluster type will be either app_cluster or blockchain_cluster."
-  }
+variable "app_vpc_cidr" {
+  description = "The VPC network CIDR Block to be created"
+}
+variable "app_availability_zones" {
+  type        = list(string)
+  description = "The list of availability zones aligning to the numbers with public/private subnets defined"
+}
+variable "app_private_subnets" {
+  type        = list(string)
+  description = "The list of private subnet cidrs to be created"
+}
+variable "app_public_subnets" {
+  type        = list(string)
+  description = "The list of public subnet cidrs to be created"
+}
+variable "app_public_nacl_rules" {
+  type        = map(any)
+  description = "The list of network access rules to be allowed for public subnets"
+}
+variable "app_private_nacl_rules" {
+  type        = map(any)
+  description = "The list of network access rules to be allowed for private subnets"
+}
+variable "blk_vpc_cidr" {
+  description = "The VPC network CIDR Block to be created"
+}
+variable "blk_availability_zones" {
+  type        = list(string)
+  description = "The list of availability zones aligning to the numbers with public/private subnets defined"
+}
+variable "blk_private_subnets" {
+  type        = list(string)
+  description = "The list of private subnet cidrs to be created"
+}
+variable "blk_public_subnets" {
+  type        = list(string)
+  description = "The list of public subnet cidrs to be created"
+}
+variable "blk_public_nacl_rules" {
+  type        = map(any)
+  description = "The list of network access rules to be allowed for public subnets"
+}
+variable "blk_private_nacl_rules" {
+  type        = map(any)
+  description = "The list of network access rules to be allowed for private subnets"
 }
 #variables related to transit gateway
-variable "tgw_routes" {
+variable "app_tgw_routes" {
+  type        = list(any)
+  description = "The list of network routes to be allowed/blocked in the transit gateway route table"
+  default     = []
+}
+variable "blk_tgw_routes" {
   type        = list(any)
   description = "The list of network routes to be allowed/blocked in the transit gateway route table"
   default     = []
@@ -104,22 +131,59 @@ variable "transit_gateway_route_table_id" {
   default     = ""
   description = "The transit gateway route table id"
 }
-variable "tgw_destination_cidr" {
+variable "app_tgw_destination_cidr" {
   type        = list(any)
   default     = []
   description = "The list of network routes to route via transit gateway"
 }
-####variables from codeset
+variable "blk_tgw_destination_cidr" {
+  type        = list(any)
+  default     = []
+  description = "The list of network routes to route via transit gateway"
+}
+#bastion host related
+variable "app_bastion_sg_ingress" {
+  type    = list(any)
+  default = []
+  description = "The list of traffic rules to be allowed for ingress"
+}
+variable "app_bastion_sg_egress" {
+  type    = list(any)
+  default = []
+  description = "The list of traffic rules to be allowed for egress"
+}
+variable "blk_bastion_sg_ingress" {
+  type    = list(any)
+  default = []
+  description = "The list of traffic rules to be allowed for ingress"
+}
+variable "blk_bastion_sg_egress" {
+  type    = list(any)
+  default = []
+  description = "The list of traffic rules to be allowed for egress"
+}
+variable "app_bastion_ssh_key" {
+  type = string
+  description = "The public ssh key to setup on the bastion host for remote ssh access"
+}
+variable "blk_bastion_ssh_key" {
+    type = string
+  description = "The public ssh key to setup on the bastion host for remote ssh access"
+}
+variable "blk_eks_alb_sg_ingress" {
+  type = list(any)
+  description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
+}
+variable "blk_eks_alb_sg_egress" {
+  type = list(any)
+  description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
+}
+
 variable "instance_type" {
   description = "The instance type of the bastion host"
   type        = string
   default     = "t2.small"
-}
-variable "ec2_keypair" {
-  description = "The ssh keypair for the instances"
-  type        = string
-  default     = "ec2_keypair"
-}
+  }
 variable "instance_ami_id" {
   description = "The ami id for the ec2 instance"
   type        = string
@@ -129,11 +193,6 @@ variable "instance_count" {
   description = "The number of instances to launch"
   type        = number
   default     = 1
-}
-variable "app_service_sg" {
-  description = "The application security group"
-  default     = "app_service_sg"
-  type        = string
 }
 variable "storage_type" {
   description = "The ebs volume storage type"
@@ -151,92 +210,11 @@ variable "root_block_device_volume_type" {
 variable "root_block_device_volume_size" {
   description = "root_block_device volume Size"
 }
-variable "ebs_block_device_volume_type" {
-  description = "ebs_block_device_volume type"
+#S3 bucket related
+variable "s3_bucket_name" {
+  type = string
+  description ="The unique name of the S3 bucket (globally)"
 }
-
-variable "ebs_block_device_volume_size" {
-  description = "ebs_block_device_volume size"
-}
-variable "cluster_version" {
-  description = "The hasicorp terraform eks module version"
-  type        = string
-  default     = "1.19"
-}
-variable "eks_worker_instance_type" {
-  description = "The eks cluster worker node instance type"
-  type        = string
-}
-variable "s3_owner" {
-  description = "The iam owner of the s3 bucket"
-  default     = ""
-  type        = string
-}
-variable "tenancy" {
-  description = "The tenancy of the instance (if the instance is running in a VPC). Available values: default, dedicated, host."
-  type        = string
-  default     = "default"
-}
-variable "cluster_encryption_config_resources" {
-  type        = list(any)
-  default     = ["secrets"]
-  description = "Cluster Encryption Config Resources to encrypt, e.g. ['secrets']"
-}
-variable "cluster_encryption_config" {
-  description = "Configuration block with encryption configuration for the cluster. See examples/secrets_encryption/main.tf for example format"
-  type = list(object({
-    provider_key_arn = string
-    resources        = list(string)
-  }))
-  default = []
-}
-variable "kms_key_arn" {
-  default     = ""
-  description = "KMS key ARN to use if you want to encrypt EKS node root volumes"
-  type        = string
-}
-variable "kubeconfig_output_path" {
-  description = "Where to save the Kubectl config file (if `write_kubeconfig = true`). Assumed to be a directory if the value ends with a forward slash `/`."
-  type        = string
-  default     = "./kubeconfig_file/"
-}
-variable "tf_backend_s3_bucket" {
-  type        = string
-  default     = ""
-  description = "The s3 bucket to store terraform state files"
-}
-variable "eks_worker_group_sg_mgmt_one" {
-  //type        = string
-  //default     = ""
-  description = "eks_worker_group_sg_mgmt_one"
-}
-variable "eks_worker_group_sg_mgmt_two" {
-  //type        = string
-  //default     = ""
-  description = "eks_worker_group_sg_mgmt_two"
-}
-variable "ip_address_type" {
-  description = "The type of IP addresses used by the subnets for your load balancer. The possible values are ipv4 and dualstack."
-  type        = string
-  default     = "ipv4"
-}
-variable "eks_worker_name_1" {
-  description = "The name of the EKS worker 1"
-}
-variable "eks_worker_name_2" {
-  description = "The name of the EKS worker 2"
-}
-variable "create_vpc" {
-  description = "Controls if VPC should be created (it affects almost all resources)"
-  type        = bool
-  default     = true
-}
-variable "target_group_sticky" {
-  description = "Whether to enable/disable stickiness for NLB"
-  type        = bool
-  default     = true
-}
-
 #aws cognito variables
 #aws cognito application client specific variables
 variable "client_app_name" {
@@ -454,38 +432,72 @@ variable "email_address" {
   description = "The email address to be used in Cognito referred as from-email & reply-to-email address"
   default     = ""
 }*/
-variable "bastion_host_sg_ingress" {
-  type    = list(any)
-  default = []
-  description = "The list of traffic rules to be allowed for ingress"
-}
-variable "bastion_host_sg_egress" {
-  type    = list(any)
-  default = []
-  description = "The list of traffic rules to be allowed for egress"
-}
-variable "ec2_ssh_public_key" {
-  type = string
-  description = "The external generated ssh public key to configure with bastion host"
-  sensitive = true
-}
-variable "security_groups" {
-  type =map(any)
-  description = "The list of security groups and its traffic definition for the environment"
-  default = {}
-}
-variable "bastion_sg_ingress" {
-  type = list
-  description = "The list of ingress traffic rules of the bastion host security group"
-}
-variable "bastion_sg_egress" {
-  type =list
-  description = "The list of egress traffic rules of the bastion host security group"
-}
+#------------------------------------------------------------------------------------------------------------------
+#Route53 related
 variable "domain_info" {
   type = map(any)
   description = "The name of the domain registered within aws-route53 or outside"
   default = {}
+}
+#-------------------------------------------------------------------------------------------------------------------
+
+variable "cluster_version" {
+  description = "The hasicorp terraform eks module version"
+  type        = string
+  default     = "1.19"
+}
+variable "eks_worker_instance_type" {
+  description = "The eks cluster worker node instance type"
+  type        = string
+}
+
+variable "tenancy" {
+  description = "The tenancy of the instance (if the instance is running in a VPC). Available values: default, dedicated, host."
+  type        = string
+  default     = "default"
+}
+variable "cluster_encryption_config_resources" {
+  type        = list(any)
+  default     = ["secrets"]
+  description = "Cluster Encryption Config Resources to encrypt, e.g. ['secrets']"
+}
+variable "cluster_encryption_config" {
+  description = "Configuration block with encryption configuration for the cluster. See examples/secrets_encryption/main.tf for example format"
+  type = list(object({
+    provider_key_arn = string
+    resources        = list(string)
+  }))
+  default = []
+}
+
+variable "kubeconfig_output_path" {
+  description = "Where to save the Kubectl config file (if `write_kubeconfig = true`). Assumed to be a directory if the value ends with a forward slash `/`."
+  type        = string
+  default     = "./kubeconfig_file/"
+}
+
+variable "eks_worker_group_sg_mgmt_one" {
+  //type        = string
+  //default     = ""
+  description = "eks_worker_group_sg_mgmt_one"
+}
+variable "eks_worker_group_sg_mgmt_two" {
+  //type        = string
+  //default     = ""
+  description = "eks_worker_group_sg_mgmt_two"
+}
+
+variable "eks_worker_name_1" {
+  description = "The name of the EKS worker 1"
+}
+variable "eks_worker_name_2" {
+  description = "The name of the EKS worker 2"
+}
+
+variable "target_group_sticky" {
+  description = "Whether to enable/disable stickiness for NLB"
+  type        = bool
+  default     = true
 }
 variable "cluster_endpoint_private_access" {
   type        = bool
@@ -507,7 +519,6 @@ variable "cluster_endpoint_public_access" {
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled"
   default     = false
 }
-
 variable "cluster_endpoint_public_access_cidrs" {
   type        = list(string)
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
@@ -548,21 +559,6 @@ variable "attach_worker_cni_policy" {
   type        = bool
   default     = true
 }
-variable "public_subnet_suffix" {
-  description = "Suffix to append to public subnets name"
-  type        = string
-  default     = "public"
-}
-variable "private_subnet_suffix" {
-  description = "Suffix to append to private subnets name"
-  type        = string
-  default     = "private"
-}
-variable "intra_subnet_suffix" {
-  description = "Suffix to append to intra subnets name"
-  type        = string
-  default     = "intra"
-}
 variable "wg_asg_min_size" {
   description = "The worker group min auto scaling size"
 }
@@ -571,10 +567,6 @@ variable "wg_asg_max_size" {
 }
 variable "wg_asg_desired_capacity" {
   description = "The worker group desired instance capacity"
-}
-#dummy variable remove
-variable "project_name" {
-  description = "The project name"
 }
 variable "wg_ebs_optimized" {
   description = "The worker group ebs volume optimized"
@@ -605,66 +597,6 @@ variable "enable_ipv6" {
   type        = bool
   default     = false
 }
-variable "manage_default_network_acl" {
-  description = "Should be true to adopt and manage Default Network ACL"
-  type        = bool
-  default     = false
-}
-variable "manage_default_route_table" {
-  description = "Should be true to manage default route table"
-  type        = bool
-  default     = false
-}
-variable "public_dedicated_network_acl" {
-  description = "Whether to use dedicated network ACL (not default) and custom rules for public subnets"
-  type        = bool
-  default     = false
-}
-variable "private_dedicated_network_acl" {
-  description = "Whether to use dedicated network ACL (not default) and custom rules for private subnets"
-  type        = bool
-  default     = false
-}
-variable "enable_nat_gateway" {
-  description = "Should be true if you want to provision NAT Gateways for each of your private networks"
-  type        = bool
-  default     = false
-}
-variable "single_nat_gateway" {
-  description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
-  type        = bool
-  default     = false
-}
-variable "one_nat_gateway_per_az" {
-  description = "Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs`."
-  type        = bool
-  default     = false
-}
-variable "create_igw" {
-  description = "Controls if an Internet Gateway is created for public subnets and the related routes that connect them."
-  type        = bool
-  default     = true
-}
-variable "enable_dns_hostnames" {
-  description = "Should be true to enable DNS hostnames in the VPC"
-  type        = bool
-  default     = false
-}
-variable "enable_dns_support" {
-  description = "Should be true to enable DNS support in the VPC"
-  type        = bool
-  default     = true
-}
-variable "instance_tenancy" {
-  description = "A tenancy option for instances launched into the VPC"
-  type        = string
-  default     = "default"
-}
-variable "azs" {
-  description = "A list of availability zones names or ids in the region"
-  type        = list(string)
-  default     = []
-}
 variable "eks_wg_public_ip" {
   description = "Whether to enable pubic IP address for worker groups"
 }
@@ -685,7 +617,6 @@ variable "eks_wg_ebs_volume_size" {
 }
 variable "eks_wg_ebs_volume_type" {
   description = "Type of EBS volume"
-
 }
 variable "eks_wg_ebs_vol_encrypted" {
   description = "Whether to enable encryption for EBS volume"
@@ -755,9 +686,4 @@ variable "chart_version" {
   description = "Helm Chart version"
   type        = string
   default     = "4.3.1"
-}
-#dummy variables will be removed after testing
-variable "ec2_sg_ingress" {
-}
-variable "ec2_sg_egress" {
 }

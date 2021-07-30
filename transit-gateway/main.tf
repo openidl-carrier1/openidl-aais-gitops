@@ -19,8 +19,8 @@ locals {
     var.tags,
     var.tgw_default_route_table_tags,
   )
-
-/*  vpc_route_table_destination_cidr = flatten([
+/*
+  vpc_route_table_destination_cidr = flatten([
     for k, v in var.vpc_attachments : [
       for rtb_id in lookup(v, "vpc_route_table_ids", []) : {
         rtb_id = rtb_id
@@ -28,13 +28,15 @@ locals {
       }
     ]
   ])*/
-
-  vpc_tgw_id = var.create_tgw ? null : var.vpc_attachments.aais_vpc.tgw_id
-  vpc_tgw_rt_id = var.create_tgw ? null : var.vpc_attachments.aais_vpc.transit_gateway_route_table_id
+  vpc_tgw_id = var.create_tgw ? null : var.vpc_attachments.app_vpc.tgw_id
+  #vpc_tgw_rt_id = var.create_tgw ? null : var.vpc_attachments.app_vpc.transit_gateway_route_table_id
   vpc_route_table_destination_cidr = chunklist(flatten([for k, v in var.vpc_attachments :
     setproduct(v["vpc_route_table_ids"], v["tgw_destination_cidr"])]),2)
-}
 
+}
+output "value" {
+  value = var.vpc_attachments
+}
 resource "aws_ec2_transit_gateway" "this" {
   count = var.create_tgw ? 1 : 0
 
@@ -93,7 +95,7 @@ resource "aws_route" "this" {
   #for_each = { for x in local.vpc_route_table_destination_cidr : x.rtb_id => x.cidr }
     route_table_id         = each.value[0]
     destination_cidr_block = each.value[1]
-    transit_gateway_id     = var.create_tgw ? aws_ec2_transit_gateway.this[0].id : local.vpc_tgw_id
+    transit_gateway_id     = var.create_tgw ? aws_ec2_transit_gateway.this[0].id : var.vpc_attachments.app_vpc.tgw_id
   depends_on = [aws_ec2_transit_gateway_vpc_attachment.this]
 }
 

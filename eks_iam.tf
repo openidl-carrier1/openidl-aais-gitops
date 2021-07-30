@@ -1,8 +1,8 @@
+/*
 resource "aws_iam_role" "app-eks-cluster" {
-  name = "aais-dev-app-eks-cluster" #blkchain then aais-dev-blk-cluster
-
+  name = "${local.std_name}-eks"
   assume_role_policy = <<POLICY
-{
+ {
   "Version": "2012-10-17",
   "Statement": [
     {
@@ -15,6 +15,11 @@ resource "aws_iam_role" "app-eks-cluster" {
   ]
 }
 POLICY
+  tags = merge(
+    local.tags,
+    {
+      "name" = "${local.std_name}-eks"
+    },)
 }
 resource "aws_iam_role_policy_attachment" "app-eks-cluster-AmazonEKSClusterPolicy" {
   policy_arn = "${local.policy_arn_prefix}/AmazonEKSClusterPolicy"
@@ -40,3 +45,4 @@ resource "aws_iam_role_policy_attachment" "app-eks-cluster-AmazonEC2ContainerReg
   policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.app-eks-cluster.name
 }
+*/

@@ -1,11 +1,9 @@
 /*
 resource "aws_ses_email_identity" "email_identity" {
-  count = var.cluster_type == "app_cluster" ? 1 : 0
   email = var.email_address
 }*/
 resource "aws_cognito_user_pool" "user_pool" {
-  count = var.cluster_type == "app_cluster" ? 1 : 0
-  name = "${local.stdname}-${var.userpool_name}"
+  name = "${local.std_name}-${var.userpool_name}"
   dynamic "account_recovery_setting" {
     for_each = length(var.userpool_recovery_mechanisms) == 0 ? [] : [1]
     content {
@@ -46,7 +44,6 @@ resource "aws_cognito_user_pool" "user_pool" {
     email_sending_account  = "DEVELOPER"
     from_email_address     = var.email_address
   }*/
-
   email_verification_subject = var.userpool_email_verficiation_subject != "" ? var.userpool_email_verficiation_subject : "Here, your verification code baby"
   email_verification_message = var.userpool_email_verficiation_message != "" ? var.userpool_email_verficiation_message : "Dear {username}, your verification code is {####}."
   mfa_configuration          = var.userpool_mfa_configuration
@@ -63,7 +60,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
   sms_authentication_message = "Your username is {username} and temporary password is {####}."
   sms_verification_message   = "This is the verification message {####}."
-  tags                       = local.tags
+
   user_pool_add_ons {
     advanced_security_mode = var.userpool_advanced_security_mode
   }
@@ -71,14 +68,33 @@ resource "aws_cognito_user_pool" "user_pool" {
     case_sensitive = var.userpool_enable_username_case_sensitivity
   }
   verification_message_template {
-    default_email_option = "CONFIRM_WITH_CODE"
+    default_email_option = "CONFIRM_WITH_LINK"
   }
+  dynamic schema {
+    for_each = local.custom_attributes
+    content {
+      attribute_data_type = "String"
+      name = schema.value
+      developer_only_attribute = false
+      mutable                  = true
+      string_attribute_constraints {
+        min_length = 1
+        max_length = 256
+    }
+  }
+}
+
+  tags = merge(
+    local.tags,
+    {
+      "name" = "${local.std_name}-${var.userpool_name}"
+      "Cluster_type" = "application"
+    },)
 }
 #aws cognito application client definition
 resource "aws_cognito_user_pool_client" "cognito_app_client" {
-  count = var.cluster_type == "app_cluster" ? 1 : 0
-  name                                 = "${local.stdname}-${var.client_app_name}"
-  user_pool_id                         = aws_cognito_user_pool.user_pool[0].id
+  name                                 = "${local.std_name}-${var.client_app_name}"
+  user_pool_id                         = aws_cognito_user_pool.user_pool.id
   allowed_oauth_flows                  = var.client_allowed_oauth_flows
   allowed_oauth_flows_user_pool_client = var.client_allowed_oauth_flows_user_pool_client
   allowed_oauth_scopes                 = var.client_allowed_oauth_scopes
@@ -100,21 +116,18 @@ resource "aws_cognito_user_pool_client" "cognito_app_client" {
     refresh_token = lookup(var.client_token_validity_units, "refresh_token", null)
   }
 }
-/*
+
 #aws cognito domain (custom/out-of-box) specification
 resource "aws_cognito_user_pool_domain" "domain" {
-  count = var.cluster_type == "app_cluster" ? 1 : 0
   domain          = var.cognito_domain
 # certificate_arn = var.acm_cert_arn #activate when custom domain is required
-  user_pool_id    = aws_cognito_user_pool.user_pool[0].id
+  user_pool_id    = aws_cognito_user_pool.user_pool.id
 
 }
 #aws cognito user interface customization resource definition
 resource "aws_cognito_user_pool_ui_customization" "cognito_ui_cust" {
-  count = var.cluster_type == "app_cluster" ? 1 : 0
-  client_id    = aws_cognito_user_pool_client.cognito_app_client[0].id
+  client_id    = aws_cognito_user_pool_client.cognito_app_client.id
   image_file   = filebase64("resources/aais_logo.png")
-  user_pool_id = aws_cognito_user_pool.user_pool[0].id
+  user_pool_id = aws_cognito_user_pool.user_pool.id
   depends_on   = [aws_cognito_user_pool_client.cognito_app_client, aws_cognito_user_pool_domain.domain]
 }
-*/

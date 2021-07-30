@@ -1,3 +1,4 @@
+/*
 resource "aws_kms_key" "eks_kms_key_app" {
   description             = "The KMS key for app eks"
   deletion_window_in_days = 7
@@ -5,7 +6,7 @@ resource "aws_kms_key" "eks_kms_key_app" {
   enable_key_rotation     = true
   //  policy                  = file("./key_policy/app_eks_key_policy.json")
   policy = jsonencode({
-    "Id" : "app_eks_kms_key_policy",
+    "Id" : "${local.std_name}-eks",
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -76,8 +77,14 @@ resource "aws_kms_key" "eks_kms_key_app" {
       }
     ]
   })
+  tags = merge(
+    local.tags,
+    {
+      "name" = "${local.std_name}-eks"
+    },)
 }
 resource "aws_kms_alias" "alias" {
-  name          = "alias/eks_kms_key_app"
+  name          = "alias\${local.std_name}-eks"
   target_key_id = aws_kms_key.eks_kms_key_app.id
 }
+*/

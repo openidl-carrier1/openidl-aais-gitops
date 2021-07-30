@@ -9,3 +9,14 @@
 ./.terraform/.*
 terraform.tfstate.d/.*
 terraform.tfstate.d/**
+carriers_another_region.tfvars
+carriers_same_region.tfvars
+aais_carriers.tfvars
+aais_clusters.tfvars
+./blockchain_cluster.tfvars
+./terraform.tfstate.d
+./terraform.tfstate
+./terraform.tfvars
+./terraform.tfstate.backup
+./.terraform
+./.*.tfvars

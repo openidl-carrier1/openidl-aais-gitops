@@ -1,7 +1,8 @@
 #Creating an application cluster VPC in the specific region of the aws account
+/*
 module "aais_vpc" {
   source          = "terraform-aws-modules/vpc/aws"
-  name            = var.cluster_type == "app_cluster" ? "${local.stdname}-vpc" : "${local.stdname}-vpc"
+  name            = var.cluster_type == "app_cluster" ? "${local.std_name}-vpc" : "${local.std_name}-vpc"
   cidr            = var.vpc_cidr
   azs             = var.availability_zones
   private_subnets = var.private_subnets
@@ -36,19 +37,19 @@ module "aais_vpc" {
   create_flow_log_cloudwatch_log_group = false
   create_flow_log_cloudwatch_iam_role  = false
   flow_log_max_aggregation_interval    = 60
-  tags                                 = local.tags
-  vpc_tags                             = local.tags
-  public_subnet_tags = {
+  tags                                 = merge(local.tags,{"name" = "${local.std_name}-vpc"},)
+  vpc_tags                             = merge(local.tags,{"name" = "${local.std_name}-vpc"},)
+  public_subnet_tags = merge(local.tags,{
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                      = "1"
-    #"Name"                                        = "${var.aws_env}-Public_Subnets"
-  }
+    "name"                                        = "${local.std_name}-public_subnets"
+  })
 
-  private_subnet_tags = {
+  private_subnet_tags = merge(local.tags,{
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
-    #"Name"                                        = "app-${var.aws_env}-Private_Subnets"
-  }
+    "name"                                        = "${local.std_name}-private_subnets"
+  })
 }
 
 #creating transit gateway in application cluster.
@@ -58,7 +59,7 @@ module "transit-gateway" {
   source = "./transit-gateway"
   create_tgw = true
   share_tgw = var.other_aws_account ? true : false
-  name = "${local.stdname}-central-tgw"
+  name = "${local.std_name}-central-tgw"
   amazon_side_asn = 64532
   description = "The core tgw in the environment to which all VPCs connect"
   enable_auto_accept_shared_attachments = true
@@ -77,11 +78,21 @@ module "transit-gateway" {
   }
   ram_allow_external_principals = true
   ram_principals = var.aws_secondary_account_number
-  tags = local.tags
-  tgw_default_route_table_tags = local.tags
-  tgw_route_table_tags = local.tags
-  tgw_tags = local.tags
-  tgw_vpc_attachment_tags = local.tags
+  tags =  merge(local.tags,{
+    "name" = "${local.std_name}-central-tgw"
+  })
+  tgw_default_route_table_tags = merge(local.tags,{
+    "name" = "${local.std_name}-central-tgw"
+  })
+  tgw_route_table_tags = merge(local.tags,{
+    "name" = "${local.std_name}-central-tgw"
+  })
+  tgw_tags = merge(local.tags,{
+    "name" = "${local.std_name}-central-tgw"
+  })
+  tgw_vpc_attachment_tags = merge(local.tags,{
+    "name" = "${local.std_name}-central-tgw"
+  })
 }
 
 #Using existing transit gateway created in app_cluster with blockchain cluster
@@ -91,7 +102,7 @@ module "transit-gateway-peer" {
   source = "./transit-gateway"
   create_tgw = false
   share_tgw = var.other_aws_account ? true : false
-  name = "${local.stdname}-peer-tgw"
+  name = "${local.std_name}-peer-tgw"
   amazon_side_asn = 64532
   description = "The tgw to which VPC has to be attached"
   enable_auto_accept_shared_attachments = true
@@ -113,11 +124,21 @@ module "transit-gateway-peer" {
   ram_resource_share_arn = var.tgw_ram_resource_share_id
   ram_allow_external_principals = true
   ram_principals = [var.aws_core_account_number]
-  tags = local.tags
-  tgw_default_route_table_tags = local.tags
-  tgw_route_table_tags = local.tags
-  tgw_tags = local.tags
-  tgw_vpc_attachment_tags = local.tags
+  tags = merge(local.tags,{
+    "name" = "${local.std_name}-peer-tgw"
+  })
+  tgw_default_route_table_tags = merge(local.tags,{
+    "name" = "${local.std_name}-peer-tgw"
+  })
+  tgw_route_table_tags = merge(local.tags,{
+    "name" = "${local.std_name}-peer-tgw"
+  })
+  tgw_tags = lmerge(local.tags,{
+    "name" = "${local.std_name}-peer-tgw"
+  })
+  tgw_vpc_attachment_tags = merge(local.tags,{
+    "name" = "${local.std_name}-peer-tgw"
+  })
 }
-
+*/
 

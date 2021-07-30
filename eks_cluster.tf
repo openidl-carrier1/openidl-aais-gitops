@@ -9,7 +9,7 @@ module "app_eks" {
   source                                         = "terraform-aws-modules/eks/aws"
   version                                        = "17.1.0"
   create_eks                                     = var.create_eks
-  cluster_name                                   = local.cluster_name
+  cluster_name                                   = "${local.std_name}-app" #include condition for blk
   enable_irsa                                    = var.enable_irsa
   cluster_version                                = var.cluster_version
   subnets                                        = module.aais_vpc.private_subnets
@@ -33,7 +33,7 @@ module "app_eks" {
   ]
   worker_groups = [
     {
-      name                          = "${var.eks_worker_name_1}"
+      name                          = "${local.std_name}-wk-group-1"
       instance_type                 = var.eks_worker_instance_type
       platform                      = "linux"
       additional_userdata           = "echo foo bar"
@@ -45,14 +45,15 @@ module "app_eks" {
       root_encrypted                = var.eks_wg_root_vol_encrypted
       //encrypted                     = true
       root_encrypted = true
-      additional_ebs_volumes = [
+      /*additional_ebs_volumes = [
         {
           block_device_name = "${var.eks_wg_block_device_name}",
           volume_size       = "${var.eks_wg_ebs_volume_size}",
           volume_type       = var.eks_wg_ebs_volume_type,
           encrypted         = var.eks_wg_ebs_vol_encrypted
         }
-      ]
+      ]*/
+      /*
       root_volume_size         = var.eks_wg_root_volume_size
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.key_pair_external.key_pair_key_name
@@ -63,7 +64,7 @@ module "app_eks" {
       instance_refresh_enabled = var.wg_instance_refresh_enabled
     },
     {
-      name                          = "${var.eks_worker_name_2}"
+      name                          = "${local.std_name}-wk-group-1"
       instance_type                 = var.eks_worker_instance_type
       platform                      = "linux"
       additional_userdata           = "echo foo bar"
@@ -74,6 +75,7 @@ module "app_eks" {
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       //encrypted                     = true
+      /*
       additional_ebs_volumes = [
         {
           block_device_name = "${var.eks_wg_block_device_name}",
@@ -81,22 +83,24 @@ module "app_eks" {
           volume_type       = var.eks_wg_ebs_volume_type,
           encrypted         = var.eks_wg_ebs_vol_encrypted
         }
-      ]
+      ]*/
+      /*
       root_volume_size         = var.eks_wg_root_volume_size
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.key_pair_external.key_pair_key_name
       subnet_id                = module.aais_vpc.private_subnets[1]
-      target_group_arns        = module.eks_nlb.target_group_arns
+      target_group_arns        = module.eks_alb.target_group_arns
       health_check_type        = var.eks_wg_health_check_type
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
     }
   ]
   worker_additional_security_group_ids = [module.all_worker_mgmt.security_group_id]
-  tags = {
-    terraform   = "true"
-    environment = var.aws_env
-  }
+  tags =  merge(
+    local.tags,
+    {
+      "name" = "${local.std_name}-app"
+    },)
   depends_on = [
     module.aais_vpc,
     aws_vpc_endpoint.s3,

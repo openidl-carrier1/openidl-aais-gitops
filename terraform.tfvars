@@ -1,22 +1,20 @@
 /*Default configuration specifications which can be amended when required, anything specific
-and vital for deployment are to be passed as application_cluster.tfvars or blockchain_cluster.tfvars
+and vital for deployment are to be passed as aais_clusters.tfvars or blockchain_cluster.tfvars
 from a specific terraform workspace*/
-
-#default bastion host configuration
-instance_type                  = "t2.micro"
-root_block_device_volume_type = "gp2"
-root_block_device_volume_size = "15"
-ebs_block_device_volume_type  = "gp2"
-ebs_block_device_volume_size  = "20"
-
-#cognito default configurations
+#-------------------------------------------------------------------------------------------------------------------
+#Bastion host configuration
+instance_type                   = "t2.micro"
+root_block_device_volume_type   = "gp2"
+root_block_device_volume_size   = "40"
+#-------------------------------------------------------------------------------------------------------------------
+#Cognito default configurations
 client_allowed_oauth_flows                  = ["code", "implicit"] #"client_credentials" is an alternate option
 client_allowed_oauth_flows_user_pool_client = true
 client_allowed_oauth_scopes                 = ["email", "phone", "profile", "openid"]
 client_explicit_auth_flows                  = ["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 client_generate_secret                      = true
-client_read_attributes                      = ["email", "phone_number", "profile"]
-client_write_attributes                     = ["email", "gender", "locale", "profile", "phone_number"]
+client_read_attributes                      = ["email", "phone_number", "profile", "address"]
+client_write_attributes                     = ["address", "profile"]
 client_supported_idp                        = ["COGNITO"]
 client_prevent_user_existence_errors        = "ENABLED"
 client_id_token_validity                    = 1 #hour
@@ -34,27 +32,23 @@ userpool_email_config = {
 }
 userpool_mfa_configuration          = "OPTIONAL"
 userpool_software_token_mfa_enabled = true
-
 password_policy_minimum_length                   = 10
 password_policy_require_lowercase                = true
 password_policy_require_numbers                  = true
 password_policy_require_symbols                  = true
 password_policy_require_uppercase                = true
 password_policy_temporary_password_validity_days = 10
-
 userpool_advanced_security_mode           = "AUDIT"
 userpool_enable_username_case_sensitivity = false
-
 #email_address = ""
 #userpool_email_verficiation_subject = ""
 #userpool_email_verficiation_message = ""
-
-#default #EKS Cluster specifications
+#-------------------------------------------------------------------------------------------------------------------
+#EKS cluster specifications
 enable_irsa                  = true
 eks_worker_instance_type     = "t3.medium"
 eks_worker_group_sg_mgmt_one = "eks_worker_group_sg_mgmt_one"
 eks_worker_group_sg_mgmt_two = "eks_worker_group_sg_mgmt_two"
-
 kubeconfig_output_path       = "./kubeconfig_file/"
 eks_worker_name_1            = "worker-group-1"
 eks_worker_name_2            = "worker-group-2"

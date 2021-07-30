@@ -32,7 +32,7 @@ jobs:
       TF_VAR_aws_role_arn: ${{ secrets.aws_role_arn }}
       TF_VAR_aws_user_arn: ${{ secrets.aws_user_arn }}
       TF_VAR_ec2_ssh_public_key: ${{ secrets.ec2_ssh_public_key }}
-      destroy_env: ${{ secrets.destroy_env }}
+      #destroy_env: ${{ secrets.destroy_env }}
 
     #default bash shell and working directory is set
     defaults:
@@ -103,7 +103,7 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
     # env:
-      run: terraform plan -var-file=application_cluster.tfvars -out=plan.out && terraform show -json plan.out > plan.out.json
+      run: terraform plan -var-file=aais_clusters.tfvars -out=plan.out && terraform show -json plan.out > plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -115,4 +115,4 @@ jobs:
     - name: Terraform Apply
       id: apply
       if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
-      run: terraform apply -auto-approve -var-file=application_cluster.tfvars
+      run: terraform apply -auto-approve -var-file=aais_clusters.tfvars
