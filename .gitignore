@@ -21,3 +21,4 @@ aais_clusters.tfvars
 .terraform/*
 .terraform/providers
 .terraform/modules
+.terraform.lock.hcl
