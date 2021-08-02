@@ -1,6 +1,5 @@
 locals {
   std_name = var.aais || (var.aais && var.other_aws_account) ? "aais-${var.aws_env}" : "carrier-${var.aws_env}"
-  #cluster_name                   = "${var.application_name}-app-eks-${random_string.suffix.result}"
   #policy_arn_prefix              = "arn:aws:iam::aws:policy"
   #target_groups_name             = "tg-${var.aws_env}"
   #app_eks_target_groups_name     = "tg-${var.aws_env}"
