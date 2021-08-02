@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "tf_s3_bucket" {
   versioning {
     enabled = true
   }
-  tags = var.tags
+  tags = local.tags
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -28,7 +28,7 @@ resource "aws_dynamodb_table" "tf_state_lock" {
   billing_mode = "PROVISIONED"
   read_capacity = 5
   write_capacity = 5
-  tags = var.tags
+  tags = local.tags
   hash_key = "LockID"
   server_side_encryption {
     enabled = true
@@ -77,7 +77,7 @@ resource "aws_kms_key" "kms_key_tf_s3_bucket" {
   deletion_window_in_days = 30
   key_usage = "ENCRYPT_DECRYPT"
   enable_key_rotation = true
-  tags = var.tags
+  tags = local.tags
   policy = jsonencode({
     "Id": "key-consolepolicy-3",
     "Version": "2012-10-17",
