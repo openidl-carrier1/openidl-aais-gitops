@@ -87,7 +87,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   tags = merge(
     local.tags,
     {
-      "name" = "${local.std_name}-${var.userpool_name}"
+      "Name" = "${local.std_name}-${var.userpool_name}"
       "Cluster_type" = "application"
     },)
 }

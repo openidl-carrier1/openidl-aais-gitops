@@ -79,7 +79,7 @@ module "app_bastion_nlb" {
   target_group_tags = merge(
     local.tags,
     {
-      "name" = "tg-bst"
+      "Name" = "tg-bst"
       "Cluster_type" = "application"
     },)
 }
@@ -145,7 +145,7 @@ module "blk_bastion_sg" {
   tags = merge(
     local.tags,
     {
-      "cluster_type" = "blockchain"
+      "Cluster_type" = "blockchain"
     },)
 }
 module "blk_bastion_host_key_pair_external" {
@@ -157,7 +157,7 @@ module "blk_bastion_host_key_pair_external" {
     local.tags,
     {
       "Name" = "${local.std_name}-blk-bastion-hosts-external"
-      "cluster_type" = "blockchain"
+      "Cluster_type" = "blockchain"
     },)
 }
 module "blk_bastion_nlb" {
@@ -206,14 +206,14 @@ module "blk_bastion_nlb" {
   lb_tags = merge(
     local.tags,
     {
-      "cluster_type" = "blockchain"
+      "Cluster_type" = "blockchain"
     },)
   idle_timeout = 180
   target_group_tags = merge(
     local.tags,
     {
-      "name" = "tg-bst"
-      "cluster_type" = "blockchain"
+      "Name" = "tg-bst"
+      "Cluster_type" = "blockchain"
     },)
 }
 module "blk_bastion_host_asg" {
