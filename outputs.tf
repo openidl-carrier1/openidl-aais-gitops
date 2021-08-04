@@ -147,31 +147,101 @@ output "aws_registered_app_url" {
  description = "The url to access the deployed application"
 }
 #-----------------------------------------------------------------------------------------------------------------
+#S3 bucket output
 output "s3_bucket_arn" {
   value = aws_s3_bucket.s3_bucket.arn
 }
 #-----------------------------------------------------------------------------------------------------------------
+#application cluster (EKS) outputs
+output "app_cluster_endpoint" {
+  value       = module.app_eks_cluster.cluster_endpoint
+}
+output "app_cluster_cloudwatch_log_group_arn" {
+  value       = module.app_eks_cluster.cloudwatch_log_group_arn
+}
+output "app_cluster_certificate_authority_data" {
+  value       = module.app_eks_cluster.cluster_certificate_authority_data
+  sensitive = true
+}
+output "app_cluster_iam_role_arn" {
+  value       = module.app_eks_cluster.cluster_iam_role_arn
+}
+output "app_cluster_oidc_issuer_url" {
+  value       = module.app_eks_cluster.cluster_oidc_issuer_url
+}
+output "app_cluster_primary_sg_id" {
+  value       = module.app_eks_cluster.cluster_primary_security_group_id
+}
+output "app_cluster_sg_id" {
+  value       = module.app_eks_cluster.cluster_security_group_id
+}
+output "app_cluster_kubeconfig" {
+  value       = module.app_eks_cluster.kubeconfig
+  sensitive = true
+}
+output "app_cluster_oidc_provider_arn" {
+  value       = module.app_eks_cluster.oidc_provider_arn
+}
+output "app_cluster_sg_rule_https_worker_ingress" {
+  value       = module.app_eks_cluster.security_group_rule_cluster_https_worker_ingress
+}
+output "app_cluster_worker_node_iam_instance_profile_arns" {
+  value       = module.app_eks_cluster.worker_iam_instance_profile_arns
+}
+output "app_cluster_worker_node_iam_role_arn" {
+  value       = module.app_eks_cluster.worker_iam_role_arn
+}
+output "app_cluster_worker_node_sg_id" {
+  value       = module.app_eks_cluster.worker_security_group_id
+}
+#-----------------------------------------------------------------------------------------------------------------
+#blockchain cluster (EKS) outputs
+output "blk_cluster_endpoint" {
+  value       = module.blk_eks_cluster.cluster_endpoint
+}
+output "blk_cluster_cloudwatch_log_group_arn" {
+  value       = module.blk_eks_cluster.cloudwatch_log_group_arn
+}
+output "blk_cluster_certificate_authority_data" {
+  value       = module.blk_eks_cluster.cluster_certificate_authority_data
+  sensitive = true
+}
+output "blk_cluster_iam_role_arn" {
+  value       = module.blk_eks_cluster.cluster_iam_role_arn
+}
+output "blk_cluster_oidc_issuer_url" {
+  value       = module.blk_eks_cluster.cluster_oidc_issuer_url
+}
+output "blk_cluster_primary_sg_id" {
+  value       = module.blk_eks_cluster.cluster_primary_security_group_id
+}
+output "blk_cluster_sg_id" {
+  value       = module.blk_eks_cluster.cluster_security_group_id
+}
+output "blk_cluster_kubeconfig" {
+  value       = module.blk_eks_cluster.kubeconfig
+  sensitive = true
+}
+output "blk_cluster_oidc_provider_arn" {
+  value       = module.blk_eks_cluster.oidc_provider_arn
+}
+output "blk_cluster_sg_rule_https_worker_ingress" {
+  value       = module.blk_eks_cluster.security_group_rule_cluster_https_worker_ingress
+}
+output "blk_cluster_worker_node_iam_instance_profile_arns" {
+  value       = module.blk_eks_cluster.worker_iam_instance_profile_arns
+}
+output "blk_cluster_worker_node_iam_role_arn" {
+  value       = module.blk_eks_cluster.worker_iam_role_arn
+}
+output "blk_cluster_worker_node_sg_id" {
+  value       = module.blk_eks_cluster.worker_security_group_id
+}
+
+
 
 /*
-output "eks_cluster_security_group_id" {
-  description = "Security group ID attached to the EKS cluster. On 1.14 or later, this is the 'Additional security groups' in the EKS console"
-  value       = module.app_eks.cluster_security_group_id
-}
-output "eks_kubeconfig_contents" {
-  description = "kubectl config file contents for this EKS cluster. Will block on cluster creation until the cluster is really ready."
-  value       = module.app_eks.kubeconfig
-  sensitive   = true
-  depends_on = [
-    module.app_eks,
-  ]
-}
-output "eks_kubeconfig_filename" {
-  description = "The filename of the generated kubectl config. Will block on cluster creation until the cluster is really ready."
-  value       = module.app_eks.kubeconfig_filename
-  depends_on = [
-    module.app_eks,
-  ]
-}
+#-----------------------------------------------------------------------------------------------------------------
 ############Kubernetes Dashboard############
 
 output "eks_admin_token" {
@@ -188,9 +258,5 @@ output "eks_namespace" {
 output "eks_dashboard_url" {
   value     = "${var.dashboard_subdomain}${var.domain}"
   sensitive = false
-}
-
-output "eks_elb" {
-  value = module.eks_alb.lb_dns_name
 }
 */

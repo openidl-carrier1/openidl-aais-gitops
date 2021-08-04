@@ -440,8 +440,20 @@ variable "domain_info" {
   default = {}
 }
 #-------------------------------------------------------------------------------------------------------------------
-
-variable "cluster_version" {
+variable "app_cluster_name" {
+  description = "The name of application cluster (eks)"
+  type = string
+}
+variable "blk_cluster_name" {
+  description = "The name of blockchain cluster (eks)"
+  type = string
+}
+variable "app_cluster_version" {
+  description = "The hasicorp terraform eks module version"
+  type        = string
+  default     = "1.19"
+}
+variable "blk_cluster_version" {
   description = "The hasicorp terraform eks module version"
   type        = string
   default     = "1.19"
@@ -450,7 +462,6 @@ variable "eks_worker_instance_type" {
   description = "The eks cluster worker node instance type"
   type        = string
 }
-
 variable "tenancy" {
   description = "The tenancy of the instance (if the instance is running in a VPC). Available values: default, dedicated, host."
   type        = string
@@ -469,31 +480,11 @@ variable "cluster_encryption_config" {
   }))
   default = []
 }
-
 variable "kubeconfig_output_path" {
   description = "Where to save the Kubectl config file (if `write_kubeconfig = true`). Assumed to be a directory if the value ends with a forward slash `/`."
   type        = string
   default     = "./kubeconfig_file/"
 }
-
-variable "eks_worker_group_sg_mgmt_one" {
-  //type        = string
-  //default     = ""
-  description = "eks_worker_group_sg_mgmt_one"
-}
-variable "eks_worker_group_sg_mgmt_two" {
-  //type        = string
-  //default     = ""
-  description = "eks_worker_group_sg_mgmt_two"
-}
-
-variable "eks_worker_name_1" {
-  description = "The name of the EKS worker 1"
-}
-variable "eks_worker_name_2" {
-  description = "The name of the EKS worker 2"
-}
-
 variable "target_group_sticky" {
   description = "Whether to enable/disable stickiness for NLB"
   type        = bool
@@ -524,11 +515,6 @@ variable "cluster_endpoint_public_access_cidrs" {
   description = "List of CIDR blocks which can access the Amazon EKS public API server endpoint"
   default     = null
 }
-variable "create_eks" {
-  type        = bool
-  description = "Controls if EKS resources should be created (it affects almost all resources)"
-  default     = true
-}
 variable "cluster_create_timeout" {
   description = "Timeout value when creating the EKS cluster."
   type        = string
@@ -543,11 +529,6 @@ variable "wait_for_cluster_timeout" {
   description = "A timeout (in seconds) to wait for cluster to be available."
   type        = number
   default     = 3600
-}
-variable "enable_irsa" {
-  default     = true
-  description = "Enables the OpenID Connect Provider for EKS to use IAM Roles for Service Accounts (IRSA)"
-  type        = bool
 }
 variable "write_kubeconfig" {
   default     = true
@@ -579,23 +560,10 @@ variable "eks_cluster_logs" {
   type        = list(string)
   default     = []
 }
-variable "app_eks_sg" {
-  description = "Security Group for EKS"
-}
 variable "dhcp_options_domain_name_servers" {
   description = "Specify a list of DNS server addresses for DHCP options set, default to AWS provided (requires enable_dhcp_options set to true)"
   type        = list(string)
   default     = ["AmazonProvidedDNS"]
-}
-variable "enable_dhcp_options" {
-  description = "Should be true if you want to specify a DHCP options set with a custom domain name, DNS servers, NTP servers, netbios servers, and/or netbios server type"
-  type        = bool
-  default     = true
-}
-variable "enable_ipv6" {
-  description = "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block."
-  type        = bool
-  default     = false
 }
 variable "eks_wg_public_ip" {
   description = "Whether to enable pubic IP address for worker groups"
@@ -686,4 +654,40 @@ variable "chart_version" {
   description = "Helm Chart version"
   type        = string
   default     = "4.3.1"
+}
+variable "app_cluster_service_ipv4_cidr" {
+  description = "The app eks cluster service ipv4 cidr"
+  type = string
+}
+variable "blk_cluster_service_ipv4_cidr" {
+  description = "The app eks cluster service ipv4 cidr"
+  type = string
+}
+variable "app_eks_worker_nodes_ssh_key" {
+  type = string
+  description = "The ssh public key to setup on worker nodes in app cluster eks for remote access"
+}
+variable "blk_eks_worker_nodes_ssh_key" {
+  type = string
+  description = "The ssh public key to setup on worker nodes in blk cluster eks for remote access"
+}
+variable "app_cluster_map_roles" {
+  type = any
+  description = "The list of iam roles to be added part of app cluster(EKS) configmap (aws auth)"
+  default = {}
+}
+variable "app_cluster_map_users" {
+  type = any
+  description = "The list of iam users to be added part of app cluster(EKS) configmap (aws auth)"
+  default = {}
+}
+variable "blk_cluster_map_roles" {
+  type = any
+  description = "The list of iam roles to be added part of blk cluster(EKS) configmap (aws auth)"
+  default = {}
+}
+variable "blk_cluster_map_users" {
+  type = any
+  description = "The list of iam users to be added part of blk cluster(EKS) configmap (aws auth)"
+  default = {}
 }

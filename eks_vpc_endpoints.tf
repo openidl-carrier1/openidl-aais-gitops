@@ -1,116 +1,230 @@
-###########VPC ENDPOINTS FOR PRIVATE EKS CLUSTER  ###########
-/*
-resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = module.aais_vpc.vpc_id
+#application cluster(eks) vpc endpoints
+resource "aws_vpc_endpoint" "app_eks_s3" {
+  vpc_id       = module.aais_app_vpc.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.s3"
-  tags         = { Name = "${var.project_name}-${var.aws_env}-S3", Type = "endpoint_s3" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-s3-endpoint"
+    "Cluster_Type" = "application" })
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint_route_table_association" "private_s3_route" {
-  count = length(module.aais_vpc.private_route_table_ids)
+resource "aws_vpc_endpoint_route_table_association" "app_eks_private_s3_route" {
+  count = length(module.aais_app_vpc.private_route_table_ids)
   //  count = "2"
-  vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = module.aais_vpc.private_route_table_ids[count.index]
-  depends_on = [
-    module.aais_vpc,
-  ]
+  vpc_endpoint_id = aws_vpc_endpoint.app_eks_s3.id
+  route_table_id  = module.aais_app_vpc.private_route_table_ids[count.index]
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "ec2" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_ec2" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_env}-EC2", Type = "endpoint_ec2" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ec2-endpoint",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_ecr_dkr" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_region}-ECR_DKR", Type = "endpoint_dkr" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ecr-dkr-endpoint",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "elasticloadbalancing" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_elb" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.elasticloadbalancing"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_region}-ELASTICLOADBALANCING", Type = "endpoint_elasticloadbalancing" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ec2-elb",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "autoscaling" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_asg" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.autoscaling"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_region}-AUTOSCALING", Type = "endpoint_autoscaling" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ec2-asg",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "logs" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_logs" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_region}-LOGS", Type = "endpoint_logs" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-logs",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "sts" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_sts" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_env}-STS", Type = "endpoint_sts" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ec2-sts",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id              = module.aais_vpc.vpc_id
+resource "aws_vpc_endpoint" "app_eks_ecr_api" {
+  vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_env}-ECR_API", Type = "endpoint_api" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-ecr-api",
+    "Cluster_Type" = "application"})
+  depends_on = [module.aais_app_vpc]
 }
-resource "aws_vpc_endpoint" "app_mesh" {
-  vpc_id              = module.aais_vpc.vpc_id
-  service_name        = "com.amazonaws.${var.aws_region}.appmesh-envoy-management"
+/*
+resource "aws_vpc_endpoint" "app_eks_app_mesh" {
+  vpc_id = module.aais_app_vpc.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.appmesh-envoy-management"
+  vpc_endpoint_type = "Interface"
+  security_group_ids = [
+    module.app-eks-worker-node-group-sg.security_group_id]
+  subnet_ids = module.aais_app_vpc.private_subnets
+  private_dns_enabled = true
+  tags = merge(local.tags, {
+    "Name" = "${local.app_cluster_name}-app-mesh",
+    "Cluster_Type" = "application"
+  })
+  depends_on = [
+    module.aais_app_vpc]
+}*/
+#blockchain cluster (eks) vpc endpoints
+resource "aws_vpc_endpoint" "blk_eks_s3" {
+  vpc_id       = module.aais_blk_vpc.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.s3"
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-s3-endpoint"
+    "Cluster_Type" = "blockchain" })
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint_route_table_association" "blk_eks_private_s3_route" {
+  count = length(module.aais_blk_vpc.private_route_table_ids)
+  //  count = "2"
+  vpc_endpoint_id = aws_vpc_endpoint.blk_eks_s3.id
+  route_table_id  = module.aais_blk_vpc.private_route_table_ids[count.index]
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_ec2" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.all_worker_mgmt.security_group_id]
-  subnet_ids          = module.aais_vpc.private_subnets
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
-  tags                = { Name = "${var.project_name}-${var.aws_env}-ECR_API", Type = "endpoint_api" }
-  depends_on = [
-    module.aais_vpc,
-  ]
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ec2-endpoint",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
 }
-*/
+resource "aws_vpc_endpoint" "blk_eks_ecr_dkr" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ecr-dkr-endpoint",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_elb" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.elasticloadbalancing"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ec2-elb",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_asg" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.autoscaling"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ec2-asg",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_logs" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.logs"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-logs",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_sts" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.sts"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ec2-sts",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+resource "aws_vpc_endpoint" "blk_eks_ecr_api" {
+  vpc_id              = module.aais_blk_vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids          = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags         = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-ecr-api",
+    "Cluster_Type" = "blockchain"})
+  depends_on = [module.aais_blk_vpc]
+}
+/*
+resource "aws_vpc_endpoint" "blk_eks_app_mesh" {
+  vpc_id = module.aais_blk_vpc.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.appmesh-envoy-management"
+  vpc_endpoint_type = "Interface"
+  security_group_ids = [module.blk-eks-worker-node-group-sg.security_group_id]
+  subnet_ids = module.aais_blk_vpc.private_subnets
+  private_dns_enabled = true
+  tags = merge(local.tags, {
+    "Name" = "${local.blk_cluster_name}-app-mesh",
+    "Cluster_Type" = "blockchain"
+  })
+  depends_on = [module.aais_blk_vpc]
+}*/
