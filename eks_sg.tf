@@ -1,3 +1,4 @@
+#control plane security group for application cluster (eks)
 module "app-eks-control-plane-sg" {
   #for_each = {"app-eks-sg" = "aais_app_vpc", "blk-eks-sg" = "aais_blk_vpc"}
   source              = "terraform-aws-modules/security-group/aws"
@@ -36,8 +37,9 @@ module "app-eks-control-plane-sg" {
     }]
     tags = merge(local.tags, {
       Name = "${local.std_name}-app-eks-ctrl-plane-sg",
-      "Cluster_Type" = "application"})
+      "Cluster_type" = "application"})
 }
+#control plane security group for blockchain cluster (eks)
 module "blk-eks-control-plane-sg" {
   #for_each = {"app-eks-sg" = "aais_app_vpc", "blk-eks-sg" = "aais_blk_vpc"}
   source              = "terraform-aws-modules/security-group/aws"
@@ -76,8 +78,9 @@ module "blk-eks-control-plane-sg" {
     }]
     tags = merge(local.tags, {
       Name = "${local.std_name}-blk-eks-ctrl-plane-sg",
-      "Cluster_Type" = "blockchain"})
+      "Cluster_type" = "blockchain"})
 }
+#workers security group for application cluster (eks)
 module "app-eks-worker-node-group-sg" {
   source = "terraform-aws-modules/security-group/aws"
   name = "${local.std_name}-app-eks-worker-node-group-sg"
@@ -132,8 +135,9 @@ module "app-eks-worker-node-group-sg" {
   tags = merge(local.tags, {
     Name = "${local.std_name}-app-eks-worker-node-group-sg"
     "kubernetes.io/cluster/${local.app_cluster_name}" = "owned"
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
 }
+#workers security group for blockchain cluster (eks)
 module "blk-eks-worker-node-group-sg" {
   source = "terraform-aws-modules/security-group/aws"
   name = "${local.std_name}-blk-eks-worker-node-group-sg"
@@ -188,6 +192,6 @@ module "blk-eks-worker-node-group-sg" {
   tags = merge(local.tags, {
     Name = "${local.std_name}-blk-eks-worker-node-group-sg"
     "kubernetes.io/cluster/${local.blk_cluster_name}" = "owned"
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
 }
 

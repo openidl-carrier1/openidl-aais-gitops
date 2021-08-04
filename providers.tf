@@ -13,6 +13,7 @@ provider "aws" {
 provider "aws" {
   region = var.aws_region
 }
+#provider for application cluster
 provider "kubernetes" {
   alias = "app_cluster"
   config_path = "./kubeconfig_file/kubeconfig_${local.app_cluster_name}"
@@ -21,7 +22,7 @@ provider "kubernetes" {
   token = data.aws_eks_cluster_auth.app_eks_cluster_auth.token
   load_config_file = true
 }
-
+#provider for blockchain cluster
 provider "kubernetes" {
   alias = "blk_cluster"
   config_path = "./kubeconfig_file/kubeconfig_${local.blk_cluster_name}"

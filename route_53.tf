@@ -1,3 +1,4 @@
+#creating public hosted zones
 resource "aws_route53_zone" "zones" {
   count = (lookup(var.domain_info, "domain_registrar") == "others" || ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no"))) ? 1 : 0
   name = lookup(var.domain_info, "domain_name")
@@ -9,6 +10,7 @@ resource "aws_route53_zone" "zones" {
       "Cluster_type" = "application"
     },)
 }
+#adding route53 entry in the hosted zone when domain is already registered in aws route53
 resource "aws_route53_record" "r53_record_aws_registered" {
   count = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
   zone_id = data.aws_route53_zone.data_zones[0].id
@@ -20,6 +22,7 @@ resource "aws_route53_record" "r53_record_aws_registered" {
    evaluate_target_health = true
   }
 }
+#adding route53 entry in the hosted zone when domain is yet to register in aws route53
 resource "aws_route53_record" "r53_record_aws_new_entry" {
   count = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
@@ -31,6 +34,7 @@ resource "aws_route53_record" "r53_record_aws_new_entry" {
     evaluate_target_health = true
   }
 }
+#adding route53 entry in the hosted zone when domain is registered at 3rd party
 resource "aws_route53_record" "r53_record_others" {
   count = lookup(var.domain_info, "domain_registrar") == "others" ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id

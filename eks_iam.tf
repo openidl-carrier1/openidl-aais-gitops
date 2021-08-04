@@ -1,3 +1,4 @@
+#iam role for application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks-cluster-role" {
   for_each = toset(["app-eks", "blk-eks"])
   name = "${local.std_name}-${each.value}"
@@ -6,7 +7,7 @@ resource "aws_iam_role" "eks-cluster-role" {
     local.tags,
     {
       "Name" = "${local.std_name}-${each.value}"
-      "Cluster_Type" = "${each.value}"
+      "Cluster_type" = "${each.value}"
     },)
 }
 resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
@@ -40,6 +41,7 @@ resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEC2ContainerRegistr
   policy_arn = "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks-cluster-role["${each.value}"].id
 }
+#iam role for worker groups of both application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks-nodegroup-role" {
   for_each = toset(["app-node-group", "blk-node-group"])
   name = "${local.std_name}-${each.value}"
@@ -48,7 +50,7 @@ resource "aws_iam_role" "eks-nodegroup-role" {
     local.tags,
     {
       "Name" = "${local.std_name}-${each.value}"
-      "Cluster_Node_Group" = "${each.value}"
+      "Cluster_node_group" = "${each.value}"
     },)
 }
 resource "aws_iam_role_policy_attachment" "eks-nodegroup-AmazonEKSWorkerNodePolicy" {

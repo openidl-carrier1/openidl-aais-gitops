@@ -4,7 +4,7 @@ resource "aws_vpc_endpoint" "app_eks_s3" {
   service_name = "com.amazonaws.${var.aws_region}.s3"
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-s3-endpoint"
-    "Cluster_Type" = "application" })
+    "Cluster_type" = "application" })
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint_route_table_association" "app_eks_private_s3_route" {
@@ -23,7 +23,7 @@ resource "aws_vpc_endpoint" "app_eks_ec2" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ec2-endpoint",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_ecr_dkr" {
@@ -35,7 +35,7 @@ resource "aws_vpc_endpoint" "app_eks_ecr_dkr" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ecr-dkr-endpoint",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_elb" {
@@ -47,7 +47,7 @@ resource "aws_vpc_endpoint" "app_eks_elb" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ec2-elb",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_asg" {
@@ -59,7 +59,7 @@ resource "aws_vpc_endpoint" "app_eks_asg" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ec2-asg",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_logs" {
@@ -71,7 +71,7 @@ resource "aws_vpc_endpoint" "app_eks_logs" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-logs",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_sts" {
@@ -83,7 +83,7 @@ resource "aws_vpc_endpoint" "app_eks_sts" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ec2-sts",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 resource "aws_vpc_endpoint" "app_eks_ecr_api" {
@@ -95,7 +95,7 @@ resource "aws_vpc_endpoint" "app_eks_ecr_api" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-ecr-api",
-    "Cluster_Type" = "application"})
+    "Cluster_type" = "application"})
   depends_on = [module.aais_app_vpc]
 }
 /*
@@ -109,7 +109,7 @@ resource "aws_vpc_endpoint" "app_eks_app_mesh" {
   private_dns_enabled = true
   tags = merge(local.tags, {
     "Name" = "${local.app_cluster_name}-app-mesh",
-    "Cluster_Type" = "application"
+    "Cluster_type" = "application"
   })
   depends_on = [
     module.aais_app_vpc]
@@ -120,7 +120,7 @@ resource "aws_vpc_endpoint" "blk_eks_s3" {
   service_name = "com.amazonaws.${var.aws_region}.s3"
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-s3-endpoint"
-    "Cluster_Type" = "blockchain" })
+    "Cluster_type" = "blockchain" })
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint_route_table_association" "blk_eks_private_s3_route" {
@@ -139,7 +139,7 @@ resource "aws_vpc_endpoint" "blk_eks_ec2" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ec2-endpoint",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_ecr_dkr" {
@@ -151,7 +151,7 @@ resource "aws_vpc_endpoint" "blk_eks_ecr_dkr" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ecr-dkr-endpoint",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_elb" {
@@ -163,7 +163,7 @@ resource "aws_vpc_endpoint" "blk_eks_elb" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ec2-elb",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_asg" {
@@ -175,7 +175,7 @@ resource "aws_vpc_endpoint" "blk_eks_asg" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ec2-asg",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_logs" {
@@ -187,7 +187,7 @@ resource "aws_vpc_endpoint" "blk_eks_logs" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-logs",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_sts" {
@@ -199,7 +199,7 @@ resource "aws_vpc_endpoint" "blk_eks_sts" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ec2-sts",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 resource "aws_vpc_endpoint" "blk_eks_ecr_api" {
@@ -211,7 +211,7 @@ resource "aws_vpc_endpoint" "blk_eks_ecr_api" {
   private_dns_enabled = true
   tags         = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-ecr-api",
-    "Cluster_Type" = "blockchain"})
+    "Cluster_type" = "blockchain"})
   depends_on = [module.aais_blk_vpc]
 }
 /*
@@ -224,7 +224,7 @@ resource "aws_vpc_endpoint" "blk_eks_app_mesh" {
   private_dns_enabled = true
   tags = merge(local.tags, {
     "Name" = "${local.blk_cluster_name}-app-mesh",
-    "Cluster_Type" = "blockchain"
+    "Cluster_type" = "blockchain"
   })
   depends_on = [module.aais_blk_vpc]
 }*/

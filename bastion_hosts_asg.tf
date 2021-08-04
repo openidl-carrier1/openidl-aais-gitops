@@ -1,4 +1,5 @@
 #bastion host setup in the application cluster vpc
+#security group for the bastion hosts in application cluster vpc
 module "app_bastion_sg" {
   depends_on = [module.aais_app_vpc]
   #for_each = {for k,v in local.bastion_sgs : k => v}
@@ -14,6 +15,7 @@ module "app_bastion_sg" {
       "Cluster_type" = "application"
     },)
 }
+#ssh keypair for the bastion host in application cluster vpc
 module "app_bastion_host_key_pair_external" {
   depends_on = [module.aais_app_vpc]
   source = "terraform-aws-modules/key-pair/aws"
@@ -26,6 +28,7 @@ module "app_bastion_host_key_pair_external" {
       "Cluster_type" = "application"
     },)
 }
+#network load balancer for the bastion hosts in application cluster vpc
 module "app_bastion_nlb" {
   depends_on = [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc]
   source  = "terraform-aws-modules/alb/aws"
@@ -83,6 +86,7 @@ module "app_bastion_nlb" {
       "Cluster_type" = "application"
     },)
 }
+#auto scaling group for the bastion hosts in application cluster vpc
 module "app_bastion_host_asg" {
   depends_on = [module.aais_app_vpc, module.app_bastion_sg]
   source = "terraform-aws-modules/autoscaling/aws"
@@ -133,6 +137,7 @@ module "app_bastion_host_asg" {
     },)
 }
 ##bastion host setup in the blockchain cluster vpc
+#security group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_sg" {
   depends_on = [module.aais_blk_vpc]
   #for_each = {for k,v in local.bastion_sgs : k => v}
@@ -148,6 +153,7 @@ module "blk_bastion_sg" {
       "Cluster_type" = "blockchain"
     },)
 }
+#ssh keypair for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_key_pair_external" {
   depends_on = [module.aais_blk_vpc]
   source = "terraform-aws-modules/key-pair/aws"
@@ -160,6 +166,7 @@ module "blk_bastion_host_key_pair_external" {
       "Cluster_type" = "blockchain"
     },)
 }
+#network load balancer for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_nlb" {
   depends_on = [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc]
   source  = "terraform-aws-modules/alb/aws"
@@ -216,6 +223,7 @@ module "blk_bastion_nlb" {
       "Cluster_type" = "blockchain"
     },)
 }
+#autoscaling group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_host_asg" {
   depends_on = [module.aais_blk_vpc, module.blk_bastion_sg]
   source = "terraform-aws-modules/autoscaling/aws"

@@ -3,8 +3,6 @@ locals {
   app_cluster_name = "${local.std_name}-${var.app_cluster_name}"
   blk_cluster_name = "${local.std_name}-${var.blk_cluster_name}"
   policy_arn_prefix = "arn:aws:iam::aws:policy"
-  #target_groups_name             = "tg-${var.aws_env}"
-  #app_eks_target_groups_name     = "tg-${var.aws_env}"
   #dashboard_chart                 = "kubernetes-dashboard"
   #dashboard_admin_service_account = "kubernetes-dashboard-admin"
   #dashboard_repository            = "https://kubernetes.github.io/dashboard/"
@@ -15,13 +13,13 @@ locals {
   }
   bastion_host_userdata = filebase64("resources/bastion_host.sh")
   worker_nodes_userdata = filebase64("resources/worker_nodes.sh")
-  #cognito custom attributes
+#cognito custom attributes
   custom_attributes = [
     "role",
     "statusCode",
     "stateName",
     "organizationId"]
-
+#application cluster (eks) config-map (aws auth) - iam roles to map
   app_cluster_map_roles = [
     {
       rolearn = aws_iam_role.eks-nodegroup-role["app-node-group"].arn
@@ -31,6 +29,7 @@ locals {
         "system:nodes",
         "system:bootstrappers"]
     }]
+#blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
     {
       rolearn = aws_iam_role.eks-nodegroup-role["blk-node-group"].arn

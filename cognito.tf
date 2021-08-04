@@ -2,6 +2,7 @@
 resource "aws_ses_email_identity" "email_identity" {
   email = var.email_address
 }*/
+#setting up congnito user pool
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${local.std_name}-${var.userpool_name}"
   dynamic "account_recovery_setting" {
@@ -91,7 +92,7 @@ resource "aws_cognito_user_pool" "user_pool" {
       "Cluster_type" = "application"
     },)
 }
-#aws cognito application client definition
+#setting up cognito application client in the userpool
 resource "aws_cognito_user_pool_client" "cognito_app_client" {
   name                                 = "${local.std_name}-${var.client_app_name}"
   user_pool_id                         = aws_cognito_user_pool.user_pool.id
@@ -116,7 +117,6 @@ resource "aws_cognito_user_pool_client" "cognito_app_client" {
     refresh_token = lookup(var.client_token_validity_units, "refresh_token", null)
   }
 }
-
 #aws cognito domain (custom/out-of-box) specification
 resource "aws_cognito_user_pool_domain" "domain" {
   domain          = var.cognito_domain

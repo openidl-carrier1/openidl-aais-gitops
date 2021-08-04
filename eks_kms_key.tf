@@ -1,3 +1,4 @@
+#kms key for application cluster and blockchain cluster encryption
 resource "aws_kms_key" "eks_kms_key" {
   for_each = toset(["app-eks", "blk-eks"])
   description             = "The KMS key for app eks"
@@ -108,7 +109,7 @@ resource "aws_kms_key" "eks_kms_key" {
     local.tags,
     {
       "Name" = "${local.std_name}-${each.value}"
-      "Cluster_Type" = "${each.value}"
+      "Cluster_type" = "${each.value}"
     },)
 }
 resource "aws_kms_alias" "alias" {

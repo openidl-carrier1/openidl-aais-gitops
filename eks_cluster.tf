@@ -1,9 +1,11 @@
 #application cluster specific
+#iam instance profile for worker nodes of application cluster and blockchain cluster (eks)
 resource "aws_iam_instance_profile" "eks_instance_profile" {
   for_each = toset(["app-node-group", "blk-node-group"])
   name = "${local.std_name}-${each.value}-instance-profile"
   role = aws_iam_role.eks-nodegroup-role["${each.value}"].id
 }
+#ssh key pair for application cluster worker nodes (eks)
 module "app_eks_worker_nodes_key_pair_external" {
   depends_on = [module.aais_app_vpc]
   source = "terraform-aws-modules/key-pair/aws"
@@ -16,6 +18,7 @@ module "app_eks_worker_nodes_key_pair_external" {
       "Cluster_type" = "application"
     },)
 }
+#setting up application cluster (eks)
 module "app_eks_cluster" {
   providers = {
     kubernetes = kubernetes.app_cluster
@@ -141,8 +144,8 @@ module "app_eks_cluster" {
     aws_iam_role_policy_attachment.eks-nodegroup-AmazonEKSWorkerNodePolicy,
     aws_iam_instance_profile.eks_instance_profile]
 }
-#add multiple dependencies here finally
 #blockchain cluster specific
+#ssh key pair for blockchain cluster worker nodes (eks)
 module "blk_eks_worker_nodes_key_pair_external" {
   depends_on = [module.aais_blk_vpc]
   source = "terraform-aws-modules/key-pair/aws"
@@ -155,6 +158,7 @@ module "blk_eks_worker_nodes_key_pair_external" {
       "Cluster_type" = "blockchain"
     },)
 }
+#setting up blockchain cluster (eks)
 module "blk_eks_cluster" {
     providers = {
     kubernetes = kubernetes.blk_cluster
