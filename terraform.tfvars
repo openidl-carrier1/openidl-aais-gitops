@@ -45,21 +45,11 @@ userpool_enable_username_case_sensitivity = false
 #userpool_email_verficiation_message = ""
 #-------------------------------------------------------------------------------------------------------------------
 #EKS cluster specifications
-enable_irsa                  = true
 eks_worker_instance_type     = "t3.medium"
-eks_worker_group_sg_mgmt_one = "eks_worker_group_sg_mgmt_one"
-eks_worker_group_sg_mgmt_two = "eks_worker_group_sg_mgmt_two"
 kubeconfig_output_path       = "./kubeconfig_file/"
-eks_worker_name_1            = "worker-group-1"
-eks_worker_name_2            = "worker-group-2"
-target_group_sticky          = true
-
 #This "manage_aws_auth = true" is not required when we are using bastion host
 manage_aws_auth                                = true
-create_eks                                     = true
 cluster_endpoint_private_access                = true
-cluster_create_endpoint_private_access_sg_rule = false
-cluster_endpoint_private_access_cidrs          = ["0.0.0.0/0"]
 cluster_endpoint_public_access                 = true
 cluster_endpoint_public_access_cidrs           = ["0.0.0.0/0"]
 cluster_create_timeout                         = "30m"
@@ -68,19 +58,20 @@ eks_cluster_logs                               = ["api", "audit", "authenticator
 
 #### Worker Groups Variables###
 wg_asg_min_size             = "1"
-wg_asg_max_size             = "1"
+wg_asg_max_size             = "2"
 wg_asg_desired_capacity     = "1"
 wg_ebs_optimized            = true
 wg_instance_refresh_enabled = false
 eks_wg_public_ip            = false
 eks_wg_root_vol_encrypted   = true
-eks_wg_root_volume_size     = "30"
+eks_wg_root_volume_size     = "40"
 eks_wg_root_volume_type     = "gp2"
 eks_wg_block_device_name    = "/dev/sdf"
 eks_wg_ebs_volume_size      = 100
 eks_wg_ebs_volume_type      = "gp2"
 eks_wg_ebs_vol_encrypted    = true
 eks_wg_health_check_type = "ELB"
+
 ### EKS Ingress ###
 nginx_ingress_enabled = true
 nginx_ingress_chart_version = "1.12.0"

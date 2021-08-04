@@ -16,7 +16,7 @@ module "aais_app_vpc" {
   enable_dhcp_options    = true
   enable_ipv6            = false
 
-  manage_default_network_acl    = false
+  #manage_default_network_acl    = false
   default_security_group_name   = "${local.std_name}-app-vpc-def-sg"
   manage_default_security_group = true
   manage_default_route_table    = true
@@ -40,14 +40,14 @@ module "aais_app_vpc" {
   tags                                 = merge(local.tags, {"Cluster_type" = "application"})
   vpc_tags                             = merge(local.tags, {"Cluster_type" = "application"})
   public_subnet_tags = merge(local.tags,{
-    #"kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    #"kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
     "Cluster_type" = "application"
   })
 
   private_subnet_tags = merge(local.tags,{
-    #"kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    #"kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.app_cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
     "Cluster_type" = "application"
   })
 }
@@ -93,14 +93,14 @@ module "aais_blk_vpc" {
   tags                                 = merge(local.tags, {"Cluster_type" = "blockchain"})
   vpc_tags                             = merge(local.tags, {"Cluster_type" = "blockchain"})
   public_subnet_tags = merge(local.tags,{
-    #"kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    #"kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
     "Cluster_type" = "blockchain"
   })
 
   private_subnet_tags = merge(local.tags,{
-    #"kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    #"kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/cluster/${local.blk_cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
     "Cluster_type" = "blockchain"
   })
 }

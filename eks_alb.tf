@@ -82,8 +82,6 @@ module "app_eks_alb" {
       target_type      = "instance"
       vpc_id           = "${module.aais_app_vpc.vpc_id}"
       tags = merge(local.tags, {"Cluster_type" = "blockchain"},)
-      #added for testing
-      #target_group_arn = aws_instance.private_ec2.arn
       health_check = {
         enabled             = true
         interval            = 30
@@ -124,16 +122,13 @@ module "blk_eks_alb_sg" {
   vpc_id      = module.aais_blk_vpc.vpc_id
   ingress_with_cidr_blocks = var.blk_eks_alb_sg_ingress
   egress_with_cidr_blocks = var.blk_eks_alb_sg_egress
-  #ingress_cidr_blocks = ["0.0.0.0/0"] #it might need a dynamic provisioning
-  #ingress_rules       = ["https-443-tcp", "http-80-tcp"] # port 80 will be redirected to 443 at ALB level
-  #egress_rules        = ["all-all"]
   tags = merge(
     local.tags,
     {
       "Cluster_type" = "blockchain"
     },)
 }
-# private application load balancer in application cluster
+# private application load balancer in blockchain cluster
 module "blk_eks_alb" {
   depends_on = [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc]
   source  = "terraform-aws-modules/alb/aws"
@@ -182,12 +177,10 @@ module "blk_eks_alb" {
       target_type      = "instance"
       vpc_id           = "${module.aais_blk_vpc.vpc_id}"
       tags = merge(local.tags, {"Cluster_type" = "blockchain"},)
-      #added for testing
-      #target_group_arn = aws_instance.private_ec2.arn
       health_check = {
         enabled             = true
         interval            = 30
-        protocol            = "HTTP" #change to HTTPS
+        protocol            = "HTTP" #change to https
         port                = "80" #change to 443
         healthy_threshold   = 3
         unhealthy_threshold = 3

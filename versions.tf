@@ -7,5 +7,13 @@ terraform {
       #version = "~> 3.0"
       version = "3.51.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~>1.9"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "2.2.0"
+    }
   }
 }

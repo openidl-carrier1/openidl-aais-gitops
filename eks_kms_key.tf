@@ -1,12 +1,11 @@
-/*
-resource "aws_kms_key" "eks_kms_key_app" {
+resource "aws_kms_key" "eks_kms_key" {
+  for_each = toset(["app-eks", "blk-eks"])
   description             = "The KMS key for app eks"
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
   enable_key_rotation     = true
-  //  policy                  = file("./key_policy/app_eks_key_policy.json")
   policy = jsonencode({
-    "Id" : "${local.std_name}-eks",
+    "Id" : "${local.std_name}-${each.value}",
     "Version" : "2012-10-17",
     "Statement" : [
       {
@@ -74,17 +73,46 @@ resource "aws_kms_key" "eks_kms_key_app" {
             "kms:GrantIsForAWSResource" : "true"
           }
         }
-      }
+      },
+              {
+            "Sid": "Enable IAM User Permissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.aws_core_account_number}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "logs.${var.aws_region}.amazonaws.com"
+            },
+            "Action": [
+                "kms:Encrypt*",
+                "kms:Decrypt*",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Describe*"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ArnLike": {
+                    "kms:EncryptionContext:aws:logs:arn": "arn:aws:logs:${var.aws_region}:${var.aws_core_account_number}:*"
+                }
+            }
+        }
     ]
   })
   tags = merge(
     local.tags,
     {
-      "name" = "${local.std_name}-eks"
+      "Name" = "${local.std_name}-${each.value}"
+      "Cluster_Type" = "${each.value}"
     },)
 }
 resource "aws_kms_alias" "alias" {
-  name          = "alias\${local.std_name}-eks"
-  target_key_id = aws_kms_key.eks_kms_key_app.id
+  for_each = toset(["app-eks", "blk-eks"])
+  name          = "alias/${local.std_name}-${each.value}"
+  target_key_id = aws_kms_key.eks_kms_key["${each.value}"].id
 }
-*/
