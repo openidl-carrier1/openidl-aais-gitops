@@ -105,7 +105,7 @@ module "aais_blk_vpc" {
   })
 }
 #creating transit gateway on aais environment or carrier on another aws region
-module "transit-gateway" {
+module "transit_gateway" {
   count = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? 1 : 0
   depends_on = [module.aais_app_vpc, module.aais_blk_vpc]
   source = "./transit-gateway"
@@ -148,10 +148,10 @@ module "transit-gateway" {
 }
 
 #Connects to existing transit gateway on aais environment or another carrier both on another aws account but same region
-module "transit-gateway-peer" {
+module "transit_gateway_peer" {
   #(!var.aais && var.other_aws_account && var.other_aws_region)
   count = !var.aais && var.other_aws_account && !var.other_aws_region ? 1 : 0
-  depends_on = [module.aais_blk_vpc,module.aais_app_vpc,module.transit-gateway]
+  depends_on = [module.aais_blk_vpc,module.aais_app_vpc,module.transit_gateway]
   source = "./transit-gateway"
   create_tgw = false
   share_tgw = var.other_aws_account && !var.aais ? true : false

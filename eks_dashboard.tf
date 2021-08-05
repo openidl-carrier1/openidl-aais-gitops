@@ -1,4 +1,5 @@
 #application cluster (eks) dashboard
+/*
 resource "helm_release" "app_eks_dashboard" {
   provider = helm.app_cluster
   name = "${local.std_name}-app-eks-dashboard"
@@ -162,3 +163,4 @@ data "kubernetes_secret" "blk_eks_admin_token" {
     }
   depends_on = [module.blk_eks_cluster, kubernetes_service_account.blk_eks_admin_service_account]
 }
+*/

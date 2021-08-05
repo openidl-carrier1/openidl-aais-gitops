@@ -1,3 +1,4 @@
+/*
 module "app_eks_nginx_controller" {
   source = "terraform-iaac/nginx-controller/kubernetes"
   name = "ingress-nginx"
@@ -24,4 +25,4 @@ module "app_eks_nginx_controller" {
       type  = "string"
     }
   ]
-}
+}*/

@@ -19,7 +19,7 @@ locals {
 #application cluster (eks) config-map (aws auth) - iam roles to map
   app_cluster_map_roles = [
     {
-      rolearn = aws_iam_role.eks-nodegroup-role["app-node-group"].arn
+      rolearn = aws_iam_role.eks_nodegroup_role["app-node-group"].arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups = [
         "system:masters",
@@ -29,7 +29,7 @@ locals {
 #blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
     {
-      rolearn = aws_iam_role.eks-nodegroup-role["blk-node-group"].arn
+      rolearn = aws_iam_role.eks_nodegroup_role["blk-node-group"].arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups = [
         "system:masters",

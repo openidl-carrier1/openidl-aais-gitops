@@ -170,6 +170,7 @@ variable "blk_bastion_ssh_key" {
     type = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
 }
+#blockchain cluster ALB SG specific
 variable "blk_eks_alb_sg_ingress" {
   type = list(any)
   description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
@@ -178,7 +179,33 @@ variable "blk_eks_alb_sg_egress" {
   type = list(any)
   description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
 }
-
+#blockchain cluster NLB SG specific
+variable "blk_eks_nlb_sg_ingress" {
+  type = list(any)
+  description = "The ingress rules to be allowed in blockchain cluster private network load balancer security group"
+}
+variable "blk_eks_nlb_sg_egress" {
+  type = list(any)
+  description = "The ingress rules to be allowed in blockchain cluster private network load balancer security group"
+}
+#app cluster (eks) worker nodes application traffic specific SG
+variable "app_eks_workers_app_sg_ingress" {
+  type = list(any)
+  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of app cluster"
+}
+variable "app_eks_workers_app_sg_egress" {
+  type = list(any)
+  description = "The egress rules of the application specific traffic to be allowed to worker nodes of app cluster"
+}
+#blk cluster (eks) worker nodes application traffic specific SG
+variable "blk_eks_workers_app_sg_ingress" {
+  type = list(any)
+  description = "The ingress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
+}
+variable "blk_eks_workers_app_sg_egress" {
+  type = list(any)
+  description = "The egress rules of the application specific traffic to be allowed to worker nodes of blk cluster"
+}
 variable "instance_type" {
   description = "The instance type of the bastion host"
   type        = string

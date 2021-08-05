@@ -3,7 +3,7 @@
 resource "aws_iam_instance_profile" "eks_instance_profile" {
   for_each = toset(["app-node-group", "blk-node-group"])
   name = "${local.std_name}-${each.value}-instance-profile"
-  role = aws_iam_role.eks-nodegroup-role["${each.value}"].id
+  role = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
 #ssh key pair for application cluster worker nodes (eks)
 module "app_eks_worker_nodes_key_pair_external" {
@@ -38,7 +38,7 @@ module "app_eks_cluster" {
   cluster_endpoint_public_access                 = var.cluster_endpoint_public_access
   cluster_create_endpoint_private_access_sg_rule = true
   cluster_create_security_group                  = false
-  cluster_security_group_id                      = module.app-eks-control-plane-sg.security_group_id
+  cluster_security_group_id                      = module.app_eks_control_plane_sg.security_group_id
   cluster_endpoint_private_access_cidrs          = [var.app_vpc_cidr]
   cluster_endpoint_public_access_cidrs           = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                         = var.cluster_create_timeout
@@ -47,11 +47,11 @@ module "app_eks_cluster" {
   manage_cluster_iam_resources                   = false
   manage_worker_iam_resources                    = false
   cluster_enabled_log_types                      = var.eks_cluster_logs
-  cluster_iam_role_name                          = aws_iam_role.eks-cluster-role["app-eks"].name
+  cluster_iam_role_name                          = aws_iam_role.eks_cluster_role["app-eks"].name
   cluster_log_kms_key_id                         = aws_kms_key.eks_kms_key["app-eks"].arn
   cluster_log_retention_in_days                  = 365
   worker_create_security_group                   = false
-  worker_security_group_id                       = module.app-eks-worker-node-group-sg.security_group_id
+  worker_security_group_id                       = module.app_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
   #worker_sg_ingress_from_port                    =
   #workers_role_name                              = "app-worker-group-role"
@@ -73,8 +73,8 @@ module "app_eks_cluster" {
       asg_min_size                  = var.wg_asg_min_size
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
-      security_groups               = module.app-eks-worker-node-group-sg.security_group_id
-      #additional_security_group_ids = module.app-eks-worker-node-group-sg.security_group_id
+      security_groups               = module.app_eks_worker_node_group_sg.security_group_id
+      additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_encrypted                = true
@@ -82,7 +82,8 @@ module "app_eks_cluster" {
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                = module.aais_app_vpc.private_subnets[0]
-      target_group_arns        = module.app_eks_alb.target_group_arns
+      #target_group_arns        = module.app_eks_alb.target_group_arns
+      target_group_arns        = module.app_eks_nlb.target_group_arns
       health_check_type        = "EC2"
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
@@ -97,15 +98,16 @@ module "app_eks_cluster" {
       asg_min_size                  = var.wg_asg_min_size
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
-      security_groups               = module.app-eks-worker-node-group-sg.security_group_id
-      #additional_security_group_ids = module.app-eks-worker-node-group-sg.security_group_id
+      security_groups               = module.app_eks_worker_node_group_sg.security_group_id
+      additional_security_group_ids = module.app_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size         = var.eks_wg_root_volume_size
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                = module.aais_app_vpc.private_subnets[1]
-      target_group_arns        = module.app_eks_alb.target_group_arns
+     #target_group_arns        = module.app_eks_alb.target_group_arns
+      target_group_arns        = module.app_eks_nlb.target_group_arns
       health_check_type        = "EC2"
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
@@ -128,20 +130,20 @@ module "app_eks_cluster" {
     aws_vpc_endpoint.app_eks_logs,
     aws_vpc_endpoint.app_eks_s3,
     aws_vpc_endpoint.app_eks_sts,
-    module.app-eks-control-plane-sg,
-    module.app-eks-worker-node-group-sg,
-    aws_iam_role.eks-cluster-role,
-    aws_iam_role.eks-nodegroup-role,
+    module.app_eks_control_plane_sg,
+    module.app_eks_worker_node_group_sg,
+    aws_iam_role.eks_cluster_role,
+    aws_iam_role.eks_nodegroup_role,
     aws_kms_key.eks_kms_key,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSServicePolicy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSVPCResourceController,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSCNIPolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSServicePolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSCNIPolicy,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSWorkerNodePolicy,
     aws_iam_instance_profile.eks_instance_profile]
 }
 #blockchain cluster specific
@@ -178,7 +180,7 @@ module "blk_eks_cluster" {
   cluster_endpoint_public_access                 = var.cluster_endpoint_public_access
   cluster_create_endpoint_private_access_sg_rule = true
   cluster_create_security_group                  = false
-  cluster_security_group_id                      = module.blk-eks-control-plane-sg.security_group_id
+  cluster_security_group_id                      = module.blk_eks_control_plane_sg.security_group_id
   cluster_endpoint_private_access_cidrs          = [var.blk_vpc_cidr]
   cluster_endpoint_public_access_cidrs           = var.cluster_endpoint_public_access_cidrs
   cluster_create_timeout                         = var.cluster_create_timeout
@@ -187,11 +189,11 @@ module "blk_eks_cluster" {
   manage_cluster_iam_resources                   = false
   manage_worker_iam_resources                    = false
   cluster_enabled_log_types                      = var.eks_cluster_logs
-  cluster_iam_role_name                          = aws_iam_role.eks-cluster-role["blk-eks"].name
+  cluster_iam_role_name                          = aws_iam_role.eks_cluster_role["blk-eks"].name
   cluster_log_kms_key_id                         = aws_kms_key.eks_kms_key["blk-eks"].arn
   cluster_log_retention_in_days                  = 365
   worker_create_security_group                   = false
-  worker_security_group_id                       = module.blk-eks-worker-node-group-sg.security_group_id
+  worker_security_group_id                       = module.blk_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
   #worker_sg_ingress_from_port                    =
   #workers_role_name                              = "app-worker-group-role"
@@ -213,8 +215,8 @@ module "blk_eks_cluster" {
       asg_min_size                  = var.wg_asg_min_size
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
-      security_groups               = module.blk-eks-worker-node-group-sg.security_group_id
-      #additional_security_group_ids = module.app-eks-worker-node-group-sg.security_group_id
+      security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
+      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_encrypted                = true
@@ -222,7 +224,8 @@ module "blk_eks_cluster" {
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                = module.aais_blk_vpc.private_subnets[0]
-      target_group_arns        = module.blk_eks_alb.target_group_arns
+     #target_group_arns        = module.blk_eks_alb.target_group_arns
+      target_group_arns        = module.blk_eks_nlb.target_group_arns
       health_check_type        = "EC2"
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
@@ -237,15 +240,16 @@ module "blk_eks_cluster" {
       asg_min_size                  = var.wg_asg_min_size
       asg_max_size                  = var.wg_asg_max_size
       asg_desired_capacity          = var.wg_asg_desired_capacity
-      security_groups               = module.blk-eks-worker-node-group-sg.security_group_id
-      #additional_security_group_ids = module.app-eks-worker-node-group-sg.security_group_id
+      security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
+      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
       public_ip                     = var.eks_wg_public_ip
       root_encrypted                = var.eks_wg_root_vol_encrypted
       root_volume_size         = var.eks_wg_root_volume_size
       root_volume_type         = var.eks_wg_root_volume_type
       key_name                 = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                = module.aais_blk_vpc.private_subnets[1]
-      target_group_arns        = module.blk_eks_alb.target_group_arns
+     #target_group_arns        = module.blk_eks_alb.target_group_arns
+      target_group_arns        = module.blk_eks_nlb.target_group_arns
       health_check_type        = "EC2"
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
@@ -268,19 +272,19 @@ module "blk_eks_cluster" {
     aws_vpc_endpoint.blk_eks_logs,
     aws_vpc_endpoint.blk_eks_s3,
     aws_vpc_endpoint.blk_eks_sts,
-    module.blk-eks-control-plane-sg,
-    module.blk-eks-worker-node-group-sg,
-    aws_iam_role.eks-cluster-role,
-    aws_iam_role.eks-nodegroup-role,
+    module.blk_eks_control_plane_sg,
+    module.blk_eks_worker_node_group_sg,
+    aws_iam_role.eks_cluster_role,
+    aws_iam_role.eks_nodegroup_role,
     aws_kms_key.eks_kms_key,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSServicePolicy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSVPCResourceController,
-    aws_iam_role_policy_attachment.eks-cluster-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.eks-nodegroup-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSCNIPolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSServicePolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.eks_cluster_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSCNIPolicy,
+    aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSWorkerNodePolicy,
     aws_iam_instance_profile.eks_instance_profile]
 }

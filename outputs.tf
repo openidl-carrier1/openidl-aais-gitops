@@ -47,22 +47,22 @@ output "blk_vpc_private_nacl_id" {
 #-----------------------------------------------------------------------------------------------------------------
 #transit gateway results when created if aais environment or carrier environment in another aws region
 output "app_tgw_ram_resource_share_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit-gateway[0].ram_resource_share_id : null
+  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ram_resource_share_id : null
   sensitive = true
 }
 output "app_tgw_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit-gateway[0].ec2_transit_gateway_id : null
+  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_id : null
 }
 /*
 output "app_tgw_route_table_id" {
   value = var.aais && var.other_aws_account || !var.aais && var.other_aws_region ? module.transit-gateway[0].ec2_transit_gateway_route_table_id : null
 }*/
 output "app_tgw_owner_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit-gateway[0].ec2_transit_gateway_owner_id : null
+  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_owner_id : null
   sensitive = true
 }
 output "app_tgw_ram_principal_association_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit-gateway[0].ram_principal_association_id : null
+  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ram_principal_association_id : null
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -135,15 +135,26 @@ output "aws_name_servers" {
   value = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
   description = "The list of name servers to be added into the registered domain with 3rd party registrar"
 }
-output "non_aws_registered_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.r53_record_others[0].fqdn : null
+output "app_alb_non_aws_registered_app_url" {
+  value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_alb_r53_record_others[0].fqdn : null
   description = "The url to access the deployed application"
 }
-output "aws_registration_due_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no" ? aws_route53_record.r53_record_aws_new_entry[0].fqdn : null
+output "app_alb_aws_registration_due_app_url" {
+  value = lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no" ? aws_route53_record.app_alb_r53_record_aws_new_entry[0].fqdn : null
 }
-output "aws_registered_app_url" {
- value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.r53_record_aws_registered[0].fqdn : null
+output "app_alb_aws_registered_app_url" {
+ value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_alb_r53_record_aws_registered[0].fqdn : null
+ description = "The url to access the deployed application"
+}
+output "app_nlb_non_aws_registered_app_url" {
+  value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_others[0].fqdn : null
+  description = "The url to access the deployed application"
+}
+output "app_nlb_aws_registration_due_app_url" {
+  value = lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no" ? aws_route53_record.app_nlb_r53_record_aws_new_entry[0].fqdn : null
+}
+output "app_nlb_aws_registered_app_url" {
+ value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_nlb_r53_record_aws_registered[0].fqdn : null
  description = "The url to access the deployed application"
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -240,6 +251,7 @@ output "blk_cluster_worker_node_sg_id" {
 
 #-----------------------------------------------------------------------------------------------------------------
 #eks cluster dashboard specific
+/*
 output "app_eks_dashboard_url" {
   value     = "${var.app_k8s_dashboard_subdomain}.${var.app_k8s_dashboard_domain}"
 }
@@ -261,5 +273,5 @@ output "blk_eks_dashboard_admin_token" {
   sensitive = true
 }
 
-
+*/
 

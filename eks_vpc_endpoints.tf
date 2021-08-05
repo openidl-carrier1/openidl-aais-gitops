@@ -18,7 +18,7 @@ resource "aws_vpc_endpoint" "app_eks_ec2" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -30,7 +30,7 @@ resource "aws_vpc_endpoint" "app_eks_ecr_dkr" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -42,7 +42,7 @@ resource "aws_vpc_endpoint" "app_eks_elb" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.elasticloadbalancing"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -54,7 +54,7 @@ resource "aws_vpc_endpoint" "app_eks_asg" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.autoscaling"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -66,7 +66,7 @@ resource "aws_vpc_endpoint" "app_eks_logs" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -78,7 +78,7 @@ resource "aws_vpc_endpoint" "app_eks_sts" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -90,7 +90,7 @@ resource "aws_vpc_endpoint" "app_eks_ecr_api" {
   vpc_id              = module.aais_app_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -103,8 +103,7 @@ resource "aws_vpc_endpoint" "app_eks_app_mesh" {
   vpc_id = module.aais_app_vpc.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.appmesh-envoy-management"
   vpc_endpoint_type = "Interface"
-  security_group_ids = [
-    module.app-eks-worker-node-group-sg.security_group_id]
+  security_group_ids = [module.app_eks_worker_node_group_sg.security_group_id]
   subnet_ids = module.aais_app_vpc.private_subnets
   private_dns_enabled = true
   tags = merge(local.tags, {
@@ -134,7 +133,7 @@ resource "aws_vpc_endpoint" "blk_eks_ec2" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -146,7 +145,7 @@ resource "aws_vpc_endpoint" "blk_eks_ecr_dkr" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -158,7 +157,7 @@ resource "aws_vpc_endpoint" "blk_eks_elb" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.elasticloadbalancing"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -170,7 +169,7 @@ resource "aws_vpc_endpoint" "blk_eks_asg" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.autoscaling"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -182,7 +181,7 @@ resource "aws_vpc_endpoint" "blk_eks_logs" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -194,7 +193,7 @@ resource "aws_vpc_endpoint" "blk_eks_sts" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -206,7 +205,7 @@ resource "aws_vpc_endpoint" "blk_eks_ecr_api" {
   vpc_id              = module.aais_blk_vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids  = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids          = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags         = merge(local.tags, {
@@ -219,7 +218,7 @@ resource "aws_vpc_endpoint" "blk_eks_app_mesh" {
   vpc_id = module.aais_blk_vpc.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.appmesh-envoy-management"
   vpc_endpoint_type = "Interface"
-  security_group_ids = [module.blk-eks-worker-node-group-sg.security_group_id]
+  security_group_ids = [module.blk_eks_worker_node_group_sg.security_group_id]
   subnet_ids = module.aais_blk_vpc.private_subnets
   private_dns_enabled = true
   tags = merge(local.tags, {
