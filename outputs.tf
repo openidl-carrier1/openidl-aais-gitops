@@ -87,14 +87,6 @@ output "cognito_userpool_arn" {
   value = aws_cognito_user_pool.user_pool.arn
   sensitive = true
 }
-/*
-output "ses_email_identity_arn" {
-  value = aws_ses_email_identity.email_identity.arn
-}
-output "ses_email_identity_id" {
-  value = aws_ses_email_identity.email_identity.id
-}
-*/
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster bastion host ssh key info
 output "app_bastion_host_keypair_name" {
@@ -128,6 +120,14 @@ output "app_eks_alb_fqdn" {
 #blockchain cluster public facing application load balancer fqdn
 output "blk_eks_alb_fqdn" {
   value = module.blk_eks_alb.lb_dns_name
+}
+#application cluster public facing network load balancer fqdn
+output "app_eks_nlb_fqdn" {
+  value = module.app_eks_nlb.lb_dns_name
+}
+#blockchain cluster public facing network load balancer fqdn
+output "blk_eks_nlb_fqdn" {
+  value = module.blk_eks_nlb.lb_dns_name
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route 53 hosted zones and endpoint information
@@ -193,12 +193,6 @@ output "app_cluster_kubeconfig" {
 output "app_cluster_oidc_provider_arn" {
   value       = module.app_eks_cluster.oidc_provider_arn
 }
-output "app_cluster_sg_rule_https_worker_ingress" {
-  value       = module.app_eks_cluster.security_group_rule_cluster_https_worker_ingress
-}
-output "app_cluster_worker_node_iam_instance_profile_arns" {
-  value       = module.app_eks_cluster.worker_iam_instance_profile_arns
-}
 output "app_cluster_worker_node_iam_role_arn" {
   value       = module.app_eks_cluster.worker_iam_role_arn
 }
@@ -236,19 +230,21 @@ output "blk_cluster_kubeconfig" {
 output "blk_cluster_oidc_provider_arn" {
   value       = module.blk_eks_cluster.oidc_provider_arn
 }
-output "blk_cluster_sg_rule_https_worker_ingress" {
-  value       = module.blk_eks_cluster.security_group_rule_cluster_https_worker_ingress
-}
-output "blk_cluster_worker_node_iam_instance_profile_arns" {
-  value       = module.blk_eks_cluster.worker_iam_instance_profile_arns
-}
 output "blk_cluster_worker_node_iam_role_arn" {
   value       = module.blk_eks_cluster.worker_iam_role_arn
 }
 output "blk_cluster_worker_node_sg_id" {
   value       = module.blk_eks_cluster.worker_security_group_id
 }
-
+#-----------------------------------------------------------------------------------------------------------------
+#application cluster - application specific traffic rules - Security Group
+output "app_cluster_sg_application_specific_traffic_rules" {
+  value = module.app_eks_workers_app_traffic_sg.security_group_id
+}
+#blockchain cluster - application specific traffic rules - Security Group
+output "blk_cluster_sg_application_specific_traffic_rules" {
+  value = module.blk_eks_workers_app_traffic_sg.security_group_id
+}
 #-----------------------------------------------------------------------------------------------------------------
 #eks cluster dashboard specific
 /*
@@ -272,6 +268,5 @@ output "blk_eks_dashboard_admin_token" {
   value = data.kubernetes_secret.blk_eks_admin_token.data
   sensitive = true
 }
-
 */
 

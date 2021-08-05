@@ -24,12 +24,6 @@ userpool_recovery_mechanisms                = [{ name : "verified_email", priori
 #userpool_alais_attributes = ["email", "preferred_username"]
 userpool_username_attributes      = ["email"]
 userpool_auto_verified_attributes = ["email"]
-userpool_email_config = {
-  reply_to_email_address = ""
-  source_arn             = ""
-  email_sending_account  = "DEVELOPER"
-  from_email_address     = ""
-}
 userpool_mfa_configuration          = "OPTIONAL"
 userpool_software_token_mfa_enabled = true
 password_policy_minimum_length                   = 10
@@ -40,7 +34,6 @@ password_policy_require_uppercase                = true
 password_policy_temporary_password_validity_days = 10
 userpool_advanced_security_mode           = "AUDIT"
 userpool_enable_username_case_sensitivity = false
-#email_address = ""
 #userpool_email_verficiation_subject = ""
 #userpool_email_verficiation_message = ""
 #-------------------------------------------------------------------------------------------------------------------

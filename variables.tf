@@ -453,12 +453,15 @@ variable "userpool_name" {
   description = "The name of the cognito userpool to create"
   default     = ""
 }
-/*
-variable "email_address" {
+variable "ses_email_identity" {
   type        = string
   description = "The email address to be used in Cognito referred as from-email & reply-to-email address"
   default     = ""
-}*/
+}
+variable "userpool_email_source_arn" {
+  type = string
+  description = "The cognito ses email identity source arn"
+}
 #------------------------------------------------------------------------------------------------------------------
 #Route53 related
 variable "domain_info" {

@@ -1,7 +1,3 @@
-/*
-resource "aws_ses_email_identity" "email_identity" {
-  email = var.email_address
-}*/
 #setting up congnito user pool
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${local.std_name}-${var.userpool_name}"
@@ -32,19 +28,12 @@ resource "aws_cognito_user_pool" "user_pool" {
     challenge_required_on_new_device      = var.userpool_challenge_required_on_new_device
     device_only_remembered_on_user_prompt = var.userpool_device_only_remembered_on_user_prompt
   }
-  /*
   email_configuration {
-    reply_to_email_address = lookup(var.userpool_email_config, "reply_to_email_address")
-    source_arn             = lookup(var.userpool_email_config, "source_arn")
-    email_sending_account  = lookup(var.userpool_email_config, "email_sending_account")
-    from_email_address     = lookup(var.userpool_email_config, "from_email_address")
-  }
-  email_configuration {
-    reply_to_email_address = var.email_address
-    source_arn             = aws_ses_email_identity.email_identity.arn
+    reply_to_email_address = var.ses_email_identity
+    source_arn             = var.userpool_email_source_arn
     email_sending_account  = "DEVELOPER"
-    from_email_address     = var.email_address
-  }*/
+    from_email_address     = var.ses_email_identity
+  }
   email_verification_subject = var.userpool_email_verficiation_subject != "" ? var.userpool_email_verficiation_subject : "Here, your verification code baby"
   email_verification_message = var.userpool_email_verficiation_message != "" ? var.userpool_email_verficiation_message : "Dear {username}, your verification code is {####}."
   mfa_configuration          = var.userpool_mfa_configuration
@@ -122,7 +111,6 @@ resource "aws_cognito_user_pool_domain" "domain" {
   domain          = var.cognito_domain
 # certificate_arn = var.acm_cert_arn #activate when custom domain is required
   user_pool_id    = aws_cognito_user_pool.user_pool.id
-
 }
 #aws cognito user interface customization resource definition
 resource "aws_cognito_user_pool_ui_customization" "cognito_ui_cust" {

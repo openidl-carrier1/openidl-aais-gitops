@@ -28,7 +28,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSServicePolicy" {
 }
 resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSCNIPolicy" {
   for_each = toset(["app-eks", "blk-eks"])
-  policy_arn = "${local.policy_arn_prefix}/AmazonEKSCNIPolicy"
+  policy_arn = "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks_cluster_role["${each.value}"].id
 }
 resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSWorkerNodePolicy" {

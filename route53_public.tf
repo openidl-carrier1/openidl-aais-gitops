@@ -38,7 +38,8 @@ resource "aws_route53_record" "app_alb_r53_record_aws_new_entry" {
 resource "aws_route53_record" "app_alb_r53_record_others" {
   count = lookup(var.domain_info, "domain_registrar") == "others" ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name = "${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  #name = "${var.domain_info.sub_domain_name}.${aws_route53_zone.zones[0].name}"
+  name = "dev-openidl-alb.aaisdirect.com"
   type = "A"
   alias {
    name = module.app_eks_alb.lb_dns_name
