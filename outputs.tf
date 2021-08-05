@@ -238,25 +238,28 @@ output "blk_cluster_worker_node_sg_id" {
   value       = module.blk_eks_cluster.worker_security_group_id
 }
 
-
-
-/*
 #-----------------------------------------------------------------------------------------------------------------
-############Kubernetes Dashboard############
+#eks cluster dashboard specific
+output "app_eks_dashboard_url" {
+  value     = "${var.app_k8s_dashboard_subdomain}.${var.app_k8s_dashboard_domain}"
+}
+output "app_eks_dashboard_admin_account" {
+  value = "app-eks-admin"
+}
+output "app_eks_dashboard_admin_token" {
+  value = data.kubernetes_secret.app_eks_admin_token.data
+  sensitive = true
+}
+output "blk_eks_dashboard_url" {
+  value     = "${var.blk_k8s_dashboard_subdomain}.${var.blk_k8s_dashboard_domain}"
+}
+output "blk_eks_dashboard_admin_account" {
+  value = "blk-eks-admin"
+}
+output "blk_eks_dashboard_admin_token" {
+  value = data.kubernetes_secret.blk_eks_admin_token.data
+  sensitive = true
+}
 
-output "eks_admin_token" {
-  value     = var.create_admin_token ? lookup(data.kubernetes_secret.admin_token[0].data, "token") : "Not enabled"
-  sensitive = true
-}
-output "eks_admin_service_account" {
-  value = local.dashboard_admin_service_account
-  sensitive = true
-}
-output "eks_namespace" {
-  value = var.namespace
-}
-output "eks_dashboard_url" {
-  value     = "${var.dashboard_subdomain}${var.domain}"
-  sensitive = false
-}
-*/
+
+

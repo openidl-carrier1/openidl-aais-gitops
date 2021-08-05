@@ -606,27 +606,39 @@ variable "nginx_ingress_namespace" {
   default     = "nginx-ingress"
 }
 ####### Kubernetes Dashboard ######
-variable "create_namespace" {
+variable "app_create_namespace" {
   description = "Create namespace by module ? true or false"
   type        = bool
   default     = true
 }
-variable "namespace" {
-  description = "Namespace name"
-  type        = string
-  default     = "kubernetes-dashboard"
+variable "blk_create_namespace" {
+  description = "Create namespace by module ? true or false"
+  type        = bool
+  default     = true
 }
-variable "tls" {
-  description = "TLS Secret name for URL"
-  type        = string
+variable "app_k8s_namespace" {
+  type = string
+  description = "The namespace to setup in eks"
 }
-variable "dashboard_subdomain" {
-  type    = string
-  default = "kubernetes-dashboard."
+variable "app_k8s_dashboard_domain" {
+  type = string
+  description = "The domain for the eks dashboard"
 }
-variable "domain" {
-  description = "(Required) Domain for URL"
-  type        = string
+variable "app_k8s_dashboard_subdomain" {
+  type = string
+  description = "the sub domain for the eks dashboard"
+}
+variable "blk_k8s_namespace" {
+  type = string
+  description = "The namespace to setup in eks"
+}
+variable "blk_k8s_dashboard_domain" {
+  type = string
+  description = "The domain for the eks dashboard"
+}
+variable "blk_k8s_dashboard_subdomain" {
+  type = string
+  description = "the sub domain for the eks dashboard"
 }
 variable "cidr_whitelist" {
   description = "General Whitelist for all URLs"

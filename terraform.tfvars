@@ -1,5 +1,5 @@
 /*Default configuration specifications which can be amended when required, anything specific
-and vital for deployment are to be passed as aais_clusters.tfvars or blockchain_cluster.tfvars
+and vital for deployment are to be passed as aais_clusters_old.tfvars or blockchain_cluster.tfvars
 from a specific terraform workspace*/
 #-------------------------------------------------------------------------------------------------------------------
 #Bastion host configuration
@@ -78,12 +78,7 @@ nginx_ingress_chart_version = "1.12.0"
 nginx_ingress_namespace = "nginx-ingress"
 
 #Kubernetes dashboard default
-tls = "yes"
 cidr_whitelist = ""
-readonly_user = true
 create_admin_token = true
-additional_set = []
-enable_skip_button =true
-chart_version = "4.3.1"
 
 

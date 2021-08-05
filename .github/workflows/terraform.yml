@@ -103,7 +103,7 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
     # env:
-      run: terraform plan -var-file=aais_clusters.tfvars -out=plan.out && terraform show -json plan.out > plan.out.json
+      run: terraform plan -var-file=aais_clusters_old.tfvars -out=plan.out && terraform show -json plan.out > plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -115,4 +115,4 @@ jobs:
     - name: Terraform Apply
       id: apply
       if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
-      run: terraform apply -auto-approve -var-file=aais_clusters.tfvars
+      run: terraform apply -auto-approve -var-file=aais_clusters_old.tfvars
