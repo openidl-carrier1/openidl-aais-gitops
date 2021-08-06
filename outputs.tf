@@ -241,27 +241,5 @@ output "blk_cluster_sg_application_specific_traffic_rules" {
   value = module.blk_eks_workers_app_traffic_sg.security_group_id
 }
 #-----------------------------------------------------------------------------------------------------------------
-#eks cluster dashboard specific
-/*
-output "app_eks_dashboard_url" {
-  value     = "${var.app_k8s_dashboard_subdomain}.${var.app_k8s_dashboard_domain}"
-}
-output "app_eks_dashboard_admin_account" {
-  value = "app-eks-admin"
-}
-output "app_eks_dashboard_admin_token" {
-  value = data.kubernetes_secret.app_eks_admin_token.data
-  sensitive = true
-}
-output "blk_eks_dashboard_url" {
-  value     = "${var.blk_k8s_dashboard_subdomain}.${var.blk_k8s_dashboard_domain}"
-}
-output "blk_eks_dashboard_admin_account" {
-  value = "blk-eks-admin"
-}
-output "blk_eks_dashboard_admin_token" {
-  value = data.kubernetes_secret.blk_eks_admin_token.data
-  sensitive = true
-}
-*/
+
 
