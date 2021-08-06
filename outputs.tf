@@ -157,6 +157,9 @@ output "app_nlb_aws_registered_app_url" {
  value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_nlb_r53_record_aws_registered[0].fqdn : null
  description = "The url to access the deployed application"
 }
+output "route53_private_hosted_zone_id" {
+  value = aws_route53_zone.aais_private_zones.zone_id
+}
 #-----------------------------------------------------------------------------------------------------------------
 #S3 bucket output
 output "s3_bucket_arn" {
