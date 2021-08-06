@@ -63,15 +63,5 @@ eks_wg_block_device_name    = "/dev/sdf"
 eks_wg_ebs_volume_size      = 100
 eks_wg_ebs_volume_type      = "gp2"
 eks_wg_ebs_vol_encrypted    = true
-eks_wg_health_check_type = "ELB"
-
-### EKS Ingress ###
-nginx_ingress_enabled = true
-nginx_ingress_chart_version = "1.12.0"
-nginx_ingress_namespace = "nginx-ingress"
-
-#Kubernetes dashboard default
-cidr_whitelist = ""
-create_admin_token = true
-
+eks_wg_health_check_type = "EC2"
 

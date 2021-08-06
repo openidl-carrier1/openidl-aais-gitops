@@ -9,7 +9,7 @@ resource "aws_route53_zone" "zones" {
       "Name" = "${var.domain_info.domain_name}"
       "Cluster_type" = "application"
     },)
-}
+}/*
 #adding route53 entry in the hosted zone when domain is already registered in aws route53 uses ALB
 resource "aws_route53_record" "app_alb_r53_record_aws_registered" {
   count = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
@@ -46,7 +46,7 @@ resource "aws_route53_record" "app_alb_r53_record_others" {
    zone_id = module.app_eks_alb.lb_zone_id
    evaluate_target_health = true
   }
-}
+}*/
 #adding route53 entry in the hosted zone when domain is already registered in aws route53 uses NLB
 resource "aws_route53_record" "app_nlb_r53_record_aws_registered" {
   count = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
@@ -83,6 +83,3 @@ resource "aws_route53_record" "app_nlb_r53_record_others" {
    evaluate_target_health = true
   }
 }
-#setup private hosted zones for blockchain cluster NLB and its name resolution
-#waiting for requirements from team
-

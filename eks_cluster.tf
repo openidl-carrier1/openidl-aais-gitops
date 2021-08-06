@@ -31,7 +31,7 @@ module "app_eks_cluster" {
   cluster_version                                = var.app_cluster_version
   subnets                                        = module.aais_app_vpc.private_subnets
   vpc_id                                         = module.aais_app_vpc.vpc_id
-  write_kubeconfig                               = true
+  write_kubeconfig                               = false
   cluster_service_ipv4_cidr                      = var.app_cluster_service_ipv4_cidr
   kubeconfig_output_path                         = var.kubeconfig_output_path
   cluster_endpoint_private_access                = var.cluster_endpoint_private_access
@@ -53,9 +53,6 @@ module "app_eks_cluster" {
   worker_create_security_group                   = false
   worker_security_group_id                       = module.app_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-  #worker_sg_ingress_from_port                    =
-  #workers_role_name                              = "app-worker-group-role"
-  #workers_egress_cidrs                           = ["0.0.0.0/0"]
   map_roles = concat(local.app_cluster_map_roles, var.app_cluster_map_roles)
   map_users = var.app_cluster_map_users
   cluster_encryption_config = [
@@ -84,7 +81,7 @@ module "app_eks_cluster" {
       subnet_id                = module.aais_app_vpc.private_subnets[0]
       #target_group_arns        = module.app_eks_alb.target_group_arns
       target_group_arns        = module.app_eks_nlb.target_group_arns
-      health_check_type        = "EC2"
+      health_check_type        = var.eks_wg_health_check_type
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
       enable_monitoring        = true
@@ -108,7 +105,7 @@ module "app_eks_cluster" {
       subnet_id                = module.aais_app_vpc.private_subnets[1]
      #target_group_arns        = module.app_eks_alb.target_group_arns
       target_group_arns        = module.app_eks_nlb.target_group_arns
-      health_check_type        = "EC2"
+      health_check_type        = var.eks_wg_health_check_type
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
       enable_monitoring        = true
@@ -173,7 +170,7 @@ module "blk_eks_cluster" {
   cluster_version                                = var.blk_cluster_version
   subnets                                        = module.aais_blk_vpc.private_subnets
   vpc_id                                         = module.aais_blk_vpc.vpc_id
-  write_kubeconfig                               = true
+  write_kubeconfig                               = false
   cluster_service_ipv4_cidr                      = var.blk_cluster_service_ipv4_cidr
   kubeconfig_output_path                         = var.kubeconfig_output_path
   cluster_endpoint_private_access                = var.cluster_endpoint_private_access
@@ -195,9 +192,6 @@ module "blk_eks_cluster" {
   worker_create_security_group                   = false
   worker_security_group_id                       = module.blk_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-  #worker_sg_ingress_from_port                    =
-  #workers_role_name                              = "app-worker-group-role"
-  #workers_egress_cidrs                           = ["0.0.0.0/0"]
   map_roles = concat(local.blk_cluster_map_roles, var.blk_cluster_map_roles)
   map_users = var.blk_cluster_map_users
   cluster_encryption_config = [
@@ -226,7 +220,7 @@ module "blk_eks_cluster" {
       subnet_id                = module.aais_blk_vpc.private_subnets[0]
      #target_group_arns        = module.blk_eks_alb.target_group_arns
       target_group_arns        = module.blk_eks_nlb.target_group_arns
-      health_check_type        = "EC2"
+      health_check_type        = var.eks_wg_health_check_type
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
       enable_monitoring        = true
@@ -250,7 +244,7 @@ module "blk_eks_cluster" {
       subnet_id                = module.aais_blk_vpc.private_subnets[1]
      #target_group_arns        = module.blk_eks_alb.target_group_arns
       target_group_arns        = module.blk_eks_nlb.target_group_arns
-      health_check_type        = "EC2"
+      health_check_type        = var.eks_wg_health_check_type
       ebs_optimized            = var.wg_ebs_optimized
       instance_refresh_enabled = var.wg_instance_refresh_enabled
       enable_monitoring        = true

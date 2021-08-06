@@ -113,14 +113,6 @@ output "blk_bastion_nlb_fqdn" {
   value = module.blk_bastion_nlb.lb_dns_name
 }
 #-----------------------------------------------------------------------------------------------------------------
-#application cluster public facing application load balancer fqdn
-output "app_eks_alb_fqdn" {
-  value = module.app_eks_alb.lb_dns_name
-}
-#blockchain cluster public facing application load balancer fqdn
-output "blk_eks_alb_fqdn" {
-  value = module.blk_eks_alb.lb_dns_name
-}
 #application cluster public facing network load balancer fqdn
 output "app_eks_nlb_fqdn" {
   value = module.app_eks_nlb.lb_dns_name
@@ -134,7 +126,7 @@ output "blk_eks_nlb_fqdn" {
 output "aws_name_servers" {
   value = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
   description = "The list of name servers to be added into the registered domain with 3rd party registrar"
-}
+}/*
 output "app_alb_non_aws_registered_app_url" {
   value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_alb_r53_record_others[0].fqdn : null
   description = "The url to access the deployed application"
@@ -145,7 +137,7 @@ output "app_alb_aws_registration_due_app_url" {
 output "app_alb_aws_registered_app_url" {
  value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_alb_r53_record_aws_registered[0].fqdn : null
  description = "The url to access the deployed application"
-}
+}*/
 output "app_nlb_non_aws_registered_app_url" {
   value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_others[0].fqdn : null
   description = "The url to access the deployed application"

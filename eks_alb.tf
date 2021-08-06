@@ -1,4 +1,5 @@
 # public application load balancer in application cluster - related security group
+/*
 module "app_eks_alb_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
@@ -19,8 +20,6 @@ module "app_eks_alb_acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "~> 3.0"
   domain_name = lookup(var.domain_info, "domain_name") # trimsuffix(data.aws_route53_zone.this.name, ".") # Terraform >= 0.12.17
-  # may need to setup condition either to use data resource or module route53 zone to pull based on domain registrar
-  #zone_id      = aws_route53_zone.zones[0].id || data.aws_route53_zone.this.id
   zone_id     = (lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws") ? data.aws_route53_zone.data_zones[0].id : aws_route53_zone.zones[0].id
   validation_method = "EMAIL" #alternate DNS validation
     tags = merge(
@@ -48,7 +47,6 @@ module "app_eks_alb" {
   #changed from private to public for testing
   subnets = module.aais_app_vpc.public_subnets
   security_groups = [module.app_eks_alb_sg.security_group_id]
- /*
   http_tcp_listeners = [
     {
       port = 80
@@ -67,13 +65,7 @@ module "app_eks_alb" {
       action_type = "forward"
       certificate_arn    = module.app_eks_alb_acm.acm_certificate_arn #create certificate/otherwise use data resource to fetch
     }
-  ]*/
-  http_tcp_listeners = [
-    {
-      port = 80
-      protocol = "HTTP"
-      action_type = "forward"
-    }]
+  ]
    target_groups = [
     {
       name_prefix      = "apptg-"
@@ -143,7 +135,6 @@ module "blk_eks_alb" {
   #changed from private to public for testing
   subnets = module.aais_blk_vpc.private_subnets
   security_groups = [module.blk_eks_alb_sg.security_group_id]
- /*
   http_tcp_listeners = [
     {
       port = 80
@@ -162,13 +153,7 @@ module "blk_eks_alb" {
       action_type = "forward"
       certificate_arn    = module.app_eks_alb_acm.acm_certificate_arn #create certificate/otherwise use data resource to fetch
     }
-  ]*/
-  http_tcp_listeners = [
-    {
-      port = 80
-      protocol = "HTTP"
-      action_type = "forward"
-    }]
+  ]
    target_groups = [
     {
       name_prefix      = "blktg-"
@@ -208,3 +193,4 @@ module "blk_eks_alb" {
       "Cluster_type" = "blockchain"
     },)
 }
+*/
