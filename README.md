@@ -3,22 +3,22 @@
 Refer to tf_backend_setup/README.md to setup terraform backend resources
 
 Prerequisites:
-    1. Terraform version: >= 1.0.0
-    2. AWS provider version: >= 3.0
-    3. Kubernetes provider version: >= 1.9
+    1) Terraform version: >= 1.0.0
+    2) AWS provider version: >= 3.0
+    3) Kubernetes provider version: >= 1.9
     
 Add on prerequisites: 
-    1. S3 backend, Dynamodb table
-    2. Iam user
-    3. Iam role 
-    4. SSH keys for bastion host
-    5. SSH keys for eks worker nodes 
-    6. List of aws secondary account numbers to share transit gateway if applicable 
-    7. Transit gateway resource id to connect blockchain cluster vpc if applicable
-    8. Email id configured in aws ses to use as an identity in aws cogntio
-    9. Email identity arn configured in ses that is used by aws cognito 
-    10. List of iam users will have access to aws eks
-    11. List of iam roles will have access to aws eks 
+    1) S3 backend, Dynamodb table
+    2) Iam user
+    3) Iam role 
+    4) SSH keys for bastion host
+    5) SSH keys for eks worker nodes 
+    6) List of aws secondary account numbers to share transit gateway if applicable 
+    7) Transit gateway resource id to connect blockchain cluster vpc if applicable
+    8) Email id configured in aws ses to use as an identity in aws cogntio
+    9) Email identity arn configured in ses that is used by aws cognito 
+    10) List of iam users will have access to aws eks
+    11) List of iam roles will have access to aws eks 
 
 Steps:    
 1. Ensure that the aws iam user and iam role created during backend configuration are ready
