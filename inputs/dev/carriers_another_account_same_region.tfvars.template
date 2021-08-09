@@ -1,0 +1,560 @@
+#The following inputs should be via git secrets as they contain sensitive data. refer to README.md
+aws_core_account_number = "" #carrier aws account
+aws_secondary_account_number = ["",] #required to mention primary aais base aws account
+aws_access_key = ""
+aws_secret_key = ""
+aws_user_arn = ""
+aws_role_arn = ""
+aws_region = ""
+aws_external_id = ""
+aws_env = "<dev/test/prod>"
+app_bastion_ssh_key = ""
+blk_bastion_ssh_key = ""
+app_eks_worker_nodes_ssh_key = ""
+blk_eks_worker_nodes_ssh_key = ""
+tgw_ram_resource_share_id = "" #required tgw ram resource share id from aais base environment
+
+ses_email_identity = "" #email address configured in aws SES service
+userpool_email_source_arn ="" #arn of the email address configured in aws SES service
+
+#List of iam users and their relevant groups mapping in EKS for its access
+app_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
+app_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
+
+List of iam roles and their relevant group mapping in EKS for its access
+blk_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
+blk_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
+
+#end of sensitive data that goes to git secrets
+
+#set to true when multiple aws accounts are being used. This is required to share/connect using transit gateway
+other_aws_account = true #set to true when other aws account used for carriers
+aais = false #set to false for carrier nodes
+other_aws_region = false
+
+#aws account and region specifications
+aws_region = "us-west-2" #ensure aais base and carrier are in same region.
+aws_env    = "dev"
+
+#application name
+application_name = "openidl"
+
+#-------------------------------------------------------------------------------------------------------------------
+#Application cluster VPC specifications
+app_vpc_cidr           = "<appvpc_cidr>"
+app_availability_zones = ["", ""]
+app_public_subnets     = ["", ""]
+app_private_subnets    = ["", ""]
+
+#VPC Network ACL traffic rules to be configured in the VPC
+#you may need to update these rules as when new networks are added
+app_public_nacl_rules = {
+  inbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<cidr allowed to ssh>" #change this is 172.x cidr of VPC peer(open VPN)
+    },
+    {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 102
+      rule_action = "allow"
+      from_port   = 1024
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+  },
+  {
+    rule_number = 103
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    }],
+  outbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<cidr allowed to ssh>" #change this is 172.x cidr of VPC peer(open VPN)
+    },
+    {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+    rule_number = 102
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 32768
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+  },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    }]
+}
+app_private_nacl_rules = {
+  inbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_cidr>"
+    },
+    {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_cidr>"
+    },
+    {
+    rule_number = 102
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_cidr>"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 1024
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0" #related to eks
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    },
+  {
+    rule_number = 105
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<blkvpc_cidr>"
+    }],
+  outbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_idr>"
+    },
+    {
+      rule_number = 101
+      rule_action = "allow"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 102
+      rule_action = "allow"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 32768
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    },
+   {
+    rule_number = 105
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "blkvpc_idr"
+    }]
+}
+#-------------------------------------------------------------------------------------------------------------------
+
+#Blockchain cluster VPC specifications
+blk_vpc_cidr           = "<blkvpccidr>"
+blk_availability_zones = ["", ""]
+blk_public_subnets     = ["", ""]
+blk_private_subnets    = ["", ""]
+#VPC Network ACL traffic rules to be configured in the VPC
+#you may need to update these rules as when new networks are added
+blk_public_nacl_rules = {
+  inbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<cidr allowed ssh access>" #change this is 172.x cidr of VPC peer(open VPN)
+    },
+    {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 102
+      rule_action = "allow"
+      from_port   = 1024
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+  },
+  {
+    rule_number = 103
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    }],
+  outbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<cidr allowed ssh access>" #change this is 172.x cidr of VPC peer(open VPN)
+    },
+    {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+    rule_number = 102
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 32768
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+  },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    }]
+}
+blk_private_nacl_rules = {
+  inbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<blkvpc_cidr>"
+    }, {
+    rule_number = 101
+    rule_action = "allow"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_block  = "<blkvpc_cidr>"
+    },
+    {
+    rule_number = 102
+    rule_action = "allow"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_block  = "<blkvpc_cidr>"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 1024
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0" #related to eks
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    },
+  {
+    rule_number = 105
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<blkvpc_cidr>"
+    }],
+  outbound = [{
+    rule_number = 100
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_cidr>"
+    },
+    {
+      rule_number = 101
+      rule_action = "allow"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 102
+      rule_action = "allow"
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+    {
+      rule_number = 103
+      rule_action = "allow"
+      from_port   = 32768
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_block  = "0.0.0.0/0"
+    },
+  {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 8443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_block  = "0.0.0.0/0" #related to eks
+    },
+  {
+    rule_number = 105
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "<appvpc_cidr>"
+    }]
+}
+#--------------------------------------------------------------------------------------------------------------------
+#Default security group assigned/used when a resource is created without any security group attached
+default_sg_rules = {
+  ingress = [{
+    cidr_blocks = "172.16.0.0/16" #update to aais vpc peer ip(openvpn)
+    description = "Inbound SSH traffic"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+  }],
+  egress = [{
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
+  }]
+}
+#--------------------------------------------------------------------------------------------------------------------
+
+#Bastion host specifications
+#application cluster bastion host specifications
+app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "0.0.0.0/0"},]
+app_bastion_sg_egress =   [{rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
+                       {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
+                       {rule="ssh-tcp", cidr_blocks = "<appvpc_cidr>"}]
+
+#blockchain cluster bastion host specifications
+#bastion host security specifications
+blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "0.0.0.0/0"},]
+blk_bastion_sg_egress =   [{rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
+                       {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
+                       {rule="ssh-tcp", cidr_blocks = "<blkvpc_cidr>"}]
+
+#--------------------------------------------------------------------------------------------------------------------
+#Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws/others, registered: yes/no)
+domain_info = {
+  domain_registrar = "others", # alternate: aws or others
+  domain_name: "", #primary domain registered
+  registered = "" #registered already: yes, otherwise: no
+  sub_domain_name: "", #subdomain
+  comments: ""
+}
+#Route53 (PRIVATE) DNS resolution related specifications
+#internal name resolution required for blockchain vpc NLB
+internal_domain = ""
+internal_subdomain = ["", "",]
+
+#list of vpcs and their region to which the route53 private zones to share with
+internal_dns_other_account_vpc_to_authorize = [
+  {vpc_region = "<region>", vpc_id = "<vpcid>"},
+  {vpc_region = "<region>", vpc_id = "<vpcid>"}]
+
+#app vpc and blk vpc to associate with other aws account route53 private zone ids
+other_acc_zone_ids = [""] #route53 private zone id
+#-------------------------------------------------------------------------------------------------------------------
+#Transit gateway  specifications
+# routes from application cluster private subnets to other vpc private subnet cidrs (TGW route table updates)
+app_tgw_routes = [{
+  destination_cidr_block = "0.0.0.0/0"
+  blackhole              = true #blackhole = true drops traffic for that destination cidr block
+  },
+  {destination_cidr_block = "<blkvpc_cidr>"}, {destination_cidr_block = "<other_blkvpc_cidr>"}]
+
+#routes from blockchain cluster private subnets to other vpc private subnet cidrs (TGW route table updates)
+blk_tgw_routes = [{destination_cidr_block = "<appvpc_cidr>"}, {destination_cidr_block = "<other_appvpc_cidr>"}]
+
+#routes from application cluster private subnets to other vpc private subnet cidrs (subnet route table updates)
+app_tgw_destination_cidr = ["<blkvpc_cidr>", "<other_cidrs>",]
+
+#routes from blockchain cluster private subnets to other vpc private subnet cidrs (subnet route table updates)
+blk_tgw_destination_cidr = ["<appvpc_cidr>", "<other_cidrs>",]
+
+#transit gateway id is required when setting up carrier nodes in another aws account
+transit_gateway_id = "" #applicable only when carrier nodes in another aws account
+#tgw_ram_resource_share_id is only required when connecting to tgw of another aws account
+tgw_ram_resource_share_id = "" #applicable only when carrier nodes in another aws account
+#-------------------------------------------------------------------------------------------------------------------
+
+#traffic rules to be opened for the internal application load balancer in the blockchain cluster
+blk_eks_nlb_sg_ingress = [{
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "inbound traffic to internal elb in blockchain cluster"
+      cidr_blocks = "<appvpc_cidr>"
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "inbound traffic to internal elb in blockchain cluster"
+      cidr_blocks = "<blkvpc_cidr>"
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "inbound traffic to internal elb in blockchain cluster"
+      cidr_blocks = "<other_appvpc_cidr>"
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      description = "inbound traffic to internal elb in blockchain cluster"
+      cidr_blocks = "<other_blkvpc_cidr>"
+    }]
+blk_eks_nlb_sg_egress  = [{
+      rule = "all-all"
+    }]
+#--------------------------------------------------------------------------------------------------------------------
+
+#application specific traffic to be allowed in app cluster worker nodes
+app_eks_workers_app_sg_ingress = [] #for format refer to blk_eks_nlb_sg_ingress input
+app_eks_workers_app_sg_egress = [] #for format refer to blk_eks_nlb_sg_egress input
+
+#application specific traffic to be allowed in blk cluster worker nodes
+blk_eks_workers_app_sg_ingress = [] #for format refer to blk_eks_nlb_sg_ingress input
+blk_eks_workers_app_sg_egress = [] #for format refer to blk_eks_nlb_sg_egress input
+#--------------------------------------------------------------------------------------------------------------------
+
+# application cluster EKS specifications
+app_cluster_name              = ""
+app_cluster_version           = ""
+app_cluster_service_ipv4_cidr = ""
+#--------------------------------------------------------------------------------------------------------------------
+
+# blockchain cluster EKS specifications
+blk_cluster_name              = ""
+blk_cluster_version           = ""
+blk_cluster_service_ipv4_cidr = ""
+#--------------------------------------------------------------------------------------------------------------------
+
+
