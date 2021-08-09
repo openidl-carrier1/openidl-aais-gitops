@@ -2,8 +2,8 @@
 This code can be cloned to an environment where terraform CLI is available/possible to initially setup terraform backend resources, i.e., S3 bucket for managing terraform state files and DynamoDB for handling state file locking. 
 
 Requirements:
-    1. Terraform version: > 1.0.0
-    2. AWS provider: >= 3.0
+    1) Terraform version: > 1.0.0
+    2) AWS provider: >= 3.0
 
 Note: Prepare aws environment with necessary iam user and iam role that would be assumed. 
 

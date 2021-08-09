@@ -22,31 +22,31 @@ Add on prerequisites:
 
 Steps:    
 1. Ensure that the aws iam user and iam role created during backend configuration are ready
-2. Setup the following sensitive data via git secrets, Prefix dev_/test_/Prod_ according to environment
+2. Setup the following sensitive data via git secrets, Prefix: dev_/test_/Prod_ according to environment
 Note: The pipeline uses individual secrets for each environment and they prefixed as mentioned
 
 List of sensitive data to configure in git secrets
 
-1. <env>_aws_access_key
-2. <env>_aws_secret_key
-3. <env>_aws_env # ex: dev/test/prod
-4. <env>_aws_region # ex: us-east-1
-5. <env>_aws_external_id # ex: terraform
-6. <env>_aws_user_arn
-7. <env>_aws_role_arn
-8. <env>_aws_core_account_number
-9. <env>_aws_secondary_account_number #acc numbers to share tgw
-10. <env>_app_bastion_ssh_key
-11. <env>_blk_bastion_ssh_key
-12. <env>_app_eks_worker_nodes_ssh_key
-13. <env>_blk_eks_worker_nodes_ssh_key
-14. <env>_tgw_ram_resource_share_id #applicable for carrier nodes
-15. <env>_ses_email_identity # ses email identity
-16. <env>_userpool_email_source_arn # ses email identity arn
-17. <env>_app_cluster_map_users
-18. <env>_blk_cluster_map_users
-19. <env>_app_cluster_map_roles
-20. <env>_blk_cluster_map_roles 
+1. prefix_aws_access_key
+2. prefix_aws_secret_key
+3. prefix_aws_env # ex: dev/test/prod
+4. prefix_aws_region # ex: us-east-1
+5. prefix_aws_external_id # ex: terraform
+6. prefix_aws_user_arn
+7. prefix_aws_role_arn
+8. prefix_aws_core_account_number
+9. prefix_aws_secondary_account_number #acc numbers to share tgw
+10. prefix_app_bastion_ssh_key
+11. prefix_blk_bastion_ssh_key
+12. prefix_app_eks_worker_nodes_ssh_key
+13. prefix_blk_eks_worker_nodes_ssh_key
+14. prefix_tgw_ram_resource_share_id #applicable for carrier nodes
+15. prefix_ses_email_identity # ses email identity
+16. prefix_userpool_email_source_arn # ses email identity arn
+17. prefix_app_cluster_map_users
+18. prefix_blk_cluster_map_users
+19. prefix_app_cluster_map_roles
+20. prefix_blk_cluster_map_roles 
 
 example: dev_aws_access_key, dev_aws_secret_key etc., 
 
