@@ -1,5 +1,4 @@
 .terraform/*
-inputs/*
 kubeconfig_file/*
 tf_backend_setup/terraform.tfvars
 tf_backend_setup/.terraform/*
