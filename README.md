@@ -55,18 +55,18 @@ example: dev_aws_access_key, dev_aws_secret_key etc.,
     test: inputs/test/env_inputs.tfvars
     prod: inputs/prod/env_inputs.tfvars
    
-4. To prepare the input file refer to templates according to usecase scenario 
-    Usecase1: aais base environment.
-            aais_clusters.tfvars.template
+4. To prepare the input file refer to templates according to usecase scenario. 
+   Usecase1: aais base environment.
+    aais_clusters.tfvars.template
    
-    Usecase2: carriers in same aws account of aais base environment.
-            aais_carriers_same_account.tfvars.template 
+    Usecase2: carriers in same aws account of aais base environment. 
+     aais_carriers_same_account.tfvars.template 
    
     Usecase3: carriers in another aws account in same region of base aais environment. 
-            carriers_another_account_same_region.tfvars.template 
+     carriers_another_account_same_region.tfvars.template 
    
     Usecase3: carriers in another aws account and another aws region than base aais environment. 
-            carriers_another_account_another_region.tfvars.template
+     carriers_another_account_another_region.tfvars.template
    
 
 
