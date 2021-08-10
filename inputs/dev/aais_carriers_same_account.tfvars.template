@@ -502,7 +502,7 @@ transit_gateway_id = "" #applicable only when carrier nodes in another aws accou
 tgw_ram_resource_share_id = "" #applicable only when carrier nodes in another aws account
 #-------------------------------------------------------------------------------------------------------------------
 
-#traffic rules to be opened for the internal application load balancer in the blockchain cluster
+#traffic rules to be opened for the internal network load balancer in the blockchain cluster
 blk_eks_nlb_sg_ingress = [{
       from_port   = 443
       to_port     = 443

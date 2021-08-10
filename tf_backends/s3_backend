@@ -1,13 +1,14 @@
 #The below config declaration is applicable when using remote backend as S3 in terraform
-bucket               = ""
+bucket               = "<s3_bucket_name>"
 key                  = "terraform.tfstate"
-region               = ""
+region               = "<aws_region>"
 encrypt              = true
 workspace_key_prefix = "environment"
-dynamodb_endpoint    = ""   #reference: https://dynamodb.us-east-1.amazonaws.com
-dynamodb_table       = ""
-role_arn             = ""
-session_name         = ""
-external_id          = ""
+#reference example: https://dynamodb.us-east-1.amazonaws.com
+dynamodb_endpoint    = "<https://dynamodb.<aws_region>.amazonaws.com"
+dynamodb_table       = "<dynamodb_table>"
+role_arn             = "<aws_role_arn>"
+session_name         = "<session-name>"
+external_id          = "<aws_external_id>"
 
 

@@ -11,3 +11,4 @@ kubeconfig_file/.*
 kubeconfig_file/kubeconfig_aais-dev-application-cluster
 kubeconfig_file/kubeconfig_aais-dev-blockchain-cluster
 .terraform.tfstate.lock.info
+

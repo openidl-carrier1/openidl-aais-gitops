@@ -510,7 +510,7 @@ cognito_domain               = ""
 #acm_cert_arn                = "" #used for custom domain, not applicable now
 #--------------------------------------------------------------------------------------------------------------------
 
-#traffic rules to be opened for the internal application load balancer in the blockchain cluster
+#traffic rules to be opened for the internal network load balancer in the blockchain cluster
 blk_eks_nlb_sg_ingress = [{
       from_port   = 443
       to_port     = 443

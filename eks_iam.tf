@@ -1,7 +1,7 @@
 #iam role for application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks_cluster_role" {
   for_each = toset(["app-eks", "blk-eks"])
-  name = "${local.std_name}-${each.value}-${var.aws_region}" #remove this aws_region from the name
+  name = "${local.std_name}-${each.value}"
   assume_role_policy = file("resources/policies/cluster-role-trust-policy.json")
   tags = merge(
     local.tags,
@@ -44,7 +44,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEC2ContainerRegistr
 #iam role for worker groups of both application cluster and blockchain cluster (eks)
 resource "aws_iam_role" "eks_nodegroup_role" {
   for_each = toset(["app-node-group", "blk-node-group"])
-  name = "${local.std_name}-${each.value}-${var.aws_region}" #remove aws_region from the name
+  name = "${local.std_name}-${each.value}"
   assume_role_policy = file("resources/policies/nodegroup-role-trust-policy.json")
   tags = merge(
     local.tags,

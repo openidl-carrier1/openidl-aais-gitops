@@ -671,8 +671,10 @@ variable "internal_subdomain" {
 variable "internal_dns_other_account_vpc_to_authorize" {
   type = list(any)
   description = "The map of 3rd party aws account VPCs and their relevant aws region to be authorized to associate with internal DNS"
+  default = []
 }
 variable "other_acc_zone_ids" {
   type = list
   description = "The list of other account internal dns private hosted aws zone ids to associate with app and blk vpc in this env"
+  default = []
 }
