@@ -4,7 +4,7 @@ key                  = "terraform.tfstate"
 region               = "<aws_region>"
 encrypt              = true
 workspace_key_prefix = "environment"
-#reference example: https://dynamodb.us-east-1.amazonaws.com
+##################reference example: https://dynamodb.us-east-1.amazonaws.com#################
 dynamodb_endpoint    = "<https://dynamodb.<aws_region>.amazonaws.com"
 dynamodb_table       = "<dynamodb_table>"
 role_arn             = "<aws_role_arn>"

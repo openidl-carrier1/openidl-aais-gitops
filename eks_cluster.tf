@@ -53,8 +53,8 @@ module "app_eks_cluster" {
   worker_create_security_group                   = false
   worker_security_group_id                       = module.app_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-  map_roles = concat(local.app_cluster_map_roles, var.app_cluster_map_roles)
-  map_users = var.app_cluster_map_users
+  map_roles = concat(local.app_cluster_map_roles, local.app_cluster_map_roles_list)
+  map_users = local.app_cluster_map_users_list
   cluster_encryption_config = [
     {
       provider_key_arn = aws_kms_key.eks_kms_key["app-eks"].arn
@@ -192,8 +192,8 @@ module "blk_eks_cluster" {
   worker_create_security_group                   = false
   worker_security_group_id                       = module.blk_eks_worker_node_group_sg.security_group_id
   worker_create_cluster_primary_security_group_rules = true
-  map_roles = concat(local.blk_cluster_map_roles, var.blk_cluster_map_roles)
-  map_users = var.blk_cluster_map_users
+  map_roles = concat(local.blk_cluster_map_roles, local.blk_cluster_map_roles_list)
+  map_users = local.blk_cluster_map_users_list
   cluster_encryption_config = [
     {
       provider_key_arn = aws_kms_key.eks_kms_key["blk-eks"].arn

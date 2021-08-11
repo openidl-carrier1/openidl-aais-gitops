@@ -112,7 +112,7 @@ module "transit_gateway" {
   create_tgw = var.aais || (!var.aais && var.other_aws_region) ? true : false
   share_tgw = var.aais && var.other_aws_account || !var.aais && var.other_aws_region ? true : false
   name = "${local.std_name}-central-tgw"
-  amazon_side_asn = 64532
+  amazon_side_asn = var.tgw_amazon_side_asn
   description = "The core tgw in the environment to which all VPCs connect"
   enable_auto_accept_shared_attachments = true
   enable_vpn_ecmp_support = true
@@ -156,7 +156,7 @@ module "transit_gateway_peer" {
   create_tgw = false
   share_tgw = var.other_aws_account && !var.aais ? true : false
   name = "${local.std_name}-peer-tgw"
-  amazon_side_asn = 64532
+  amazon_side_asn = var.tgw_amazon_side_asn
   description = "The tgw to which VPC has to be attached"
   enable_auto_accept_shared_attachments = true
   enable_vpn_ecmp_support = true

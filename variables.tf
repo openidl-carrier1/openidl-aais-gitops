@@ -141,6 +141,10 @@ variable "blk_tgw_destination_cidr" {
   default     = []
   description = "The list of network routes to route via transit gateway"
 }
+variable "tgw_amazon_side_asn" {
+  type = string
+  description = "The amazon side asn for the transit gateway"
+}
 #bastion host related
 variable "app_bastion_sg_ingress" {
   type    = list(any)
@@ -171,6 +175,7 @@ variable "blk_bastion_ssh_key" {
   description = "The public ssh key to setup on the bastion host for remote ssh access"
 }
 #blockchain cluster ALB SG specific
+/*
 variable "blk_eks_alb_sg_ingress" {
   type = list(any)
   description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
@@ -178,7 +183,7 @@ variable "blk_eks_alb_sg_ingress" {
 variable "blk_eks_alb_sg_egress" {
   type = list(any)
   description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
-}
+}*/
 #blockchain cluster NLB SG specific
 variable "blk_eks_nlb_sg_ingress" {
   type = list(any)
@@ -639,24 +644,24 @@ variable "blk_eks_worker_nodes_ssh_key" {
   description = "The ssh public key to setup on worker nodes in blk cluster eks for remote access"
 }
 variable "app_cluster_map_roles" {
-  type = any
-  description = "The list of iam roles to be added part of app cluster(EKS) configmap (aws auth)"
-  default = {}
+  type = list
+  description = "The list of iam roles to have admin access in app cluster(EKS) to manage resources (sets config-map)"
+  default = []
 }
 variable "app_cluster_map_users" {
-  type = any
-  description = "The list of iam users to be added part of app cluster(EKS) configmap (aws auth)"
-  default = {}
+  type = list
+  description = "The list of iam users to have admin access in app cluster (EKS) to manage resources (sets config-map)"
+  default = []
 }
 variable "blk_cluster_map_roles" {
-  type = any
-  description = "The list of iam roles to be added part of blk cluster(EKS) configmap (aws auth)"
-  default = {}
+  type = list
+  description = "The list of iam roles to have admin access in blk cluster(EKS) to manage resources (sets config-map)"
+  default = []
 }
 variable "blk_cluster_map_users" {
-  type = any
-  description = "The list of iam users to be added part of blk cluster(EKS) configmap (aws auth)"
-  default = {}
+  type = list
+  description = "The list of iam users to have admin access in blk cluster(EKS) to manage resources (sets config-map)"
+  default = []
 }
 #-------------------------------------------------------------------------------------------------------------------
 #internal route53 hosted zones related
@@ -671,10 +676,8 @@ variable "internal_subdomain" {
 variable "internal_dns_other_account_vpc_to_authorize" {
   type = list(any)
   description = "The map of 3rd party aws account VPCs and their relevant aws region to be authorized to associate with internal DNS"
-  default = []
 }
 variable "other_acc_zone_ids" {
   type = list
   description = "The list of other account internal dns private hosted aws zone ids to associate with app and blk vpc in this env"
-  default = []
 }

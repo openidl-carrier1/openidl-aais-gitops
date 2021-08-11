@@ -53,10 +53,6 @@ output "app_tgw_ram_resource_share_id" {
 output "app_tgw_id" {
   value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_id : null
 }
-/*
-output "app_tgw_route_table_id" {
-  value = var.aais && var.other_aws_account || !var.aais && var.other_aws_region ? module.transit-gateway[0].ec2_transit_gateway_route_table_id : null
-}*/
 output "app_tgw_owner_id" {
   value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_owner_id : null
   sensitive = true
@@ -117,9 +113,27 @@ output "blk_bastion_nlb_fqdn" {
 output "app_eks_nlb_fqdn" {
   value = module.app_eks_nlb.lb_dns_name
 }
-#blockchain cluster public facing network load balancer fqdn
+#blockchain cluster internal facing network load balancer fqdn
 output "blk_eks_nlb_fqdn" {
   value = module.blk_eks_nlb.lb_dns_name
+}
+#application cluster worker nodes ssh key info
+output "app_eks_worker_nodes_keypair_name" {
+  value = module.app_eks_worker_nodes_key_pair_external.key_pair_key_name
+  sensitive = true
+}
+output "app_eks_worker_nodes_keypair_id" {
+  value = module.app_eks_worker_nodes_key_pair_external.key_pair_key_pair_id
+  sensitive = true
+}
+#blockchain cluster worker nodes ssh key info
+output "blk_eks_worker_nodes_keypair_name" {
+  value = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
+  sensitive = true
+}
+output "blk_eks_worker_nodes_keypair_id" {
+  value = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_pair_id
+  sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route 53 hosted zones and endpoint information

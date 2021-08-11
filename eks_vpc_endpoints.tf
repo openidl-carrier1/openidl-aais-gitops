@@ -9,7 +9,6 @@ resource "aws_vpc_endpoint" "app_eks_s3" {
 }
 resource "aws_vpc_endpoint_route_table_association" "app_eks_private_s3_route" {
   count = length(module.aais_app_vpc.private_route_table_ids)
-  //  count = "2"
   vpc_endpoint_id = aws_vpc_endpoint.app_eks_s3.id
   route_table_id  = module.aais_app_vpc.private_route_table_ids[count.index]
   depends_on = [module.aais_app_vpc]

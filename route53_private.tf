@@ -34,14 +34,15 @@ resource "aws_route53_vpc_association_authorization" "r53_vpc_authorization" {
     vpc_id = each.value.vpc_id
     vpc_region = each.value.vpc_region
 }
-#assocating local VPCs to remote hosted zones that are already authorized by 3rd party aws account
+
+#assocating local app cluster VPC to remote hosted zones that are already authorized by 3rd party aws account
 resource "aws_route53_zone_association" "r53_app_vpc_association" {
   for_each = toset(var.other_acc_zone_ids)
     zone_id = each.key
     vpc_id = module.aais_app_vpc.vpc_id
     vpc_region = var.aws_region
 }
-#assocating local VPCs to remote hosted zones that are already authorized by 3rd party aws account
+#assocating local blk cluster VPC to remote hosted zones that are already authorized by 3rd party aws account
 resource "aws_route53_zone_association" "r53_blk_vpc_association" {
   for_each = toset(var.other_acc_zone_ids)
     zone_id = each.key
