@@ -418,7 +418,7 @@ blk_private_nacl_rules = {
 #Default security group assigned/used when a resource is created without any security group attached
 default_sg_rules = {
   ingress = [{
-    cidr_blocks = "172.16.0.0/16" #update to aais vpc peer ip(openvpn)
+    cidr_blocks = "<cidr-used-to-ssh>" #update to aais vpc peer ip(openvpn)
     description = "Inbound SSH traffic"
     from_port   = "22"
     to_port     = "22"

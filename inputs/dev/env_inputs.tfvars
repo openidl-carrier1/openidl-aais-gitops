@@ -77,7 +77,7 @@ app_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     }],
   outbound = [{
     rule_number = 100
@@ -117,7 +117,7 @@ app_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     }]
 }
 app_private_nacl_rules = {
@@ -159,7 +159,7 @@ app_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     },
   {
     rule_number = 105
@@ -207,7 +207,7 @@ app_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     },
    {
     rule_number = 105
@@ -267,7 +267,7 @@ blk_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     }],
   outbound = [{
     rule_number = 100
@@ -307,7 +307,7 @@ blk_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     }]
 }
 blk_private_nacl_rules = {
@@ -348,7 +348,7 @@ blk_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     },
   {
     rule_number = 105
@@ -356,7 +356,7 @@ blk_private_nacl_rules = {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_block  = "10.20.0.0/16" #need to verify, related to EKS
+    cidr_block  = "10.20.0.0/16"
     }],
   outbound = [{
     rule_number = 100
@@ -396,7 +396,7 @@ blk_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "0.0.0.0/0" #need to verify, related to EKS
+    cidr_block  = "0.0.0.0/0" #, related to EKS
     },
   {
     rule_number = 105
