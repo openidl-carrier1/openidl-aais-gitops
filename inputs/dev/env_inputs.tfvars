@@ -1,6 +1,6 @@
-#The following inputs should be via git secrets as they are contain sensitive data
+#The following inputs should be via git secrets as they contain sensitive data
 aws_core_account_number = ""
-aws_secondary_account_number = ["",]
+aws_secondary_account_number = ["",] #list of aws accounts to share transit gateway with.
 aws_access_key = ""
 aws_secret_key = ""
 aws_user_arn = ""
@@ -12,18 +12,18 @@ app_bastion_ssh_key = ""
 blk_bastion_ssh_key = ""
 app_eks_worker_nodes_ssh_key = ""
 blk_eks_worker_nodes_ssh_key = ""
-tgw_ram_resource_share_id = ""
+tgw_ram_resource_share_id = "" #applicable only for carrier nodes
 ses_email_identity = ""
 userpool_email_source_arn =""
-app_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
-app_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
-blk_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
-blk_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
+app_cluster_map_users = ["<userarn>","<userarn>"]
+app_cluster_map_roles = ["<rolearn>","<rolearn>"]
+blk_cluster_map_users = ["<userarn>","<userarn>"]
+blk_cluster_map_roles = ["<rolearn>","<rolearn>"]
 #end of sensitive data that goes to git secrets
 
 #set to true when multiple aws accounts are being used. This is required to share/connect using transit gateway
 aais = true #when carrier nodes set to false
-other_aws_account = true #this is to activate sharing transit gateway to other account
+other_aws_account = true #this is to activate transit gateway sharing to other accounts.
 other_aws_region = false
 
 #application name
@@ -469,6 +469,7 @@ other_acc_zone_ids = ["Z0160046JEYT6MYE5H3I"]
 #-------------------------------------------------------------------------------------------------------------------
 
 #Transit gateway  specifications
+tgw_amazon_side_asn = "64532"
 # routes from application cluster private subnets to other vpc private subnet cidrs (TGW route table updates)
 app_tgw_routes = [{
   destination_cidr_block = "0.0.0.0/0"
@@ -591,13 +592,3 @@ blk_cluster_name              = "blockchain-cluster"
 blk_cluster_version           = "1.19"
 blk_cluster_service_ipv4_cidr = "172.17.0.0/16"
 #--------------------------------------------------------------------------------------------------------------------
-/*for reference only
-#you may require to keep updating these rules as and when new network added
-app_ec2_sg_ingress = [{rule="ssh-tcp", cidr_blocks="10.10.0.0/16"},
-                  {rule="https-443-tcp", cidr_blocks="10.10.0.0/16"},
-                  {rule="http-80-tcp", cidr_blocks="10.10.0.0/16"},
-                  {rule="ssh-tcp", cidr_blocks="10.20.0.0/16"}] #added for testing
-app_ec2_sg_egress = [{rule="https-443-tcp", cidr_blocks="0.0.0.0/0"},
-                 {rule="http-80-tcp", cidr_blocks="0.0.0.0/0"},
-                 {rule="ssh-tcp", cidr_blocks="10.20.0.0/16"}]
-for reference only*/

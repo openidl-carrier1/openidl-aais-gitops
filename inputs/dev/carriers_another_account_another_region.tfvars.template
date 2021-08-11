@@ -18,12 +18,12 @@ ses_email_identity = "" #email address configured in aws SES service
 userpool_email_source_arn ="" #arn of the email address configured in aws SES service
 
 #List of iam users and their relevant groups mapping in EKS for its access
-app_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
-app_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
+app_cluster_map_users = ["<userarn>","<userarn>"]
+app_cluster_map_roles = ["<rolearn>","<rolearn>"]
 
 List of iam roles and their relevant group mapping in EKS for its access
-blk_cluster_map_users = [{userarn = "", username = "", groups = ["",""]},]
-blk_cluster_map_roles = [{rolearn = "", username = "", groups = ["", "", ""]},{}]
+blk_cluster_map_users = ["<userarn>","<userarn>"]
+blk_cluster_map_roles = ["<rolearn>","<rolearn>"]
 
 #end of sensitive data that goes to git secrets
 
@@ -482,6 +482,7 @@ internal_dns_other_account_vpc_to_authorize = [
 other_acc_zone_ids = [""] #route53 private zone id
 #-------------------------------------------------------------------------------------------------------------------
 #Transit gateway  specifications
+tgw_amazon_side_asn = "<amazon_side_asn>" #default is 64532.
 # routes from application cluster private subnets to other vpc private subnet cidrs (TGW route table updates)
 app_tgw_routes = [{
   destination_cidr_block = "0.0.0.0/0"
@@ -539,12 +540,12 @@ blk_eks_nlb_sg_egress  = [{
 #--------------------------------------------------------------------------------------------------------------------
 
 #application specific traffic to be allowed in app cluster worker nodes
-app_eks_workers_app_sg_ingress = [] #for format refer to blk_eks_nlb_sg_ingress input
-app_eks_workers_app_sg_egress = [] #for format refer to blk_eks_nlb_sg_egress input
+app_eks_workers_app_sg_ingress = [] #for input format refer to blk_eks_nlb_sg_ingress input
+app_eks_workers_app_sg_egress = [] #for input format refer to blk_eks_nlb_sg_egress input
 
 #application specific traffic to be allowed in blk cluster worker nodes
-blk_eks_workers_app_sg_ingress = [] #for format refer to blk_eks_nlb_sg_ingress input
-blk_eks_workers_app_sg_egress = [] #for format refer to blk_eks_nlb_sg_egress input
+blk_eks_workers_app_sg_ingress = [] #for input format refer to blk_eks_nlb_sg_ingress input
+blk_eks_workers_app_sg_egress = [] #for input format refer to blk_eks_nlb_sg_egress input
 #--------------------------------------------------------------------------------------------------------------------
 
 # application cluster EKS specifications
