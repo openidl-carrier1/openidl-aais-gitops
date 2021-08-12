@@ -21,6 +21,7 @@ resource "aws_s3_bucket" "s3_bucket" {
       }
     }
   }
+  #depends_on = [aws_s3_bucket_policy.bucket_policy]
 }
 #blocking public access to s3 bucket
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block" {
@@ -36,48 +37,25 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket     = "${local.std_name}-cloudtrail"
   depends_on = [aws_s3_bucket.s3_bucket]
   policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Id" : "tf_bucketpolicy",
-    "Statement" : [
-      {
-        "Sid" : "allowiamrole-1",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
-        },
-        "Action" : [
-          "s3:GetObject",
-          "s3:PutObject"
-        ],
-        "Resource" : "arn:aws:s3:::${local.std_name}-cloudtrail/*"
-      },
-      {
-        "Sid" : "allowiamrole-2",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
-        },
-        "Action" : "s3:ListBucket",
-        "Resource" : "arn:aws:s3:::${local.std_name}-cloudtrail"
-      },
-       {
-            "Sid": "AWSCloudTrailAclCheck",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AWSCloudTrailAclCheck20150319",
             "Effect": "Allow",
             "Principal": {
-              "Service": "cloudtrail.amazonaws.com"
+                "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:GetBucketAcl",
-            "Resource": aws_cloudtrail.cloudtrail_events.arn
+            "Resource": "arn:aws:s3:::${local.std_name}-cloudtrail"
         },
         {
-            "Sid": "AWSCloudTrailWrite",
+            "Sid": "AWSCloudTrailWrite20150319",
             "Effect": "Allow",
             "Principal": {
-              "Service": "cloudtrail.amazonaws.com"
+                "Service": "cloudtrail.amazonaws.com"
             },
             "Action": "s3:PutObject",
-          #update cloudtrail name
-            "Resource": "arn:aws:s3:::${local.std_name}-cloudtrail/prefix/AWSLogs/${var.aws_account_number}/*",
+            "Resource": "arn:aws:s3:::${local.std_name}-cloudtrail/AWSLogs/${var.aws_account_number}/*",
             "Condition": {
                 "StringEquals": {
                     "s3:x-amz-acl": "bucket-owner-full-control"
@@ -85,7 +63,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
             }
         }
     ]
-  })
+})
 }
 #creating kms key that is used to encrypt data at rest in S3 bucket
 resource "aws_kms_key" "s3_kms_key" {
