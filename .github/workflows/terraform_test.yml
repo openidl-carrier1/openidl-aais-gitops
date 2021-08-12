@@ -27,7 +27,6 @@ jobs:
       TF_VAR_aws_role_arn: ${{ secrets.test_aws_role_arn }}
       TF_VAR_aws_user_arn: ${{ secrets.test_aws_user_arn }}
       TF_VAR_aws_region: ${{ secrets.test_aws_region }}
-      TF_VAR_aws_env: ${{ secrets.test_aws_env }}
       TF_VAR_app_bastion_ssh_key: ${{ secrets.test_app_bastion_ssh_key }}
       TF_VAR_blk_bastion_ssh_key: ${{ secrets.test_blk_bastion_ssh_key }}
       TF_VAR_app_eks_worker_nodes_ssh_key: ${{ secrets.test_app_eks_worker_nodes_ssh_key }}

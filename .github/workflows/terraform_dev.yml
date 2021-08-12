@@ -20,14 +20,13 @@ on:
       - 'github_actions_backup/**'
 jobs:
   dev_setup:
-    name: 'dev_environment'
+    name: 'openidl-dev'
     runs-on: ubuntu-latest
     env:
       TF_VAR_aws_account_number: ${{ secrets.dev_aws_account_number }}
       TF_VAR_aws_role_arn: ${{ secrets.dev_aws_role_arn }}
       TF_VAR_aws_user_arn: ${{ secrets.dev_aws_user_arn }}
       TF_VAR_aws_region: ${{ secrets.dev_aws_region }}
-      TF_VAR_aws_env: ${{ secrets.dev_aws_env }}
       TF_VAR_app_bastion_ssh_key: ${{ secrets.dev_app_bastion_ssh_key }}
       TF_VAR_blk_bastion_ssh_key: ${{ secrets.dev_blk_bastion_ssh_key }}
       TF_VAR_app_eks_worker_nodes_ssh_key: ${{ secrets.dev_app_eks_worker_nodes_ssh_key }}
