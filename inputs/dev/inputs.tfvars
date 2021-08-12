@@ -451,7 +451,7 @@ blk_tgw_destination_cidr = ["172.16.0.0/16"]
 #Cognito specifications
 userpool_name                = "openidl-pool"
 client_app_name              = "openidl-client"
-client_callback_urls         = ["https://dev-openidl.aaisdirect.com/callback", "https://dev-oopenidl.aaisdirect.com/redirect"]
+client_callback_urls         = ["https://dev-openidl.aaisdirect.com/callback", "https://dev-openidl.aaisdirect.com/redirect"]
 client_default_redirect_url  = "https://dev-openidl.aaisdirect.com/redirect"
 client_logout_urls           = ["https://dev-openidl.aaisdirect.com/signout"]
 cognito_domain               = "aaisdirect.com"
