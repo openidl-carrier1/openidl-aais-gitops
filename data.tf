@@ -79,3 +79,173 @@ data "aws_subnet_ids" "blk_vpc_private_subnets" {
     values = var.blk_private_subnets
   }
 }
+data "aws_iam_policy_document" "cloudtrail_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+  }
+}
+data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
+  statement {
+    sid = "WriteCloudWatchLogs"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:${var.aws_region}:${var.aws_account_number}:log-group:${local.std_name}-cloudtrail-logs:*"]
+  }
+}
+data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
+  statement {
+    sid     = "Enable IAM User Permissions"
+    effect  = "Allow"
+    actions = ["kms:*"]
+
+    principals {
+      type = "AWS"
+
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root"]
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid     = "Allow CloudTrail to encrypt logs"
+    effect  = "Allow"
+    actions = ["kms:GenerateDataKey*"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
+    }
+  }
+
+  statement {
+    sid     = "Allow CloudTrail to describe key"
+    effect  = "Allow"
+    actions = ["kms:DescribeKey"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "Allow principals in the account to decrypt log files"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:ReEncryptFrom",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = ["${var.aws_account_number}"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
+    }
+  }
+
+  statement {
+    sid     = "Allow alias creation during setup"
+    effect  = "Allow"
+    actions = ["kms:CreateAlias"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["ec2.${var.aws_region}.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = ["${var.aws_account_number}"]
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "Enable cross account log decryption"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:ReEncryptFrom",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = ["${var.aws_account_number}"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+      values   = ["arn:aws:cloudtrail:*:${var.aws_account_number}:trail/*"]
+    }
+
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "Allow logs KMS access"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${var.aws_region}.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Describe*"
+    ]
+    resources = ["*"]
+  }
+}

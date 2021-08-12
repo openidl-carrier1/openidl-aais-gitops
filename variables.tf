@@ -617,4 +617,10 @@ variable "internal_subdomain" {
   type = list(any)
   description = "The list of internal dns records to be created"
 }
+#-------------------------------------------------------------------------------------------------------------------
+#cloudtrail related
+variable "cw_logs_retention_period" {
+  type = number
+  description = "The number of days to retain cloudwatch logs related to cloudtrail events"
+}
 

@@ -480,3 +480,5 @@ blk_cluster_name              = ""
 blk_cluster_version           = ""
 blk_cluster_service_ipv4_cidr = ""
 #--------------------------------------------------------------------------------------------------------------------
+#cloudtrail related 
+cw_logs_retention_period = 90 
