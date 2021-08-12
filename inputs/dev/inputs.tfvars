@@ -5,7 +5,7 @@ aws_env = "dev" #set to dev or test or prod
 
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
-app_vpc_cidr           = "<172.16.0.0/16>"
+app_vpc_cidr           = "172.16.0.0/16"
 app_availability_zones = ["us-east-2a", "us-east-2b"]
 app_public_subnets     = ["172.16.1.0/24", "172.16.2.0/24"]
 app_private_subnets    = ["172.16.3.0/24", "172.16.4.0/24"]
@@ -59,7 +59,7 @@ app_public_nacl_rules = {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_block  = "<cidr allowed to ssh>"
+    cidr_block  = "172.16.0.0/16"
     },
     {
     rule_number = 101
@@ -241,7 +241,7 @@ blk_public_nacl_rules = {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_block  = "<cidr allowed ssh access>"
+    cidr_block  = "172.17.0.0/16"
     },
     {
     rule_number = 101
