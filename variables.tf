@@ -623,6 +623,3 @@ variable "cw_logs_retention_period" {
   type = number
   description = "The number of days to retain cloudwatch logs related to cloudtrail events"
 }
-variable "aws_access_key" {}
-variable "aws_secret_key" {}
-variable "aws_external_id" {}
