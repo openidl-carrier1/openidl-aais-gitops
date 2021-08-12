@@ -81,3 +81,6 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSEBSCSIDriverPo
   policy_arn = aws_iam_policy.eks_worker_node_ebs_policy.arn
   role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
+
+
+

@@ -1,5 +1,5 @@
 locals {
-  std_name = var.aais || (var.aais && var.other_aws_account) ? "aais-${var.aws_env}" : "carr-${var.aws_env}"
+  std_name = "${var.node_type}-${var.aws_env}"
   app_cluster_name = "${local.std_name}-${var.app_cluster_name}"
   blk_cluster_name = "${local.std_name}-${var.blk_cluster_name}"
   policy_arn_prefix = "arn:aws:iam::aws:policy"
@@ -7,6 +7,7 @@ locals {
     Application = "openidl"
     Environment = var.aws_env
     Managed_by = "terraform"
+    Node_type = var.node_type
   }
   bastion_host_userdata = filebase64("resources/bootstrap_scripts/bastion_host.sh")
   worker_nodes_userdata = filebase64("resources/bootstrap_scripts/worker_nodes.sh")

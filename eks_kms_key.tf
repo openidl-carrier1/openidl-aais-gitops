@@ -13,7 +13,7 @@ resource "aws_kms_key" "eks_kms_key" {
         "Sid" : "Enable IAM User Permissions",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::${var.aws_core_account_number}:root"
+          "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
         },
         "Action" : "kms:*",
         "Resource" : "*"
@@ -79,7 +79,7 @@ resource "aws_kms_key" "eks_kms_key" {
             "Sid": "Enable IAM User Permissions",
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::${var.aws_core_account_number}:root"
+                "AWS": "arn:aws:iam::${var.aws_account_number}:root"
             },
             "Action": "kms:*",
             "Resource": "*"
@@ -99,7 +99,7 @@ resource "aws_kms_key" "eks_kms_key" {
             "Resource": "*",
             "Condition": {
                 "ArnLike": {
-                    "kms:EncryptionContext:aws:logs:arn": "arn:aws:logs:${var.aws_region}:${var.aws_core_account_number}:*"
+                    "kms:EncryptionContext:aws:logs:arn": "arn:aws:logs:${var.aws_region}:${var.aws_account_number}:*"
                 }
             }
         }

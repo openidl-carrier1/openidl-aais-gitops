@@ -23,8 +23,7 @@ jobs:
     name: 'dev_environment'
     runs-on: ubuntu-latest
     env:
-      TF_VAR_aws_core_account_number: ${{ secrets.dev_aws_core_account_number }}
-      TF_VAR_aws_secondary_account_number: ${{ secrets.dev_aws_secondary_account_number }}
+      TF_VAR_aws_account_number: ${{ secrets.dev_aws_account_number }}
       TF_VAR_aws_role_arn: ${{ secrets.dev_aws_role_arn }}
       TF_VAR_aws_user_arn: ${{ secrets.dev_aws_user_arn }}
       TF_VAR_aws_region: ${{ secrets.dev_aws_region }}
@@ -33,7 +32,6 @@ jobs:
       TF_VAR_blk_bastion_ssh_key: ${{ secrets.dev_blk_bastion_ssh_key }}
       TF_VAR_app_eks_worker_nodes_ssh_key: ${{ secrets.dev_app_eks_worker_nodes_ssh_key }}
       TF_VAR_blk_eks_worker_nodes_ssh_key: ${{ secrets.dev_blk_eks_worker_nodes_ssh_key }}
-      TF_VAR_tgw_ram_resource_share_id: ${{ secrets.dev_tgw_ram_resource_share_id }}
       TF_VAR_ses_email_identity: ${{ secrets.dev_ses_email_identity }}
       TF_VAR_userpool_email_source_arn: ${{ secrets.dev_userpool_email_source_arn }}
       TF_VAR_app_cluster_map_users: ${{ secrets.dev_app_cluster_map_users }}
@@ -103,12 +101,12 @@ jobs:
     - name: Terraform Workspace if push event
       id: workspace-push
       if: github.event_name == 'push'
-      run: terraform workspace new ${GITHUB_REF##*/} || terraform workspace select ${GITHUB_REF##*/}
+      run: terraform workspace select ${GITHUB_REF##*/} || terraform workspace new ${GITHUB_REF##*/}
 
     - name: Terraform Workspace if pull event
       id: workspace-pull
       if: github.event_name == 'pull_request'
-      run: terraform workspace new ${{github.base_ref}} || terraform workspace select ${{github.base_ref}}
+      run: terraform workspace select ${{github.base_ref}} || terraform workspace new ${{github.base_ref}}
 
     # Checks that all Terraform configuration files adhere for syntax
     - name: Terraform Syntax
@@ -126,9 +124,9 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       id: plan
-      if: github.event_name == 'pull_request' && github.ref == 'refs/heads/dev'
+      if: github.event_name == 'pull_request'
     # env:
-      run: terraform plan -var-file=inputs/dev/env_inputs.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
+      run: terraform plan -var-file=inputs/dev/inputs.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -141,5 +139,5 @@ jobs:
       id: apply
       #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
       if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=inputs/dev/env_inputs.tfvars
+      run: terraform apply -auto-approve -var-file=inputs/dev/inputs.tfvars
 

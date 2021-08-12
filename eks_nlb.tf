@@ -12,11 +12,6 @@ module "app_eks_nlb" {
   vpc_id = module.aais_app_vpc.vpc_id
   subnets = module.aais_app_vpc.public_subnets
   http_tcp_listeners = [
-    {
-      port        = 80
-      protocol    = "TCP"
-      action_type = "forward"
-    },
         {
       port        = 443
       protocol    = "TCP"
@@ -24,25 +19,8 @@ module "app_eks_nlb" {
     }
   ]
   target_groups = [
-    {
-      name_prefix      = "tgapp-"
-      backend_protocol = "TCP"
-      backend_port     = 80
-      target_type      = "instance"
-      preserve_client_ip = true
-      tags = merge(local.tags, { tcp_udp = true },)
-      health_check = {
-        enabled             = true
-        interval            = 30
-        port                = "80"
-        protocol            = "TCP"
-        healthy_threshold   = 3
-        unhealthy_threshold = 3
-        #timeout             = 6
-      }
-    },
      {
-      name_prefix      = "tgapp-"
+      name_prefix      = "apnlb-"
       backend_protocol = "TCP"
       backend_port     = 443
       target_type      = "instance"
@@ -73,7 +51,7 @@ module "app_eks_nlb" {
   target_group_tags = merge(
     local.tags,
     {
-      "Name" = "tgapp-"
+      "Name" = "app-nlb"
       "Cluster_type" = "application"
     },)
 }
@@ -85,42 +63,20 @@ module "blk_eks_nlb" {
   create_lb = true
   load_balancer_type = "network"
   enable_cross_zone_load_balancing = true
-  internal = true
+  internal = false
   ip_address_type = "ipv4"
   vpc_id = module.aais_blk_vpc.vpc_id
   subnets = module.aais_blk_vpc.private_subnets
   http_tcp_listeners = [
     {
-      port        = 80
-      protocol    = "TCP"
-      action_type = "forward"
-    },
-        {
       port        = 443
       protocol    = "TCP"
       action_type = "forward"
     }
   ]
   target_groups = [
-    {
-      name_prefix      = "tgblk-"
-      backend_protocol = "TCP"
-      backend_port     = 80
-      target_type      = "instance"
-      preserve_client_ip = true
-      tags = merge(local.tags, { tcp_udp = true },)
-      health_check = {
-        enabled             = true
-        interval            = 30
-        port                = "80"
-        protocol            = "TCP"
-        healthy_threshold   = 3
-        unhealthy_threshold = 3
-        #timeout             = 6
-      }
-    },
-        {
-      name_prefix      = "tgblk-"
+     {
+      name_prefix      = "bknlb-"
       backend_protocol = "TCP"
       backend_port     = 443
       target_type      = "instance"
@@ -151,7 +107,7 @@ module "blk_eks_nlb" {
   target_group_tags = merge(
     local.tags,
     {
-      "Name" = "tgblk"
+      "Name" = "blk-nlb"
       "Cluster_type" = "blockchain"
     },)
 }

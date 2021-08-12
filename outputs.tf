@@ -45,23 +45,6 @@ output "blk_vpc_private_nacl_id" {
   value = module.aais_blk_vpc.private_network_acl_id
 }
 #-----------------------------------------------------------------------------------------------------------------
-#transit gateway results when created if aais environment or carrier environment in another aws region
-output "app_tgw_ram_resource_share_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ram_resource_share_id : null
-  sensitive = true
-}
-output "app_tgw_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_id : null
-}
-output "app_tgw_owner_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ec2_transit_gateway_owner_id : null
-  sensitive = true
-}
-output "app_tgw_ram_principal_association_id" {
-  value = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? module.transit_gateway[0].ram_principal_association_id : null
-  sensitive = true
-}
-#-----------------------------------------------------------------------------------------------------------------
 #aws cognito application client outputs
 output "cognito_user_pool_id" {
   value = aws_cognito_user_pool.user_pool.id
@@ -140,36 +123,24 @@ output "blk_eks_worker_nodes_keypair_id" {
 output "aws_name_servers" {
   value = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
   description = "The list of name servers to be added into the registered domain with 3rd party registrar"
-}/*
-output "app_alb_non_aws_registered_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_alb_r53_record_others[0].fqdn : null
-  description = "The url to access the deployed application"
-}
-output "app_alb_aws_registration_due_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no" ? aws_route53_record.app_alb_r53_record_aws_new_entry[0].fqdn : null
-}
-output "app_alb_aws_registered_app_url" {
- value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_alb_r53_record_aws_registered[0].fqdn : null
- description = "The url to access the deployed application"
-}*/
-output "app_nlb_non_aws_registered_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_others[0].fqdn : null
-  description = "The url to access the deployed application"
-}
-output "app_nlb_aws_registration_due_app_url" {
-  value = lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no" ? aws_route53_record.app_nlb_r53_record_aws_new_entry[0].fqdn : null
-}
-output "app_nlb_aws_registered_app_url" {
- value = lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws" ? aws_route53_record.app_nlb_r53_record_aws_registered[0].fqdn : null
- description = "The url to access the deployed application"
 }
 output "route53_private_hosted_zone_id" {
   value = aws_route53_zone.aais_private_zones.zone_id
 }
-#-----------------------------------------------------------------------------------------------------------------
-#S3 bucket output
-output "s3_bucket_arn" {
-  value = aws_s3_bucket.s3_bucket.arn
+output "route53_private_blk_nlb_internal_dns_mappings" {
+  value = aws_route53_record.aais_private_records[*].fqdn
+}
+output "route53_public_app_nlb_external_dns_mapping" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.app_nlb_r53_record_registered_in_aws[0].fqdn : null
+}
+output "route53_public_app_nlb_external_dns_map" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_new_entry[0].fqdn : null
+}
+output "route53_public_blk_nlb_external_dns_mapping" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.blk_nlb_r53_record_registered_in_aws[*].fqdn : null
+}
+output "route53_public_blk_nlb_external_dns_map" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.blk_nlb_r53_record_new_entry[*].fqdn : null
 }
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster (EKS) outputs
@@ -247,11 +218,11 @@ output "blk_cluster_worker_node_sg_id" {
 }
 #-----------------------------------------------------------------------------------------------------------------
 #application cluster - application specific traffic rules - Security Group
-output "app_cluster_sg_application_specific_traffic_rules" {
+output "app_cluster_application_specific_traffic_rules_sec_group" {
   value = module.app_eks_workers_app_traffic_sg.security_group_id
 }
 #blockchain cluster - application specific traffic rules - Security Group
-output "blk_cluster_sg_application_specific_traffic_rules" {
+output "blk_cluster_application_specific_traffic_rules_sec_group" {
   value = module.blk_eks_workers_app_traffic_sg.security_group_id
 }
 #-----------------------------------------------------------------------------------------------------------------

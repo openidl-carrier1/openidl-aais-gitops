@@ -21,7 +21,6 @@ client_id_token_validity                    = 1 #hour
 client_access_token_validity                = 1 #hour
 client_refresh_token_validity               = 5 #day
 userpool_recovery_mechanisms                = [{ name : "verified_email", priority : "1" }] #other options 1)verfied_phone_number 2)admin_only
-#userpool_alais_attributes = ["email", "preferred_username"]
 userpool_username_attributes      = ["email"]
 userpool_auto_verified_attributes = ["email"]
 userpool_mfa_configuration          = "OPTIONAL"
@@ -40,7 +39,6 @@ userpool_enable_username_case_sensitivity = false
 #EKS cluster specifications
 eks_worker_instance_type     = "t3.medium"
 kubeconfig_output_path       = "./kubeconfig_file/"
-#This "manage_aws_auth = true" is not required when we are using bastion host
 manage_aws_auth                                = true
 cluster_endpoint_private_access                = true
 cluster_endpoint_public_access                 = true

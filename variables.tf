@@ -16,25 +16,13 @@ variable "aws_env" {
     error_message = "The environment value must be either \\dev\\test\\prod."
   }
 }
-variable "aws_core_account_number" {
+variable "aws_account_number" {
   type        = string
   description = "The aws account number on which core application infra is to setup/exists"
 }
-variable "aws_secondary_account_number" {
-  type        = list(string)
-  description = "The aws account number on which carrier infra is to setup"
-}
-variable "aais" {
-  type = bool
-  description = "Is the setup for aais or carrier?"
-}
-variable "other_aws_account" {
-  type        = bool
-  description = "The app_cluster and blockchain_cluster are in same aws account"
-}
-variable "other_aws_region" {
-  type = bool
-  description = "Is the carrier node setup different from aais aws setup region?"
+variable "node_type" {
+  type = string
+  description = "The name of the node type will be setup"
 }
 variable "aws_user_arn" {
   type        = string
@@ -43,11 +31,6 @@ variable "aws_user_arn" {
 variable "aws_role_arn" {
   type        = string
   description = "The iam role which will have access to s3 bucket and kms key"
-}
-variable "application_name" {
-  type        = string
-  default     = "openidl"
-  description = "The name of the application"
 }
 #variables related to VPC
 variable "default_nacl_rules" {
@@ -116,21 +99,6 @@ variable "blk_tgw_routes" {
   description = "The list of network routes to be allowed/blocked in the transit gateway route table"
   default     = []
 }
-variable "tgw_ram_resource_share_id" {
-  type        = string
-  default     = ""
-  description = "The AWS resource access manager resource share id of the transit gateway to connect with for this blockchain_cluster"
-}
-variable "transit_gateway_id" {
-  type        = string
-  default     = ""
-  description = "The transit gateway id to be attached with the network"
-}
-variable "transit_gateway_route_table_id" {
-  type        = string
-  default     = ""
-  description = "The transit gateway route table id"
-}
 variable "app_tgw_destination_cidr" {
   type        = list(any)
   default     = []
@@ -173,25 +141,6 @@ variable "app_bastion_ssh_key" {
 variable "blk_bastion_ssh_key" {
     type = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
-}
-#blockchain cluster ALB SG specific
-/*
-variable "blk_eks_alb_sg_ingress" {
-  type = list(any)
-  description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
-}
-variable "blk_eks_alb_sg_egress" {
-  type = list(any)
-  description = "The ingress rules to be allowed in blockchain cluster private app load balancer security group"
-}*/
-#blockchain cluster NLB SG specific
-variable "blk_eks_nlb_sg_ingress" {
-  type = list(any)
-  description = "The ingress rules to be allowed in blockchain cluster private network load balancer security group"
-}
-variable "blk_eks_nlb_sg_egress" {
-  type = list(any)
-  description = "The ingress rules to be allowed in blockchain cluster private network load balancer security group"
 }
 #app cluster (eks) worker nodes application traffic specific SG
 variable "app_eks_workers_app_sg_ingress" {
@@ -241,11 +190,6 @@ variable "root_block_device_volume_type" {
 }
 variable "root_block_device_volume_size" {
   description = "root_block_device volume Size"
-}
-#S3 bucket related
-variable "s3_bucket_name" {
-  type = string
-  description ="The unique name of the S3 bucket (globally)"
 }
 #aws cognito variables
 #aws cognito application client specific variables
@@ -470,7 +414,7 @@ variable "userpool_email_source_arn" {
 #------------------------------------------------------------------------------------------------------------------
 #Route53 related
 variable "domain_info" {
-  type = map(any)
+  type = any
   description = "The name of the domain registered within aws-route53 or outside"
   default = {}
 }
@@ -673,11 +617,4 @@ variable "internal_subdomain" {
   type = list(any)
   description = "The list of internal dns records to be created"
 }
-variable "internal_dns_other_account_vpc_to_authorize" {
-  type = list(any)
-  description = "The map of 3rd party aws account VPCs and their relevant aws region to be authorized to associate with internal DNS"
-}
-variable "other_acc_zone_ids" {
-  type = list
-  description = "The list of other account internal dns private hosted aws zone ids to associate with app and blk vpc in this env"
-}
+

@@ -104,16 +104,15 @@ module "aais_blk_vpc" {
     "Cluster_type" = "blockchain"
   })
 }
-#creating transit gateway on aais environment or carrier on another aws region
+#setting up transit gateway to use with app_vpc and blk_vpc
 module "transit_gateway" {
-  count = var.aais || (!var.aais && var.other_aws_account && var.other_aws_region) ? 1 : 0
   depends_on = [module.aais_app_vpc, module.aais_blk_vpc]
   source = "./transit-gateway"
-  create_tgw = var.aais || (!var.aais && var.other_aws_region) ? true : false
-  share_tgw = var.aais && var.other_aws_account || !var.aais && var.other_aws_region ? true : false
+  create_tgw = true
+  share_tgw = false
   name = "${local.std_name}-central-tgw"
   amazon_side_asn = var.tgw_amazon_side_asn
-  description = "The core tgw in the environment to which all VPCs connect"
+  description = "The core tgw in the environment to which app_vpc and blk_vpc will connect"
   enable_auto_accept_shared_attachments = true
   enable_vpn_ecmp_support = true
   vpc_attachments = {
@@ -138,8 +137,6 @@ module "transit_gateway" {
       tgw_routes = var.blk_tgw_routes
     }
   }
-  ram_allow_external_principals = true
-  ram_principals = var.aws_secondary_account_number
   tags =  merge(local.tags, { "Cluster_type" = "application"})
   tgw_default_route_table_tags = merge(local.tags, { "Cluster_type" = "application"})
   tgw_route_table_tags = merge(local.tags, { "Cluster_type" = "application"})
@@ -147,51 +144,3 @@ module "transit_gateway" {
   tgw_vpc_attachment_tags = merge(local.tags, { "Cluster_type" = "application"})
 }
 
-#Connects to existing transit gateway on aais environment or another carrier both on another aws account but same region
-module "transit_gateway_peer" {
-  #(!var.aais && var.other_aws_account && var.other_aws_region)
-  count = !var.aais && var.other_aws_account && !var.other_aws_region ? 1 : 0
-  depends_on = [module.aais_blk_vpc,module.aais_app_vpc,module.transit_gateway]
-  source = "./transit-gateway"
-  create_tgw = false
-  share_tgw = var.other_aws_account && !var.aais ? true : false
-  name = "${local.std_name}-peer-tgw"
-  amazon_side_asn = var.tgw_amazon_side_asn
-  description = "The tgw to which VPC has to be attached"
-  enable_auto_accept_shared_attachments = true
-  enable_vpn_ecmp_support = true
-  vpc_attachments = {
-    blk_vpc = {
-      vpc_id = module.aais_blk_vpc.vpc_id
-      tgw_id = var.transit_gateway_id
-      vpc_route_table_ids = module.aais_blk_vpc.private_route_table_ids
-      tgw_destination_cidr = var.blk_tgw_destination_cidr
-      transit_gateway_route_table_id = var.transit_gateway_route_table_id
-      subnet_ids = module.aais_blk_vpc.private_subnets
-      dns_support = true
-      transit_gateway_default_route_table_association = true
-      transit_gateway_default_route_table_propagation = true
-      tgw_routes = var.blk_tgw_routes
-    },
-    app_vpc = {
-      vpc_id = module.aais_app_vpc.vpc_id
-      tgw_id = var.transit_gateway_id
-      vpc_route_table_ids = module.aais_app_vpc.private_route_table_ids
-      tgw_destination_cidr = var.app_tgw_destination_cidr
-      transit_gateway_route_table_id = var.transit_gateway_route_table_id
-      subnet_ids = module.aais_app_vpc.private_subnets
-      dns_support = true
-      transit_gateway_default_route_table_association = true
-      transit_gateway_default_route_table_propagation = true
-      tgw_routes = var.app_tgw_routes
-    },
-  }
-  ram_resource_share_arn = var.tgw_ram_resource_share_id
-  ram_allow_external_principals = true
-  ram_principals = [var.aws_core_account_number]
-  tags = local.tags
-  tgw_default_route_table_tags = local.tags
-  tgw_route_table_tags = local.tags
-  tgw_tags = local.tags
-  tgw_vpc_attachment_tags = local.tags
-}
