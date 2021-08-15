@@ -507,4 +507,4 @@ blk_cluster_service_ipv4_cidr = "172.21.0.0/16"
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 cw_logs_retention_period = 90
-s3_bucket_name_cloudtrail = "logs-cloudtrail"
+s3_bucket_name_cloudtrail = "cloudtrail-us-east-2"
