@@ -3,8 +3,10 @@ This code can be cloned to an environment where terraform CLI is available/possi
 
 ##Requirements:
     
-    |1.  |Terraform version: |> 1.0.0 |
-    |2.  |AWS provider:      |>= 3.0  | 
+    | Sno |     Resource       | Version |
+    |-----|--------------------|---------|
+    | 1.  | Terraform version: | > 1.0.0 |
+    | 2.  | AWS provider:      | >= 3.0  | 
     
 **Note: Prepare aws environment with necessary iam user and iam role that would be assumed.** 
 

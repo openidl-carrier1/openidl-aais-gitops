@@ -56,16 +56,16 @@ List of sensitive data to configure as secrets under git environment section.
 7. Clone the repository 
 8. Prepare input file for the specific node and specific environment. 
 
-    | node_type            |            path                       |    input file      |
+    |    node_type         |            path                       |    input file      |
     |----------------------|---------------------------------------|--------------------|
     | aais_node/dev        |  aws/data_feed_in/aais_node/dev       |  aais.tfvars       |   
     | aais_node/test       |  aws/data_feed_in/aais_node/test      |  aais.tfvars       |    
     | aais_node/prod       |  aws/data_feed_in/aais_node/prod      |  aais.tfvars       | 
-    |----------------------|---------------------------------------|--------------------|
+    |                      |                                       |                    | 
     | carrier_node/dev     |  aws/data_feed_in/carrier_node/dev    |  carrier.tfvars    |  
     | carrier_node/test    |  aws/data_feed_in/carrier_node/test   |  carrier.tfvars    |  
     | carrier_node/prod    |  aws/data_feed_in/carrier_node/prod   |  carrier.tfvars    |  
-    |----------------------|---------------------------------------|--------------------|
+    |                      |                                       |                    |  
     | analytics_node/dev   |  aws/data_feed_in/analytics_node/dev  |  analytics.tfvars  |  
     | analytics_node/test  |  aws/data_feed_in/analytics_node/test |  analytics.tfvars  |  
     | analytics_node/prod  |  aws/data_feed_in/analytics_node/prod |  analytics.tfvars  |  
