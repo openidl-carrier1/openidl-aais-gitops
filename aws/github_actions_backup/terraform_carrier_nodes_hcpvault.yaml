@@ -39,7 +39,7 @@ jobs:
   carrier_node_dev:
     environment: carrier_dev
 
-    if: github.ref == 'refs/heads/carrier_dev'
+    if: github.base_ref == 'carrier_dev' || github.ref == 'refs/heads/carrier_dev'
     name: 'carrier-node-openidl-dev'
     runs-on: ubuntu-latest
 
@@ -199,7 +199,7 @@ jobs:
   carrier_node_test:
     environment: carrier_test
 
-    if: github.ref == 'refs/heads/carrier_test'
+    if: github.base_ref == 'carrier_test' || github.ref == 'refs/heads/carrier_test'
     name: 'carrier-node-openidl-test'
     runs-on: ubuntu-latest
 
@@ -359,7 +359,7 @@ jobs:
   carrier_node_prod:
     environment: carrier_prod
 
-    if: github.ref == 'refs/heads/carrier_prod'
+    if: github.base_ref == 'carrier_prod' || github.ref == 'refs/heads/carrier_prod'
     name: 'carrier-node-openidl-prod'
     runs-on: ubuntu-latest
 

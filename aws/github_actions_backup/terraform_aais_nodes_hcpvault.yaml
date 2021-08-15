@@ -39,7 +39,7 @@ jobs:
   aais_node_dev:
     environment: aais_dev
 
-    if: github.ref == 'refs/heads/aais_dev'
+    if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
     name: 'aais-node-openidl-dev'
     runs-on: ubuntu-latest
 
@@ -199,7 +199,7 @@ jobs:
   aais_node_test:
     environment: aais_test
 
-    if: github.ref == 'refs/heads/aais_test'
+    if: github.base_ref == 'aais_test' || github.ref == 'refs/heads/aais_test'
     name: 'aais-node-openidl-test'
     runs-on: ubuntu-latest
 
@@ -359,7 +359,7 @@ jobs:
   aais_node_prod:
     environment: aais_prod
 
-    if: github.ref == 'refs/heads/aais_prod'
+    if: github.base_ref == 'aais_prod' || github.ref == 'refs/heads/aais_prod'
     name: 'aais-node-openidl-prod'
     runs-on: ubuntu-latest
 
