@@ -4,9 +4,10 @@
 
 ##Prerequisites:
     
-    |Terraform version:                 | >= 1.0.0 |
-    |AWS provider version:              | >= 3.0   |
-    |Kubernetes provider version:       | >= 1.9   |
+    | Resource                        | Version  |
+    | Terraform version:              | >= 1.0.0 |
+    | AWS provider version:           | >= 3.0   |
+    | Kubernetes provider version:    | >= 1.9   |
     
 **Additional requirements:** 
     
