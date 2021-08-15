@@ -39,7 +39,7 @@ jobs:
   aais_node_dev:
     environment: aais_dev
 
-    if: github.base_ref == 'aais_dev' || github.ref == 'aais_dev'
+    if: github.base_ref == 'aais_dev' || github.ref == 'refs/heads/aais_dev'
     name: 'aais-node-openidl-dev'
     runs-on: ubuntu-latest
     env:
