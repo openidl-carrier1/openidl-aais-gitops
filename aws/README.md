@@ -1,6 +1,6 @@
 # openidl-aais-gitops
 
-**Refer to tf_backend_setup/README.md to configure terraform backend resources**
+**Refer to aws/tf_backend_setup/README.md to configure terraform backend resources**
 
 ##Prerequisites:
     
