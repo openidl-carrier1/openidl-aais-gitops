@@ -1,3 +1,4 @@
+#locals
 locals {
   std_name          = "${var.node_type}-${var.aws_env}"
   app_cluster_name  = "${local.std_name}-${var.app_cluster_name}"
