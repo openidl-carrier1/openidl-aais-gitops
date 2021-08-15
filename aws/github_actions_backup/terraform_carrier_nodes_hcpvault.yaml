@@ -13,6 +13,8 @@ on:
       - '!aws/data_feed_in/*/*.template'
       - '!aws/tf_backend_setup/**'
       - '!aws/README.md'
+      - '!README.md'
+
     branches:
       - carrier_dev
       - carrier_test
@@ -25,6 +27,8 @@ on:
       - '!aws/data_feed_in/*/*.template'
       - '!aws/tf_backend_setup/**'
       - '!aws/README.md'
+      - '!README.md'
+
     branches:
       - carrier_dev
       - carrier_test
