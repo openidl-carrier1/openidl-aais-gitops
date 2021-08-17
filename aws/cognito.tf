@@ -29,10 +29,10 @@ resource "aws_cognito_user_pool" "user_pool" {
     device_only_remembered_on_user_prompt = var.userpool_device_only_remembered_on_user_prompt
   }
   email_configuration {
-    reply_to_email_address = var.ses_email_identity
-    source_arn             = var.userpool_email_source_arn
+    reply_to_email_address = var.email_sending_account == "DEVELOPER" ? var.ses_email_identity : null
+    source_arn             = var.email_sending_account == "DEVELOPER" ? var.userpool_email_source_arn : null
     email_sending_account  = var.email_sending_account
-    from_email_address     = var.ses_email_identity
+    from_email_address     = var.email_sending_account == "DEVELOPER" ? var.ses_email_identity : null 
   }
   email_verification_subject = var.userpool_email_verficiation_subject != "" ? var.userpool_email_verficiation_subject : "Your password"
   email_verification_message = var.userpool_email_verficiation_message != "" ? var.userpool_email_verficiation_message : "Your username is {username}, and password is {####}."
