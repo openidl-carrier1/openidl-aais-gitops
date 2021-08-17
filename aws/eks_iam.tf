@@ -92,7 +92,7 @@ resource "aws_iam_policy" "eks_admin_policy" {
 #iam role - to perform eks administrative tasks
 resource "aws_iam_role" "eks_admin_role" {
   name = "${local.std_name}-eks-admin"
-  assume_role_policy = jsoncode({
+  assume_role_policy = jsonencode({
   "Version": "2012-10-17",
   "Statement": [
     {
