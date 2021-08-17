@@ -107,7 +107,7 @@ resource "aws_iam_role" "eks_admin_role" {
   managed_policy_arns = [aws_iam_policy.eks_admin_policy.arn]
   tags = merge(local.tags, {Name = "${local.std_name}-eks-admin", Cluster_type = "both"})
   description = "The iam role that is used to manage EKS cluster administrative tasks"
-  max_session_duration = 1800
+  max_session_duration = 3600
 }
 #iam group that allows users to assume eks-admin-role
 resource "aws_iam_group" "eks_admin_group" {
