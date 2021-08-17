@@ -98,7 +98,7 @@ resource "aws_iam_role" "eks_admin_role" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::${var.aws_account_number}/root"
+        "AWS": "arn:aws:iam::${var.aws_account_number}:root"
       },
       "Action": "sts:AssumeRole",
       "Condition": {}
