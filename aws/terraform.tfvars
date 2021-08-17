@@ -33,8 +33,8 @@ password_policy_require_uppercase                = true
 password_policy_temporary_password_validity_days = 10
 userpool_advanced_security_mode                  = "AUDIT"
 userpool_enable_username_case_sensitivity        = false
-#userpool_email_verficiation_subject = ""
-#userpool_email_verficiation_message = ""
+userpool_email_verficiation_subject = "Your password"
+userpool_email_verficiation_message = "Your username is {username} and password is {####}."
 #-------------------------------------------------------------------------------------------------------------------
 #EKS cluster specifications
 eks_worker_instance_type             = "t3.medium"

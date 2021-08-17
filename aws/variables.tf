@@ -285,6 +285,10 @@ variable "client_access_token_validity" {
   type        = number
   default     = 60
 }
+variable "email_sending_account" {
+  type = string
+  description = "The email sending account type. COGNITO | DEVELOPER"
+}
 #aws cognito domain (default/custom) specific variables
 variable "cognito_domain" {
   type        = string

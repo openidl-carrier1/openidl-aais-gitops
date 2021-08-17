@@ -14,7 +14,7 @@ locals {
   #cognito custom attributes
   custom_attributes = [
     "role",
-    "statusCode",
+    "stateCode",
     "stateName",
   "organizationId"]
   #application cluster (eks) config-map (aws auth) - iam roles to map
