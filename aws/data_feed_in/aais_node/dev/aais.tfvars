@@ -52,6 +52,14 @@ app_public_nacl_rules = {
     to_port     = 8443
     protocol    = "tcp"
     cidr_block  = "0.0.0.0/0" #related to eks
+    },
+    {
+    rule_number = 105
+    rule_action = "allow"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_block  = "10.10.0.0/16"
     }],
   outbound = [{
     rule_number = 100
@@ -396,13 +404,21 @@ default_sg_rules = {
     from_port   = "443"
     to_port     = "443"
     protocol    = "tcp"
+  },
+    {
+    cidr_blocks = "10.10.0.0/16"
+    description = "Outbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
   }]
 }
 #--------------------------------------------------------------------------------------------------------------------
 
 #Bastion host specifications
 #application cluster bastion host specifications
-app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"},]
+app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"},
+                           {rule="ssh-tcp", cidr_blocks = "172.31.0.0/16"}]
 app_bastion_sg_egress =   [{rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
                        {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
                        {rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"}]
@@ -422,13 +438,13 @@ domain_info = {
   domain_name = "aaisdirect.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
   app_sub_domain_name = "dev-openidl" , #subdomain mapped to app eks nlb
-  blk_sub_domain_names = ["orderer0","orderer1", "orderer2", "aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
+  blk_sub_domain_names = ["orderer0","orderer1", "aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
   comments = "aais node public name resolutions"
 }
 #Route53 (PRIVATE) DNS resolution related specifications
 #internal name resolution required for blockchain vpc NLB
 internal_domain = "internal.aaisdirect.com" #internal domain name for internal name resolution within vpcs
-internal_subdomain = ["orderer0", "orderer1", "orderer2", "aais-peer", "aais-ca"] #list of subdomains for internal resolution within vpcs
+internal_subdomain = ["orderer0", "orderer1", "aais-peer", "aais-ca"] #list of subdomains for internal resolution within vpcs
 
 #-------------------------------------------------------------------------------------------------------------------
 
@@ -472,6 +488,13 @@ app_eks_workers_app_sg_ingress = [
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.17.0.0/16"
+},
+ {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.31.0.0/16"
 }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -496,7 +519,7 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
-app_cluster_version           = "1.19"
+app_cluster_version           = "1.20"
 app_cluster_service_ipv4_cidr = "172.20.0.0/16"
 #--------------------------------------------------------------------------------------------------------------------
 
