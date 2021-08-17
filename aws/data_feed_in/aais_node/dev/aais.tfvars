@@ -478,8 +478,8 @@ app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 #application specific traffic to be allowed in blk cluster worker nodes
 blk_eks_workers_app_sg_ingress = [
   {
-    from_port = 443
-    to_port = 443
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.17.0.0/16"
