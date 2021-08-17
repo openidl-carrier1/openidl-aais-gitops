@@ -52,14 +52,6 @@ app_public_nacl_rules = {
     to_port     = 8443
     protocol    = "tcp"
     cidr_block  = "0.0.0.0/0" #related to eks
-    },
-    {
-    rule_number = 105
-    rule_action = "allow"
-    from_port   = 8443
-    to_port     = 8443
-    protocol    = "tcp"
-    cidr_block  = "10.10.0.0/16" #related to eks
     }],
   outbound = [{
     rule_number = 100
@@ -404,20 +396,13 @@ default_sg_rules = {
     from_port   = "443"
     to_port     = "443"
     protocol    = "tcp"
-  },
-    {
-    cidr_blocks = "10.10.0.0/16"
-    description = "Outbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
   }]
 }
 #--------------------------------------------------------------------------------------------------------------------
 
 #Bastion host specifications
 #application cluster bastion host specifications
-app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"},{rule="ssh-tcp", cidr_blocks = "10.10.0.0/16"}]
+app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"}]
 app_bastion_sg_egress =   [{rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
                        {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
                        {rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"}]
@@ -470,7 +455,7 @@ client_callback_urls         = ["https://dev-openidl.aaisdirect.com/callback", "
 client_default_redirect_url  = "https://dev-openidl.aaisdirect.com/redirect"
 client_logout_urls           = ["https://dev-openidl.aaisdirect.com/signout"]
 cognito_domain               = "aaisdirect"
-email_sending_account        = "COGNITO" #alternate input is "DEVELOPER". This uses SES service.
+email_sending_account        = "COGNITO_DEFAULT" #alternate input is "DEVELOPER". This uses SES service.
 # when DEVELOPER is set ensure ses_email_identity and userpool_email_source_arn are setup as secrets in github
 #--------------------------------------------------------------------------------------------------------------------
 
@@ -488,7 +473,7 @@ app_eks_workers_app_sg_ingress = [
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "10.10.0.0/16"
+    cidr_blocks = "172.17.0.0/16"
 }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -513,8 +498,8 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
-app_cluster_version           = "1.20"
-app_cluster_service_ipv4_cidr = "172.22.0.0/16"
+app_cluster_version           = "1.19"
+app_cluster_service_ipv4_cidr = "172.20.0.0/16"
 #--------------------------------------------------------------------------------------------------------------------
 
 # blockchain cluster EKS specifications
