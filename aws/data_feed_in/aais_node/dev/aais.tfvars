@@ -419,11 +419,11 @@ blk_bastion_sg_egress =   [{rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
 #Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws/others, registered: yes/no)
 domain_info = {
   domain_registrar = "others", # alternate option: aws
-  domain_name: "aaisdirect.com", #primary domain registered
+  domain_name = "aaisdirect.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
-  app_sub_domain_name: "dev-openidl" , #subdomain mapped to app eks nlb
-  blk_sub_domain_names: ["orderer0","orderer1", "orderer2", "aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
-  comments: "aais node public name resolutions"
+  app_sub_domain_name = "dev-openidl" , #subdomain mapped to app eks nlb
+  blk_sub_domain_names = ["orderer0","orderer1", "orderer2", "aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
+  comments = "aais node public name resolutions"
 }
 #Route53 (PRIVATE) DNS resolution related specifications
 #internal name resolution required for blockchain vpc NLB
