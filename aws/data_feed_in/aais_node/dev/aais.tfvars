@@ -52,6 +52,14 @@ app_public_nacl_rules = {
     to_port     = 8443
     protocol    = "tcp"
     cidr_block  = "0.0.0.0/0" #related to eks
+    },
+    {
+    rule_number = 104
+    rule_action = "allow"
+    from_port   = 5984
+    to_port     = 5984
+    protocol    = "tcp"
+    cidr_block  = "172.16.0.0/16" # couch db
     }],
   outbound = [{
     rule_number = 100
