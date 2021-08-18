@@ -1,7 +1,6 @@
 #setting up congnito user pool
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${local.std_name}-${var.userpool_name}"
-  estimated_number_of_users = 100 
   dynamic "account_recovery_setting" {
     for_each = length(var.userpool_recovery_mechanisms) == 0 ? [] : [1]
     content {
