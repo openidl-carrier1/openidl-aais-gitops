@@ -80,10 +80,8 @@ app_public_nacl_rules = {
     {
       rule_number = 103
       rule_action = "allow"
-      from_port = 1024
-      to_port = 65535
-     # from_port   = 32768
-     # to_port     = 65535
+      from_port   = 32768
+      to_port     = 65535
       protocol    = "tcp"
       cidr_block  = "0.0.0.0/0"
   },
