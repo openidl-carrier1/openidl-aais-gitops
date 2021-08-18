@@ -120,7 +120,7 @@ resource "aws_iam_group_policy_attachment" "eks_admin_group_policy_attachment" {
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_group_assume_policy" {
-  name = "${local.std_name}-eks-admin-group-assume"
+  name = "${local.std_name}-eks-admin"
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -132,7 +132,7 @@ resource "aws_iam_policy" "eks_admin_group_assume_policy" {
       }]
   })
   tags = merge(local.tags, {
-    Name = "${local.std_name}-eks-admin-group-assume",
+    Name = "${local.std_name}-eks-admin",
     Cluster_type = "both"
   })
 }
