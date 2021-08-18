@@ -32,7 +32,7 @@ resource "aws_cognito_user_pool" "user_pool" {
     reply_to_email_address = var.email_sending_account == "DEVELOPER" ? var.ses_email_identity : null
     source_arn             = var.email_sending_account == "DEVELOPER" ? var.userpool_email_source_arn : null
     email_sending_account  = var.email_sending_account
-    from_email_address     = var.email_sending_account == "DEVELOPER" ? var.ses_email_identity : null 
+    from_email_address     = var.email_sending_account == "DEVELOPER" ? var.ses_email_identity : null
   }
   email_verification_subject = var.userpool_email_verficiation_subject != "" ? var.userpool_email_verficiation_subject : "Your password"
   email_verification_message = var.userpool_email_verficiation_message != "" ? var.userpool_email_verficiation_message : "Your username is {username}, and password is {####}."

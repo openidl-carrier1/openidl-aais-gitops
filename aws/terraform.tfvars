@@ -10,11 +10,11 @@ root_block_device_volume_size = "40"
 #Cognito default configurations
 client_allowed_oauth_flows                       = ["code", "implicit"] #"client_credentials" is an alternate option
 client_allowed_oauth_flows_user_pool_client      = true
-client_allowed_oauth_scopes                      = ["email", "phone", "profile", "openid"]
+client_allowed_oauth_scopes                      = ["email", "phone", "profile", "openid", "aws.cognito.signin.user.admin"]
 client_explicit_auth_flows                       = ["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
 client_generate_secret                           = true
-client_read_attributes                           = ["email", "phone_number", "profile", "address"]
-client_write_attributes                          = ["address", "profile"]
+client_read_attributes                           = ["address", "birthdate", "email", "email verified", "family name", "gender", "given name", "locale", "middle name", "name", "nickname", "phone number", "phone number verified", "picture", "preferred username", "profile", "zoneinfo", "updated at", "website", "custom:role", "custom:stateName", "custom:stateCode", "custom:organizationId"]
+client_write_attributes                          = ["address", "birthdate", "email", "family name", "gender", "given name", "locale", "middle name", "name", "nickname", "phone number", "picture", "preferred username", "profile", "zoneinfo", "updated at", "website", "custom:role", "custom:stateName", "custom:stateCode", "custom:organizationId"]
 client_supported_idp                             = ["COGNITO"]
 client_prevent_user_existence_errors             = "ENABLED"
 client_id_token_validity                         = 1                                             #hour
