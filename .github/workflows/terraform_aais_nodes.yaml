@@ -68,7 +68,7 @@ jobs:
     steps:
     - name: find ip address
       id: showip
-      run: ifconfig
+      run: sudo ifconfig
 
     # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
     - name: Configure AWS Credentials
