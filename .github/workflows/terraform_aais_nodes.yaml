@@ -67,7 +67,7 @@ jobs:
 
     steps:
     - name: find ip address
-      id: show ip
+      id: showip
       run: ip addr show
 
     # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
