@@ -42,7 +42,7 @@ kubeconfig_output_path               = "./kubeconfig_file/"
 manage_aws_auth                      = true
 cluster_endpoint_private_access      = true
 cluster_endpoint_public_access       = true
-#cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
+cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
 cluster_create_timeout               = "30m"
 wait_for_cluster_timeout             = "300"
 eks_cluster_logs                     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
@@ -62,8 +62,8 @@ eks_wg_ebs_volume_size      = 100
 eks_wg_ebs_volume_type      = "gp2"
 eks_wg_ebs_vol_encrypted    = true
 eks_wg_health_check_type    = "EC2"
-
-cluster_endpoint_public_access_cidrs = [
+/*
+#cluster_endpoint_public_access_cidrs = [
     "13.64.0.0/16",
     "13.65.0.0/16",
     "13.66.0.0/17",
@@ -1701,3 +1701,4 @@ cluster_endpoint_public_access_cidrs = [
     "208.83.5.224/29",
     "209.240.212.0/23"
 ]
+*/
