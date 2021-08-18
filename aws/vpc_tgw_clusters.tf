@@ -20,15 +20,15 @@ module "aais_app_vpc" {
   default_security_group_name   = "${local.std_name}-app-vpc-def-sg"
   manage_default_security_group = true
   manage_default_route_table    = true
-  public_dedicated_network_acl  = true
-  private_dedicated_network_acl = true
+  #public_dedicated_network_acl  = true
+  #private_dedicated_network_acl = true
 
   #default_network_acl_ingress    = var.default_nacl_rules["inbound"]
   #default_network_acl_egress     = var.default_nacl_rules["outbound"]
-  public_inbound_acl_rules       = var.app_public_nacl_rules["inbound"]
-  public_outbound_acl_rules      = var.app_public_nacl_rules["outbound"]
-  private_inbound_acl_rules      = var.app_private_nacl_rules["inbound"]
-  private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
+  #public_inbound_acl_rules       = var.app_public_nacl_rules["inbound"]
+  #public_outbound_acl_rules      = var.app_public_nacl_rules["outbound"]
+  #private_inbound_acl_rules      = var.app_private_nacl_rules["inbound"]
+  #private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
   default_security_group_egress  = var.default_sg_rules["egress"]
   default_security_group_ingress = var.default_sg_rules["ingress"]
 
