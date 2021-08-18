@@ -66,9 +66,11 @@ jobs:
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
 
     steps:
-      - name: find ip address
-        run: ip addr show
-     # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
+    - name: find ip address
+      id: show ip
+      run: ip addr show
+
+    # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
       with:
