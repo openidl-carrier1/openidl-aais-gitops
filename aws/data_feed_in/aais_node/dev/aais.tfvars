@@ -51,7 +51,7 @@ app_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.16.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }],
   outbound = [{
     rule_number = 100
@@ -91,7 +91,7 @@ app_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.16.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }]
 }
 app_private_nacl_rules = {
@@ -133,7 +133,7 @@ app_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.16.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     },
   {
     rule_number = 105
@@ -181,7 +181,7 @@ app_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.16.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }]
 }
 #-------------------------------------------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ blk_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.17.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }],
   outbound = [{
     rule_number = 100
@@ -273,7 +273,7 @@ blk_public_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.17.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }]
 }
 blk_private_nacl_rules = {
@@ -314,7 +314,7 @@ blk_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.17.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     },
   {
     rule_number = 105
@@ -362,7 +362,7 @@ blk_private_nacl_rules = {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
-    cidr_block  = "172.17.0.0/16" #related to eks
+    cidr_block  = "0.0.0.0/0" #related to eks
     }]
 }
 #--------------------------------------------------------------------------------------------------------------------
