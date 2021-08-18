@@ -631,3 +631,7 @@ variable "s3_bucket_name_cloudtrail" {
   type = string
   description = "The name of s3 bucket to store the cloudtrail logs"
 }
+variable "github_actions_cidr_allowed" {
+  type = list
+  description = "The default list of cidr blocks of github actions allowed"
+}
