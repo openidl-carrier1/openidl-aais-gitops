@@ -2,7 +2,7 @@
 #example: aais/carr/anlt etc.,
 node_type = "aais"
 aws_env = "dev" #set to dev or test or prod
-
+blk_cluster_map_roles = []
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
 app_vpc_cidr           = "172.16.0.0/16"
