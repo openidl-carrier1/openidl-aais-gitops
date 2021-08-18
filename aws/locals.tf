@@ -16,7 +16,7 @@ locals {
     "role",
     "stateCode",
     "stateName",
-  "organizationId"]
+    "organizationId"]
   #application cluster (eks) config-map (aws auth) - iam roles to map
   app_cluster_map_roles = [
     {
@@ -25,7 +25,7 @@ locals {
       groups = [
         "system:masters",
         "system:nodes",
-      "system:bootstrappers"]
+        "system:bootstrappers"]
   },
   {
       rolearn  = aws_iam_role.eks_admin_role.arn
@@ -33,7 +33,7 @@ locals {
       groups = [
         "system:masters",
         "system:nodes",
-      "system:bootstrappers"]
+        "system:bootstrappers"]
   }]
   #blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
@@ -43,7 +43,7 @@ locals {
       groups = [
         "system:masters",
         "system:nodes",
-      "system:bootstrappers"]
+        "system:bootstrappers"]
   },
     {
       rolearn  = aws_iam_role.eks_admin_role.arn
@@ -51,7 +51,7 @@ locals {
       groups = [
         "system:masters",
         "system:nodes",
-      "system:bootstrappers"]
+        "system:bootstrappers"]
   }]
   app_cluster_map_roles_list = [for key in var.app_cluster_map_roles :
     {
