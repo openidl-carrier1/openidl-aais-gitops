@@ -466,7 +466,7 @@ app_eks_workers_app_sg_ingress = [
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "172.16.0.0/16"
+    cidr_blocks = "10.10.0.0/16"
   },
    {
     from_port = 443
