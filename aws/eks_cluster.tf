@@ -140,7 +140,7 @@ module "app_eks_cluster" {
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSCNIPolicy,
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSWorkerNodePolicy,
-  aws_iam_instance_profile.eks_instance_profile]
+    aws_iam_instance_profile.eks_instance_profile]
 }
 #blockchain cluster specific
 #ssh key pair for blockchain cluster worker nodes (eks)
@@ -278,5 +278,5 @@ module "blk_eks_cluster" {
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSCNIPolicy,
     aws_iam_role_policy_attachment.eks_nodegroup_AmazonEKSWorkerNodePolicy,
-  aws_iam_instance_profile.eks_instance_profile]
+    aws_iam_instance_profile.eks_instance_profile]
 }

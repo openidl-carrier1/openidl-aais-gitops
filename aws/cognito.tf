@@ -112,10 +112,3 @@ resource "aws_cognito_user_pool_domain" "domain" {
   # certificate_arn = var.acm_cert_arn #activate when custom domain is required
   user_pool_id = aws_cognito_user_pool.user_pool.id
 }
-#aws cognito user interface customization resource definition
-resource "aws_cognito_user_pool_ui_customization" "cognito_ui_cust" {
-  client_id    = aws_cognito_user_pool_client.cognito_app_client.id
-  image_file   = filebase64("resources/aais_logo.png")
-  user_pool_id = aws_cognito_user_pool.user_pool.id
-  depends_on   = [aws_cognito_user_pool_client.cognito_app_client, aws_cognito_user_pool_domain.domain]
-}
