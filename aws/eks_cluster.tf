@@ -85,11 +85,9 @@ module "app_eks_cluster" {
       instance_refresh_enabled      = var.wg_instance_refresh_enabled
       enable_monitoring             = true
       iam_instance_profile_name     = aws_iam_instance_profile.eks_instance_profile["app-node-group"].name
-      metadata_options = {
-        http_endpoint               = "enabled"
-        http_tokens                 = "required"
-        http_put_response_hop_limit = 5
-      }
+      metadata_http_tokens          = "required"
+      metadata_http_endpoint        = "enabled"
+      metadata_http_put_response_hop_limit = 5
     },
     {
       name                          = "${local.std_name}-app-worker-group-2"
@@ -114,11 +112,9 @@ module "app_eks_cluster" {
       instance_refresh_enabled      = var.wg_instance_refresh_enabled
       enable_monitoring             = true
       iam_instance_profile_name     = aws_iam_instance_profile.eks_instance_profile["app-node-group"].name
-      metadata_options = {
-        http_endpoint               = "enabled"
-        http_tokens                 = "required"
-        http_put_response_hop_limit = 5
-      }
+      metadata_http_tokens          = "required"
+      metadata_http_endpoint        = "enabled"
+      metadata_http_put_response_hop_limit = 5
   }]
 
   tags = merge(
@@ -233,11 +229,9 @@ module "blk_eks_cluster" {
       instance_refresh_enabled      = var.wg_instance_refresh_enabled
       enable_monitoring             = true
       iam_instance_profile_name     = aws_iam_instance_profile.eks_instance_profile["blk-node-group"].name
-      metadata_options = {
-        http_endpoint               = "enabled"
-        http_tokens                 = "required"
-        http_put_response_hop_limit = 5
-      }
+      metadata_http_tokens          = "required"
+      metadata_http_endpoint        = "enabled"
+      metadata_http_put_response_hop_limit = 5
     },
     {
       name                          = "${local.std_name}-blk-worker-group-2"
@@ -262,11 +256,9 @@ module "blk_eks_cluster" {
       instance_refresh_enabled      = var.wg_instance_refresh_enabled
       enable_monitoring             = true
       iam_instance_profile_name     = aws_iam_instance_profile.eks_instance_profile["blk-node-group"].name
-      metadata_options = {
-        http_endpoint               = "enabled"
-        http_tokens                 = "required"
-        http_put_response_hop_limit = 5
-      }
+      metadata_http_tokens          = "required"
+      metadata_http_endpoint        = "enabled"
+      metadata_http_put_response_hop_limit = 5
   }]
 
   tags = merge(
