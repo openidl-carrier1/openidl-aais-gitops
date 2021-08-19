@@ -81,4 +81,18 @@ locals {
       username = "admin"
       groups   = ["system:masters"]
   }]
+  app_def_sg_ingress = [{
+    cidr_blocks = var.app_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+  }]
+  blk_def_sg_ingress = [{
+    cidr_blocks = var.blk_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+  }]
 }
