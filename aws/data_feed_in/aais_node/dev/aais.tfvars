@@ -1,3 +1,4 @@
+
 #set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
 #example: aais|carr|anlt etc.,
 node_type = "aais" #set to aais|carr|anlt
@@ -46,14 +47,14 @@ domain_info = {
   domain_name = "aaisdirect.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
   app_sub_domain_name = "openidl" , #subdomain mapped to app eks nlb
-  blk_sub_domain_names = ["orderer0","orderer1","aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
+  blk_sub_domain_names = ["ordererorg"] #list of subdomain names mapped to blk eks nlb
   comments = "aais node public name resolutions"
 }
 
 #Route53 (PRIVATE) DNS resolution related specifications
 #internal name resolution required for blockchain vpc NLB
 internal_domain = "internal.aaisdirect.com" #internal domain name for internal name resolution within vpcs
-internal_subdomain = ["orderer0", "orderer1", "aais-peer", "aais-ca"] #list of subdomains for internal resolution within vpcs
+internal_subdomain = ["ordererorg-net", "ordererorg"] #list of subdomains for internal resolution within vpcs
 
 #-------------------------------------------------------------------------------------------------------------------
 #Transit gateway  specifications
@@ -97,6 +98,20 @@ app_eks_workers_app_sg_ingress = [
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.17.0.0/16"
+},
+  {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.16.0.0/16"
+  },
+   {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.17.0.0/16"
 }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -115,6 +130,20 @@ blk_eks_workers_app_sg_ingress = [
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.16.0.0/16"
+},
+  {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.16.0.0/16"
+  },
+   {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.17.0.0/16"
 }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -135,37 +164,4 @@ blk_cluster_service_ipv4_cidr = "172.21.0.0/16"
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-us-east-2"
 
-#--------------------------------------------------------------------------------------------------------------------
-
-#Default security group assigned/used when a resource is created without any security group attached
-default_sg_rules = {
-  ingress = [{
-    cidr_blocks = "172.17.0.0/16"
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "172.16.0.0/16"
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  }],
-  egress = [{
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "80"
-    to_port     = "80"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  }]
-}
 #--------------------------------------------------------------------------------------------------------------------
