@@ -51,12 +51,12 @@ List of sensitive data to configure as secrets under git environment section.
         9. blk_bastion_ssh_key
         10. app_eks_worker_nodes_ssh_key
         11. blk_eks_worker_nodes_ssh_key
-        12. ses_email_identity # Required only when email_sending_account = "DEVELOPER"
-        13. userpool_email_source_arn # Required only when email_sending_account = "DEVELOPER"
-        14. app_cluster_map_users # Required only if any IAM user required EKS access
-        15. blk_cluster_map_users # Required only if any IAM user required EKS access
-        16. app_cluster_map_roles # Required only if any IAM role required EKS access
-        17. blk_cluster_map_roles  # Required only if any IAM role required EKS access
+        12. ses_email_identity # Required when email_sending_account = "DEVELOPER", otherwise set to empty in git secrets
+        13. userpool_email_source_arn # Required when email_sending_account = "DEVELOPER", otherwise set to empty in git secrets
+        14. app_cluster_map_users # Required if any IAM user required EKS access, otherwise set to empty in git secrets
+        15. blk_cluster_map_users # Required if any IAM user required EKS access, otherwise set to empty in git secrets
+        16. app_cluster_map_roles # Required if any IAM role required EKS access, otherwise set to empty in git secrets
+        17. blk_cluster_map_roles  # Required if any IAM role required EKS access, otherwise set to empty in git secrets
 
 7. Clone the repository 
 8. Prepare input file for the specific node and specific environment. 
