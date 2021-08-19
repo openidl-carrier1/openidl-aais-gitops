@@ -1,23 +1,7 @@
 #set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
 #example: aais|carr|anlt etc.,
-aws_account_number = "577645632856"
-aws_user_arn = "arn:aws:iam::577645632856:user/terraform_user"
-aws_role_arn = "arn:aws:iam::577645632856:role/terraform_automation"
-aws_region = "us-east-2"
-app_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-blk_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-app_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-blk_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-ses_email_identity = ""
-userpool_email_source_arn = ""
-app_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
-blk_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
-app_cluster_map_roles = []
-blk_cluster_map_roles = []
-
 node_type = "aais" #set to aais|carr|anlt
 aws_env = "dev" #set to dev|test|prod
-
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
 app_vpc_cidr           = "172.16.0.0/16"
@@ -34,10 +18,10 @@ blk_private_subnets    = ["172.17.3.0/24", "172.17.4.0/24"]
 
 #--------------------------------------------------------------------------------------------------------------------
 #Bastion host specifications
-/*bastion hosts are placed behind nlb. These NLBs can be configured to be private | public to serve SSH.
-In any case whether the endpoint is private|public for an nlb, the source ip_address|cidr_block should be enabled
-in bastion hosts security group for ssh traffic
-*/
+#bastion hosts are placed behind nlb. These NLBs can be configured to be private | public to serve SSH.
+#In any case whether the endpoint is private|public for an nlb, the source ip_address|cidr_block should be enabled
+#in bastion hosts security group for ssh traffic
+
 bastion_host_nlb_external = "true"
 
 #application cluster bastion host specifications
