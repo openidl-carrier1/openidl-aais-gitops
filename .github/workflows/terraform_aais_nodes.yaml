@@ -272,10 +272,10 @@ jobs:
         run: terraform apply -auto-approve -var-file=data_feed_in/aais_node/test/aais.tfvars
 
       - name: Turn the cluster to private
-          id: privatecluster
-          run: |
-            eksctl utils update-cluster-endpoints --cluster=aais-dev-app-cluster --private-access=true --public-access=false --approve
-            eksctl utils update-cluster-endpoints --cluster=aais-dev-blk-cluster --private-access=true --public-access=false --approve
+        id: privatecluster
+        run: |
+          eksctl utils update-cluster-endpoints --cluster=aais-dev-app-cluster --private-access=true --public-access=false --approve
+          eksctl utils update-cluster-endpoints --cluster=aais-dev-blk-cluster --private-access=true --public-access=false --approve
 
 
   aais_node_prod:
