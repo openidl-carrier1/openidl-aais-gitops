@@ -12,10 +12,12 @@ resource "aws_kms_key" "cw_logs_ct_kms_key" {
       "Cluster_type" = "both"
     },)
 }
+#kms key alias for cloudwatch logs related to cloudtrail
 resource "aws_kms_alias" "cw_logs_ct_kms_key_alias" {
   name          = "alias/${local.std_name}-cloudwatch-logs"
   target_key_id = aws_kms_key.cw_logs_ct_kms_key.id
 }
+#setting up cloudwatch logs
 resource "aws_cloudwatch_log_group" "cloudtrail_cw_logs" {
   name = "${local.std_name}-cloudtrail-logs"
   retention_in_days = var.cw_logs_retention_period
@@ -23,10 +25,12 @@ resource "aws_cloudwatch_log_group" "cloudtrail_cw_logs" {
   tags = merge(local.tags, { Name = "${local.std_name}-cloudtrail-logs-group", Cluster_type = "both"})
   depends_on = [aws_kms_key.cw_logs_ct_kms_key]
 }
+#setting up iam role for cloudwatch related to cloudtrail
 resource "aws_iam_role" "cloudtrail_cloudwatch_role" {
   name = "${local.std_name}-cloudtrail"
   assume_role_policy = data.aws_iam_policy_document.cloudtrail_assume_role.json
 }
+#enabling cloudtrail
 resource "aws_cloudtrail" "cloudtrail_events" {
     name = "${local.std_name}-cloudtrail"
     s3_bucket_name = aws_s3_bucket.s3_bucket.bucket
@@ -46,10 +50,12 @@ resource "aws_cloudtrail" "cloudtrail_events" {
     tags = merge(local.tags, {Name = "${local.std_name}-cloudtrail-logs", Cluster_type = "both"})
     depends_on = [aws_cloudwatch_log_group.cloudtrail_cw_logs, aws_s3_bucket_policy.bucket_policy]
 }
+#iam policy for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
   name   = "cloudtrail-cloudwatch-logs-policy"
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
 }
+#iam policy attachment for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy_attachment" "main" {
   name       = "cloudtrail-cloudwatch-logs-policy-attachment"
   policy_arn = aws_iam_policy.cloudtrail_cloudwatch_logs.arn

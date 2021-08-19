@@ -217,7 +217,7 @@ module "blk_eks_cluster" {
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                     = module.aais_blk_vpc.private_subnets[0]
-      target_group_arns             = module.blk_eks_nlb.target_group_arns
+      target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
       instance_refresh_enabled      = var.wg_instance_refresh_enabled
@@ -241,7 +241,7 @@ module "blk_eks_cluster" {
       root_volume_type              = var.eks_wg_root_volume_type
       key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
       subnet_id                     = module.aais_blk_vpc.private_subnets[1]
-      target_group_arns             = module.blk_eks_nlb.target_group_arns
+      target_group_arns             = module.blk_eks_nlb_public.target_group_arns
       health_check_type             = var.eks_wg_health_check_type
       ebs_optimized                 = var.wg_ebs_optimized
       instance_refresh_enabled      = var.wg_instance_refresh_enabled

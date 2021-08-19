@@ -1,3 +1,4 @@
+#local variables and their manipulation are here
 locals {
   std_name          = "${var.node_type}-${var.aws_env}"
   app_cluster_name  = "${local.std_name}-${var.app_cluster_name}"
@@ -81,4 +82,3 @@ locals {
       groups   = ["system:masters"]
   }]
 }
-

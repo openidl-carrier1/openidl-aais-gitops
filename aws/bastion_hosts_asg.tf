@@ -38,7 +38,7 @@ module "app_bastion_nlb" {
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
-  internal                         = false
+  internal                         = var.bastion_host_nlb_external ? false : true
   ip_address_type                  = "ipv4"
   vpc_id                           = module.aais_app_vpc.vpc_id
   subnets                          = module.aais_app_vpc.public_subnets
@@ -175,7 +175,7 @@ module "blk_bastion_nlb" {
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
-  internal                         = false
+  internal                         = var.bastion_host_nlb_external ? false : true
   ip_address_type                  = "ipv4"
   vpc_id                           = module.aais_blk_vpc.vpc_id
   subnets                          = module.aais_blk_vpc.public_subnets

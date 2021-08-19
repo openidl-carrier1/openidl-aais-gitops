@@ -20,7 +20,7 @@ data "aws_ami" "eks_app_worker_nodes_ami" {
   most_recent = true
   owners      = ["amazon"]
   filter {
-    name = "name"
+    name   = "name"
     values = ["amazon-eks-node-${var.app_cluster_version}-v*"]
   }
 }
@@ -28,10 +28,11 @@ data "aws_ami" "eks_blk_worker_nodes_ami" {
   most_recent = true
   owners      = ["amazon"]
   filter {
-    name = "name"
+    name   = "name"
     values = ["amazon-eks-node-${var.blk_cluster_version}-v*"]
   }
 }
+
 #extracting zone info if the domain is already registered in aws
 data "aws_route53_zone" "data_zones" {
   count = (lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws") ? 1 : 0
@@ -96,6 +97,7 @@ data "aws_subnet_ids" "blk_vpc_private_subnets" {
     values = var.blk_private_subnets
   }
 }
+#iam policy for cloudtrail
 data "aws_iam_policy_document" "cloudtrail_assume_role" {
   statement {
     effect  = "Allow"
@@ -106,6 +108,7 @@ data "aws_iam_policy_document" "cloudtrail_assume_role" {
     }
   }
 }
+#iam policy for cloudtrail cloudwatch logs
 data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
   statement {
     sid    = "WriteCloudWatchLogs"
@@ -117,6 +120,7 @@ data "aws_iam_policy_document" "cloudtrail_cloudwatch_logs" {
     resources = ["arn:aws:logs:${var.aws_region}:${var.aws_account_number}:log-group:${local.std_name}-cloudtrail-logs:*"]
   }
 }
+#iam policy for KMS related to cloudtrail
 data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
   statement {
     sid     = "Enable IAM User Permissions"
