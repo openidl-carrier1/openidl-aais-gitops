@@ -16,15 +16,15 @@ module "aais_app_vpc" {
   enable_dhcp_options    = true
   enable_ipv6            = false
 
-  #manage_default_network_acl    = false
-  default_security_group_name   = "${local.std_name}-app-vpc-def-sg"
+  manage_default_network_acl    = false
+  default_security_group_name   = "${local.std_name}-app-vpc-default-sg"
   manage_default_security_group = true
   manage_default_route_table    = true
-  public_dedicated_network_acl  = true
-  private_dedicated_network_acl = true
+  public_dedicated_network_acl  = false
+  private_dedicated_network_acl = false
 
-  #default_network_acl_ingress    = var.default_nacl_rules["inbound"]
-  #default_network_acl_egress     = var.default_nacl_rules["outbound"]
+  default_network_acl_ingress    = var.default_nacl_rules["inbound"]
+  default_network_acl_egress     = var.default_nacl_rules["outbound"]
   public_inbound_acl_rules       = var.app_public_nacl_rules["inbound"]
   public_outbound_acl_rules      = var.app_public_nacl_rules["outbound"]
   private_inbound_acl_rules      = var.app_private_nacl_rules["inbound"]
@@ -70,14 +70,14 @@ module "aais_blk_vpc" {
   enable_ipv6            = false
 
   manage_default_network_acl    = false
-  default_security_group_name   = "${local.std_name}-blk-vpc-def-sg"
+  default_security_group_name   = "${local.std_name}-blk-vpc-default-sg"
   manage_default_security_group = true
   manage_default_route_table    = true
-  public_dedicated_network_acl  = true
-  private_dedicated_network_acl = true
+  public_dedicated_network_acl  = false
+  private_dedicated_network_acl = false
 
-  #default_network_acl_ingress    = var.default_nacl_rules["inbound"]
-  #default_network_acl_egress     = var.default_nacl_rules["outbound"]
+  default_network_acl_ingress    = var.default_nacl_rules["inbound"]
+  default_network_acl_egress     = var.default_nacl_rules["outbound"]
   public_inbound_acl_rules       = var.blk_public_nacl_rules["inbound"]
   public_outbound_acl_rules      = var.blk_public_nacl_rules["outbound"]
   private_inbound_acl_rules      = var.blk_private_nacl_rules["inbound"]

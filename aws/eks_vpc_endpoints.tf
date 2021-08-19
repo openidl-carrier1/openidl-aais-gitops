@@ -112,6 +112,7 @@ resource "aws_vpc_endpoint" "app_eks_app_mesh" {
   depends_on = [
     module.aais_app_vpc]
 }*/
+
 #blockchain cluster (eks) vpc endpoints
 resource "aws_vpc_endpoint" "blk_eks_s3" {
   vpc_id       = module.aais_blk_vpc.vpc_id
@@ -225,4 +226,5 @@ resource "aws_vpc_endpoint" "blk_eks_app_mesh" {
     "Cluster_type" = "blockchain"
   })
   depends_on = [module.aais_blk_vpc]
-}*/
+}
+*/

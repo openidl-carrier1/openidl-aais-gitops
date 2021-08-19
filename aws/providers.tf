@@ -9,6 +9,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.app_eks_cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.app_eks_cluster_auth.token
   load_config_file       = false
+
 }
 #provider for blockchain cluster
 provider "kubernetes" {
@@ -17,4 +18,5 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.blk_eks_cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.blk_eks_cluster_auth.token
   load_config_file       = false
+
 }

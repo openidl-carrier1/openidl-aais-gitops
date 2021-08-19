@@ -36,11 +36,12 @@ variable "aws_role_arn" {
 variable "default_nacl_rules" {
   type        = map(any)
   description = "The list of default access rules to be allowed"
-  default     = {}
+  default     = {inbound=[{}],outbound=[{}]}
 }
 variable "default_sg_rules" {
   type        = map(any)
   description = "The list of default traffic flow to be opened in security group"
+  default = {ingress=[{}],egress=[{}]}
 }
 variable "app_vpc_cidr" {
   description = "The VPC network CIDR Block to be created"
@@ -60,10 +61,12 @@ variable "app_public_subnets" {
 variable "app_public_nacl_rules" {
   type        = map(any)
   description = "The list of network access rules to be allowed for public subnets"
+  default     = { inbound = [{}], outbound = [{}] }
 }
 variable "app_private_nacl_rules" {
   type        = map(any)
   description = "The list of network access rules to be allowed for private subnets"
+  default     = { inbound = [{}], outbound = [{}] }
 }
 variable "blk_vpc_cidr" {
   description = "The VPC network CIDR Block to be created"
@@ -83,10 +86,12 @@ variable "blk_public_subnets" {
 variable "blk_public_nacl_rules" {
   type        = map(any)
   description = "The list of network access rules to be allowed for public subnets"
+  default     = { inbound = [{}], outbound = [{}] }
 }
 variable "blk_private_nacl_rules" {
   type        = map(any)
   description = "The list of network access rules to be allowed for private subnets"
+  default     = { inbound = [{}], outbound = [{}] }
 }
 #variables related to transit gateway
 variable "app_tgw_routes" {
@@ -141,6 +146,10 @@ variable "app_bastion_ssh_key" {
 variable "blk_bastion_ssh_key" {
   type        = string
   description = "The public ssh key to setup on the bastion host for remote ssh access"
+}
+variable "bastion_host_nlb_external" {
+  type = bool
+  description = "Do you want to set nlb for the bastion hosts in autoscaling group to be external"
 }
 #app cluster (eks) worker nodes application traffic specific SG
 variable "app_eks_workers_app_sg_ingress" {
@@ -286,7 +295,7 @@ variable "client_access_token_validity" {
   default     = 60
 }
 variable "email_sending_account" {
-  type = string
+  type        = string
   description = "The email sending account type. COGNITO_DEFAULT | DEVELOPER"
 }
 #aws cognito domain (default/custom) specific variables
@@ -414,6 +423,7 @@ variable "ses_email_identity" {
 variable "userpool_email_source_arn" {
   type        = string
   description = "The cognito ses email identity source arn"
+  default = ""
 }
 #------------------------------------------------------------------------------------------------------------------
 #Route53 related
@@ -628,7 +638,7 @@ variable "cw_logs_retention_period" {
   description = "The number of days to retain cloudwatch logs related to cloudtrail events"
 }
 variable "s3_bucket_name_cloudtrail" {
-  type = string
+  type        = string
   description = "The name of s3 bucket to store the cloudtrail logs"
 }
 

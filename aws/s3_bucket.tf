@@ -21,7 +21,6 @@ resource "aws_s3_bucket" "s3_bucket" {
       }
     }
   }
-  #depends_on = [aws_s3_bucket_policy.bucket_policy]
 }
 #blocking public access to s3 bucket
 resource "aws_s3_bucket_public_access_block" "s3_bucket_public_access_block" {

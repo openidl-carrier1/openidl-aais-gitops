@@ -17,13 +17,16 @@
     3) Iam role 
     4) SSH keys for bastion host
     5) SSH keys for eks worker nodes 
-    6) Email id configured in aws ses to use as an identity in aws cogntio
-    7) Email identity arn configured in ses that is used by aws cognito 
-    8) List of iam users will have access to aws eks
-    9) List of iam roles will have access to aws eks 
-    10) Enable SES service in the configured region to production state by moving out of sandbox. Please refer to documention link below..
-
-https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
+    6) List of IAM users to have aws eks access (if NONE, skip)
+    7) List of IAM roles to have aws eks access  (if NONE, skip)
+    8) Choose whether Cognito to use COGNITO_DEFAULT | DEVELOPER (SES) for emails
+    9) For COGNITO_DEFAULT, set email_sending_account = "COGNITO_DEFAULT" in inputfile
+    10) For SES, set email_sending_account = "DEVELOPER" and 
+        10.1) Select aws SES service in a region supported by Cognito (us-west-1|us-east-1|us-west-2)
+        10.2) Verify a valid email address that would be used from-to, reply-to email id
+        10.3) Submit a request to aws support to move the SES service that is preferred to move out of sandbox for production use. Refer to below link 
+    https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
+    11) Note down the verified email address in SES and the ARN of the verified email id 
 
 **Steps:**    
 1. Ensure that the aws iam user and iam role created during backend configuration are ready
@@ -48,12 +51,12 @@ List of sensitive data to configure as secrets under git environment section.
         9. blk_bastion_ssh_key
         10. app_eks_worker_nodes_ssh_key
         11. blk_eks_worker_nodes_ssh_key
-        12. ses_email_identity # ses email identity
-        13. userpool_email_source_arn # ses email identity arn
-        14. app_cluster_map_users
-        15. blk_cluster_map_users
-        16. app_cluster_map_roles
-        17. blk_cluster_map_roles 
+        12. ses_email_identity # Required only when email_sending_account = "DEVELOPER"
+        13. userpool_email_source_arn # Required only when email_sending_account = "DEVELOPER"
+        14. app_cluster_map_users # Required only if any IAM user required EKS access
+        15. blk_cluster_map_users # Required only if any IAM user required EKS access
+        16. app_cluster_map_roles # Required only if any IAM role required EKS access
+        17. blk_cluster_map_roles  # Required only if any IAM role required EKS access
 
 7. Clone the repository 
 8. Prepare input file for the specific node and specific environment. 
