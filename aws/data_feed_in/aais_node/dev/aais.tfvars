@@ -1,6 +1,7 @@
+#set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
+#example: aais/carr/anlt etc.,
 node_type = "aais" #set to aais|carr|anlt
 aws_env = "dev" #set to dev|test|prod
-
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
 app_vpc_cidr           = "172.16.0.0/16"
@@ -17,10 +18,10 @@ blk_private_subnets    = ["172.17.3.0/24", "172.17.4.0/24"]
 
 #--------------------------------------------------------------------------------------------------------------------
 #Bastion host specifications
-/*bastion hosts are placed behind nlb. These NLBs can be configured to be private | public to serve SSH.
-In any case whether the endpoint is private|public for an nlb, the source ip_address|cidr_block should be enabled
-in bastion hosts security group for ssh traffic
-*/
+#bastion hosts are placed behind nlb. These NLBs can be configured to be private | public to serve SSH.
+#In any case whether the endpoint is private|public for an nlb, the source ip_address|cidr_block should be enabled
+#in bastion hosts security group for ssh traffic
+
 bastion_host_nlb_external = "true"
 
 #application cluster bastion host specifications
