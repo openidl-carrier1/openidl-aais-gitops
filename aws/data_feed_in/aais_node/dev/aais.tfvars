@@ -1,3 +1,20 @@
+#set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
+#example: aais|carr|anlt etc.,
+aws_account_number = "577645632856"
+aws_user_arn = "arn:aws:iam::577645632856:user/terraform_user"
+aws_role_arn = "arn:aws:iam::577645632856:role/terraform_automation"
+aws_region = "us-east-2"
+app_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
+blk_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
+app_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
+blk_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
+ses_email_identity = ""
+userpool_email_source_arn = ""
+app_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
+blk_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
+app_cluster_map_roles = []
+blk_cluster_map_roles = []
+
 node_type = "aais" #set to aais|carr|anlt
 aws_env = "dev" #set to dev|test|prod
 
@@ -44,7 +61,7 @@ domain_info = {
   domain_registrar = "others", # alternate option: aws
   domain_name = "aaisdirect.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
-  app_sub_domain_name = "dev-openidl" , #subdomain mapped to app eks nlb
+  app_sub_domain_name = "openidl" , #subdomain mapped to app eks nlb
   blk_sub_domain_names = ["orderer0","orderer1","aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
   comments = "aais node public name resolutions"
 }
@@ -133,3 +150,38 @@ blk_cluster_service_ipv4_cidr = "172.21.0.0/16"
 #cloudtrail related
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-us-east-2"
+
+#--------------------------------------------------------------------------------------------------------------------
+
+#Default security group assigned/used when a resource is created without any security group attached
+default_sg_rules = {
+  ingress = [{
+    cidr_blocks = "172.17.0.0/16"
+    description = "Inbound SSH traffic"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "172.16.0.0/16"
+    description = "Inbound SSH traffic"
+    from_port   = "22"
+    to_port     = "22"
+    protocol    = "tcp"
+  }],
+  egress = [{
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
+  }]
+}
+#--------------------------------------------------------------------------------------------------------------------
