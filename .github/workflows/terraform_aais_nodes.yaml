@@ -99,6 +99,11 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+    - name: Turn the cluster to public
+      id: publiccluster
+      run: |
+        eksctl utils update-cluster-endpoints --cluster=aais-dev-app-cluster --private-access=true --public-access=true --approve
+        eksctl utils update-cluster-endpoints --cluster=aais-dev-blk-cluster --private-access=true --public-access=true --approve
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
@@ -265,6 +270,13 @@ jobs:
         #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
         if: github.ref == 'refs/heads/aais_test' && github.event_name == 'push'
         run: terraform apply -auto-approve -var-file=data_feed_in/aais_node/test/aais.tfvars
+
+      - name: Turn the cluster to private
+          id: publiccluster
+          run: |
+            eksctl utils update-cluster-endpoints --cluster=aais-dev-app-cluster --private-access=true --public-access=false --approve
+            eksctl utils update-cluster-endpoints --cluster=aais-dev-blk-cluster --private-access=true --public-access=false --approve
+
 
   aais_node_prod:
     environment: aais_prod
