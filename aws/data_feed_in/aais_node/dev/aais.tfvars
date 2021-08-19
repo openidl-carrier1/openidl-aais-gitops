@@ -1,3 +1,5 @@
+
+
 #set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
 #example: aais|carr|anlt etc.,
 node_type = "aais" #set to aais|carr|anlt
@@ -43,10 +45,10 @@ blk_bastion_sg_egress = [
 #Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
 domain_info = {
   domain_registrar = "others", # alternate option: aws
-  domain_name = "aaisdirect.com", #primary domain registered
+  domain_name = "travelers.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
   app_sub_domain_name = "openidl" , #subdomain mapped to app eks nlb
-  blk_sub_domain_names = ["orderer0","orderer1","aais-peer", "aais-ca"] #list of subdomain names mapped to blk eks nlb
+  blk_sub_domain_names = ["carrier"] #list of subdomain names mapped to blk eks nlb
   comments = "aais node public name resolutions"
 }
 
@@ -97,6 +99,20 @@ app_eks_workers_app_sg_ingress = [
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.17.0.0/16"
+},
+  {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.16.0.0/16"
+  },
+   {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.17.0.0/16"
 }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -115,6 +131,20 @@ blk_eks_workers_app_sg_ingress = [
     protocol = "tcp"
     description = "inbound https traffic"
     cidr_blocks = "172.16.0.0/16"
+},
+  {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.16.0.0/16"
+  },
+   {
+    from_port = 8443
+    to_port = 8443
+    protocol = "tcp"
+    description = "inbound https traffic"
+    cidr_blocks = "172.17.0.0/16"
 }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -136,7 +166,6 @@ cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-us-east-2"
 
 #--------------------------------------------------------------------------------------------------------------------
-
 #Default security group assigned/used when a resource is created without any security group attached
 default_sg_rules = {
   ingress = [{
@@ -165,6 +194,13 @@ default_sg_rules = {
     description = "Outbound SSH traffic"
     from_port   = "443"
     to_port     = "443"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "8443"
+    to_port     = "8443"
     protocol    = "tcp"
   }]
 }
