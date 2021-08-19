@@ -130,6 +130,11 @@ module "app_bastion_host_asg" {
         volume_type           = var.root_block_device_volume_type
       }
   }]
+  metadata_options = {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 5
+  }
   tags_as_map = merge(
     local.tags,
     {
@@ -267,6 +272,11 @@ module "blk_bastion_host_asg" {
         volume_type           = var.root_block_device_volume_type
       }
   }]
+  metadata_options = {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 5
+  }
   tags_as_map = merge(
     local.tags,
     {
