@@ -10,6 +10,7 @@ resource "aws_route53_zone" "zones" {
       "Cluster_type" = "application"
   }, )
 }
+/*
 #adding route53 entry in the hosted zone when domain is already registered in aws route53 for app cluster NLB
 resource "aws_route53_record" "app_nlb_r53_record_registered_in_aws" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
@@ -58,6 +59,8 @@ resource "aws_route53_record" "blk_nlb_r53_record_new_entry" {
     evaluate_target_health = true
   }
 }
+*/
+#--------------------------------
 #adding route53 entry in the hosted zone when domain is already registered in aws route53 for app vpc nlb fronting bastion host
 resource "aws_route53_record" "app_nlb_bastion_r53_record_registered_in_aws" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0

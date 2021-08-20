@@ -21,23 +21,12 @@ output "blk_bastion_nlb_fqdn" {
   value = module.blk_bastion_nlb.lb_dns_name
 }
 #-----------------------------------------------------------------------------------------------------------------
-#application cluster public facing network load balancer fqdn
-output "app_eks_nlb_fqdn" {
-  value = module.app_eks_nlb.lb_dns_name
-}
-#blockchain cluster internal facing network load balancer fqdn
-output "blk_eks_nlb_public_fqdn" {
-  value = module.blk_eks_nlb_public.lb_dns_name
-}
-output "blk_eks_nlb_private_fqdn" {
-  value = module.blk_eks_nlb_private.lb_dns_name
-}
-#-----------------------------------------------------------------------------------------------------------------
 #Route 53 hosted zones and endpoint information
 output "aws_name_servers" {
   value       = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
   description = "The list of name servers to be added into the registered domain with 3rd party registrar"
 }
+/*
 output "route53_private_blk_nlb_internal_dns_mappings" {
   value = aws_route53_record.aais_private_records[*].fqdn
 }
@@ -53,6 +42,7 @@ output "route53_public_blk_nlb_external_dns_mapping" {
 output "route53_public_blk_nlb_external_dns_map" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.blk_nlb_r53_record_new_entry[*].fqdn : null
 }
+*/
 #bastion host route53 related
 output "route53_private_app_nlb_bastion_fqdn" {
   value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_app_nlb_bastion[0].fqdn

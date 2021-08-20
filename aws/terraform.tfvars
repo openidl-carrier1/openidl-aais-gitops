@@ -62,41 +62,6 @@ eks_wg_ebs_volume_type      = "gp2"
 eks_wg_ebs_vol_encrypted    = true
 eks_wg_health_check_type    = "EC2"
 
-#Default security group assigned/used when a resource is created without any security group attached
-default_sg_rules = {
-  ingress = [{
-    cidr_blocks = "172.17.0.0/16"
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "172.16.0.0/16"
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  }],
-  egress = [{
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "80"
-    to_port     = "80"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  }]
-}
-#--------------------------------------------------------------------------------------------------------------------
-
-
-
 
 
 

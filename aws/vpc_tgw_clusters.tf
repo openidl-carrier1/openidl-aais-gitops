@@ -29,8 +29,8 @@ module "aais_app_vpc" {
   public_outbound_acl_rules      = var.app_public_nacl_rules["outbound"]
   private_inbound_acl_rules      = var.app_private_nacl_rules["inbound"]
   private_outbound_acl_rules     = var.app_private_nacl_rules["outbound"]
-  default_security_group_egress  = var.default_sg_rules["egress"]
-  default_security_group_ingress = var.default_sg_rules["ingress"]
+  default_security_group_egress  = local.def_sg_egress
+  default_security_group_ingress = local.app_def_sg_ingress
 
   default_route_table_tags             = { DefaultRouteTable = true }
   enable_flow_log                      = true
@@ -82,8 +82,8 @@ module "aais_blk_vpc" {
   public_outbound_acl_rules      = var.blk_public_nacl_rules["outbound"]
   private_inbound_acl_rules      = var.blk_private_nacl_rules["inbound"]
   private_outbound_acl_rules     = var.blk_private_nacl_rules["outbound"]
-  default_security_group_egress  = var.default_sg_rules["egress"]
-  default_security_group_ingress = var.default_sg_rules["ingress"]
+  default_security_group_egress  = local.def_sg_egress
+  default_security_group_ingress = local.blk_def_sg_ingress
 
   default_route_table_tags             = { DefaultRouteTable = true }
   enable_flow_log                      = true
@@ -107,7 +107,7 @@ module "aais_blk_vpc" {
 #setting up transit gateway to use with app_vpc and blk_vpc
 module "transit_gateway" {
   depends_on                            = [module.aais_app_vpc, module.aais_blk_vpc]
-  source                                = "./transit-gateway"
+  source                                = "./modules/transit-gateway"
   create_tgw                            = true
   share_tgw                             = false
   name                                  = "${local.std_name}-central-tgw"
