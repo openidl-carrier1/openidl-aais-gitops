@@ -1,4 +1,3 @@
-
 #set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
 #example: aais|carr|anlt etc.,
 node_type = "aais" #set to aais|carr|anlt
@@ -27,7 +26,7 @@ bastion_host_nlb_external = "true"
 
 #application cluster bastion host specifications
 app_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"}]
-app_bastion_sg_egress =   [
+app_bastion_sg_egress  =   [
   {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
   {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
   {rule="ssh-tcp", cidr_blocks = "172.16.0.0/16"}] #additional ip_address|cidr_block should be included for ssh
@@ -35,7 +34,7 @@ app_bastion_sg_egress =   [
 #blockchain cluster bastion host specifications
 #bastion host security specifications
 blk_bastion_sg_ingress =  [{rule="ssh-tcp", cidr_blocks = "172.17.0.0/16"},]
-blk_bastion_sg_egress = [
+blk_bastion_sg_egress  = [
   {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
   {rule="http-80-tcp", cidr_blocks = "0.0.0.0/0"},
   {rule="ssh-tcp", cidr_blocks = "172.17.0.0/16"}] #additional ip_address|cidr_block should be included for ssh
@@ -46,14 +45,14 @@ domain_info = {
   domain_registrar = "others", # alternate option: aws
   domain_name = "aaisdirect.com", #primary domain registered
   registered = "yes" #registered already: yes, otherwise: no
-  app_sub_domain_name = "openidl" , #subdomain mapped to app eks nlb
-  blk_sub_domain_names = ["ordererorg"] #list of subdomain names mapped to blk eks nlb
+  app_sub_domain = "openidl" , #subdomain mapped to app eks nlb
+  blk_sub_domain = ["ordererorg"] #list of subdomain names mapped to blk eks nlb
   comments = "aais node public name resolutions"
 }
 
 #Route53 (PRIVATE) DNS resolution related specifications
 #internal name resolution required for blockchain vpc NLB
-internal_domain = "internal.aaisdirect.com" #internal domain name for internal name resolution within vpcs
+internal_domain    = "internal.aaisdirect.com" #internal domain name for internal name resolution within vpcs
 internal_subdomain = ["ordererorg-net", "ordererorg"] #list of subdomains for internal resolution within vpcs
 
 #-------------------------------------------------------------------------------------------------------------------
@@ -78,10 +77,10 @@ client_app_name              = "openidl-client"
 client_callback_urls         = ["https://dev-openidl.aaisdirect.com/callback", "https://dev-openidl.aaisdirect.com/redirect"]
 client_default_redirect_url  = "https://dev-openidl.aaisdirect.com/redirect"
 client_logout_urls           = ["https://dev-openidl.aaisdirect.com/signout"]
-cognito_domain               = "aaisdirect"
-email_sending_account        = "COGNITO_DEFAULT" #alternate input is "DEVELOPER". This uses SES service.
-# when set to DEVELOPER, please ensure ses_email_identity and userpool_email_source_arn are setup as secrets in github
-
+cognito_domain               = "aaisdirect" #unique domain name
+email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
+# COGNITO_DEFAULT - Uses cognito default and SES related inputs goes to empty in git secrets
+# DEVELOPER - Ensure inputs ses_email_identity and userpool_email_source_arn are setup in git secrets
 #--------------------------------------------------------------------------------------------------------------------
 #application specific traffic to be allowed in app cluster worker nodes
 app_eks_workers_app_sg_ingress = [
@@ -164,4 +163,3 @@ blk_cluster_service_ipv4_cidr = "172.21.0.0/16"
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-us-east-2"
 
-#--------------------------------------------------------------------------------------------------------------------

@@ -87,12 +87,61 @@ locals {
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
+  },
+  {
+    cidr_blocks = var.app_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = var.app_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "8443"
+    to_port     = "8443"
+    protocol    = "tcp"
   }]
   blk_def_sg_ingress = [{
     cidr_blocks = var.blk_vpc_cidr
     description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
+    from_port   = "21"
+    to_port     = "21"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = var.blk_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = var.blk_vpc_cidr
+    description = "Inbound SSH traffic"
+    from_port   = "8443"
+    to_port     = "8443"
+    protocol    = "tcp"
+  }]
+  def_sg_egress = [{
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "80"
+    to_port     = "80"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "443"
+    to_port     = "443"
+    protocol    = "tcp"
+  },
+  {
+    cidr_blocks = "0.0.0.0/0"
+    description = "Outbound SSH traffic"
+    from_port   = "8443"
+    to_port     = "8443"
     protocol    = "tcp"
   }]
 }
