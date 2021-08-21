@@ -13,3 +13,4 @@ aws_external_id = "<external id used during iam credentials setup>"
 tf_backend_s3_bucket = "<globally unique s3 bucket name>"
 #Name of the dynamoDB table to manage terraform state files if required to have state locking
 tf_backend_dynamodb_table = "<dynamodb table name>"
+
