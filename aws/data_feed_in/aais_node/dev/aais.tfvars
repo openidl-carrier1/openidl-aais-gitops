@@ -63,12 +63,6 @@ domain_info = {
   app_sub_domain_name = "openidl" , #subdomain mapped to app eks nlb
   comments = "aais node public name resolutions"
 }
-
-#Route53 (PRIVATE) DNS resolution related specifications
-#internal name resolution required for blockchain vpc NLB
-internal_domain    = "internal.aaisdirect.com" #internal domain name for internal name resolution within vpcs
-internal_subdomain = ["ordererorg-net", "ordererorg"] #list of subdomains for internal resolution within vpcs
-
 #-------------------------------------------------------------------------------------------------------------------
 #Transit gateway  specifications
 tgw_amazon_side_asn = "64532" #default is 64532.
