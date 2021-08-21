@@ -144,4 +144,9 @@ locals {
     to_port     = "8443"
     protocol    = "tcp"
   }]
+  node_type = {
+    aais = "aais"
+    carr = "carrier"
+    anlt = "analytics"
+  }
 }
