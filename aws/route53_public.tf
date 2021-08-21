@@ -34,33 +34,6 @@ resource "aws_route53_record" "app_nlb_r53_record_new_entry" {
     evaluate_target_health = true
   }
 }
-/*
-#adding route53 entry in the hosted zone when domain is already registered in aws route53 for blk cluster NLB
-resource "aws_route53_record" "blk_nlb_r53_record_registered_in_aws" {
-  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? length(var.domain_info.blk_sub_domain_names) : 0
-  zone_id = data.aws_route53_zone.data_zones[0].id
-  name    = "${var.aws_env}-${var.domain_info.blk_sub_domain_names[count.index]}.${data.aws_route53_zone.data_zones[0].name}"
-  type    = "A"
-  alias {
-    name                   = module.blk_eks_nlb_public.lb_dns_name
-    zone_id                = module.blk_eks_nlb_public.lb_zone_id
-    evaluate_target_health = true
-  }
-}
-#adding route53 entry in the hosted zone when domain is yet to register in aws or registered outside for blk cluster NLB
-resource "aws_route53_record" "blk_nlb_r53_record_new_entry" {
-  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? length(var.domain_info.blk_sub_domain_names) : 0
-  zone_id = aws_route53_zone.zones[0].id
-  name    = "${var.aws_env}-${var.domain_info.blk_sub_domain_names[count.index]}.${aws_route53_zone.zones[0].name}"
-  type    = "A"
-  alias {
-    name                   = module.blk_eks_nlb_public.lb_dns_name
-    zone_id                = module.blk_eks_nlb_public.lb_zone_id
-    evaluate_target_health = true
-  }
-}
-*/
-#--------------------------------
 #adding route53 entry in the hosted zone when domain is already registered in aws route53 for app vpc nlb fronting bastion host
 resource "aws_route53_record" "app_nlb_bastion_r53_record_registered_in_aws" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
