@@ -1,6 +1,6 @@
 #creating private hosted zones for internal vpc dns resolution
 resource "aws_route53_zone" "aais_private_zones" {
-  name    = var.internal_domain
+  name    = "internal.${var.domain_info.domain_name}"
   comment = "Private hosted zones for dns resolution"
   vpc {
     vpc_id = module.aais_app_vpc.vpc_id
@@ -11,7 +11,7 @@ resource "aws_route53_zone" "aais_private_zones" {
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-var.internal_domain"
+      "Name"         = "${local.std_name}-internal.${var.domain_info.domain_name}"
       "Cluster_type" = "both"
   },)
 }
@@ -39,20 +39,6 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
     evaluate_target_health = true
   }
 }
-#setting up dns entries for blk eks private nlb
-/*
-resource "aws_route53_record" "aais_private_records" {
-  count = length(var.internal_subdomain)
-  #for_each = toset(var.internal_subdomain)
-  zone_id = aws_route53_zone.aais_private_zones.zone_id
-  name    = "${var.aws_env}-${var.internal_subdomain[count.index]}"
-  type    = "A"
-  alias {
-    name                   = module.blk_eks_nlb_private.lb_dns_name
-    zone_id                = module.blk_eks_nlb_private.lb_zone_id
-    evaluate_target_health = true
-  }
-}
-*/#include entries for all appnlb, blknlb
+
 
 

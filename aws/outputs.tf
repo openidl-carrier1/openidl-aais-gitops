@@ -13,14 +13,6 @@ output "cognito_client_secret" {
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
-#bastion host nlb fqdn
-output "app_bastion_nlb_fqdn" {
-  value = module.app_bastion_nlb.lb_dns_name
-}
-output "blk_bastion_nlb_fqdn" {
-  value = module.blk_bastion_nlb.lb_dns_name
-}
-#-----------------------------------------------------------------------------------------------------------------
 #Route 53 hosted zones and endpoint information
 output "aws_name_servers" {
   value       = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
@@ -44,22 +36,22 @@ output "route53_public_blk_nlb_external_dns_map" {
 }
 */
 #bastion host route53 related
-output "route53_private_app_nlb_bastion_fqdn" {
+output "app_bastion_nlb_private_endpoint" {
   value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_app_nlb_bastion[0].fqdn
 }
-output "route53_private_blk_nlb_bastion_fqdn" {
+output "blk_bastion_nlb_private_endpoint" {
   value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_blk_nlb_bastion[0].fqdn
 }
-output "route53_public_app_nlb_bastion_dns_mapping" {
+output "app_bastion_nlb_public_endpoint" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.app_nlb_bastion_r53_record_registered_in_aws[0].fqdn : null
 }
-output "route53_public_app_nlb_bastion_dns_map" {
+output "app_bastion_host_nlb_public_endpoint" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_bastion_r53_record_new_entry[0].fqdn : null
 }
-output "route53_public_blk_nlb_bastion_dns_mapping" {
+output "blk_bastion_nlb_public_endpoint" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.blk_nlb_bastion_r53_record_registered_in_aws[0].fqdn : null
 }
-output "route53_public_blk_nlb_bastion_dns_map" {
+output "blk_bastion_host_nlb_public_endpoint" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.blk_nlb_bastion_r53_record_new_entry[0].fqdn : null
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -86,5 +78,11 @@ output "blk_cluster_application_specific_traffic_rules_sec_group" {
 output "cloudtrail_s3_bucket_name" {
   value = aws_s3_bucket.s3_bucket.bucket
 }
-
+#application dns endpoint
+output "application_UI_endpoint" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_new_entry[0].fqdn : null
+}
+output "application_user_interface_endpoint" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.app_nlb_r53_record_registered_in_aws[0].fqdn : null
+}
 

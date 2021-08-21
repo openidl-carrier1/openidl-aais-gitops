@@ -1,5 +1,6 @@
 resource "helm_release" "app_haproxy" {
-  provider = helm.app-eks
+  depends_on = [module.app_eks_cluster]
+  provider = helm.app_cluster
   cleanup_on_fail = true
   create_namespace = true
   name = "haproxy-ingress"
@@ -8,7 +9,8 @@ resource "helm_release" "app_haproxy" {
   values = ["${file("resources/helm/haproxy/values.yaml")}"]
 }
 resource "helm_release" "blk_haproxy" {
-  provider = helm.blk-eks
+  depends_on = [module.blk_eks_cluster]
+  provider = helm.blk_cluster
   cleanup_on_fail = true
   create_namespace = true
   name = "haproxy-ingress"
