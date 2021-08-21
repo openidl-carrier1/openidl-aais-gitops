@@ -105,8 +105,8 @@ locals {
   blk_def_sg_ingress = [{
     cidr_blocks = var.blk_vpc_cidr
     description = "Inbound SSH traffic"
-    from_port   = "21"
-    to_port     = "21"
+    from_port   = "22"
+    to_port     = "22"
     protocol    = "tcp"
   },
   {

@@ -10,18 +10,18 @@ resource "aws_s3_bucket" "tf_s3_bucket" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm = "aws:kms"
-        kms_master_key_id = aws_kms_key.kms_key_tf_s3_bucket.id
+        kms_master_key_id = aws_kms_key.tf_kms_key_s3_bucket.id
       }
     }
   }
 }
-resource "aws_s3_bucket_public_access_block" "s3_bucket_publicaccess_block" {
+resource "aws_s3_bucket_public_access_block" "tf_s3_bucket_public_access_block" {
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
   bucket = aws_s3_bucket.tf_s3_bucket.id
-  depends_on = [aws_s3_bucket.tf_s3_bucket,aws_s3_bucket_policy.bucket_policy]
+  depends_on = [aws_s3_bucket.tf_s3_bucket,aws_s3_bucket_policy.tf_bucket_policy]
 }
 resource "aws_dynamodb_table" "tf_state_lock" {
   name = var.tf_backend_dynamodb_table
@@ -41,7 +41,7 @@ resource "aws_dynamodb_table" "tf_state_lock" {
     enabled = true
   }
 }
-resource "aws_s3_bucket_policy" "bucket_policy"{
+resource "aws_s3_bucket_policy" "tf_bucket_policy"{
   bucket = aws_s3_bucket.tf_s3_bucket.id
   depends_on = [aws_s3_bucket.tf_s3_bucket]
   policy = jsonencode({
@@ -72,7 +72,7 @@ resource "aws_s3_bucket_policy" "bucket_policy"{
     ]
   })
 }
-resource "aws_kms_key" "kms_key_tf_s3_bucket" {
+resource "aws_kms_key" "tf_kms_key_s3_bucket" {
   description = "The KMS key used to encrypt S3 bucket managed to handle terraform.state files"
   deletion_window_in_days = 30
   key_usage = "ENCRYPT_DECRYPT"
@@ -151,8 +151,8 @@ resource "aws_kms_key" "kms_key_tf_s3_bucket" {
     ]
   })
 }
-resource "aws_kms_alias" "alias" {
+resource "aws_kms_alias" "tf_alias" {
   name          = "alias/${var.tf_backend_s3_bucket}"
-  target_key_id = aws_kms_key.kms_key_tf_s3_bucket.id
+  target_key_id = aws_kms_key.tf_kms_key_s3_bucket.id
 }
 

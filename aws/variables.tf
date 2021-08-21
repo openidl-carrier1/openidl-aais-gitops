@@ -622,16 +622,6 @@ variable "blk_cluster_map_users" {
   default     = []
 }
 #-------------------------------------------------------------------------------------------------------------------
-#internal route53 hosted zones related
-variable "internal_domain" {
-  type        = string
-  description = "The internal domain name to use for private hosted zones for managing app and blk cluster"
-}
-variable "internal_subdomain" {
-  type        = list(any)
-  description = "The list of internal dns records to be created"
-}
-#-------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 variable "cw_logs_retention_period" {
   type        = number
