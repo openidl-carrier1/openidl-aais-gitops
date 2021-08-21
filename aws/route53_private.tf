@@ -43,7 +43,7 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
 resource "aws_route53_record" "private_databases" {
   for_each = toset(["couchdb", "mongodb"])
   zone_id = aws_route53_zone.aais_private_zones.zone_id
-  name = var.aws_env != "prod" ? "${var.aws_env}-${each.value}-${lookup(local.node_type, var.node_type)}-internal.${var.domain_info.domain_name}" : "${each.value}-${lookup(local.node_type, var.node_type)}-internal.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-${each.value}-${lookup(local.node_type, var.node_type)}" : "${each.value}-${lookup(local.node_type, var.node_type)}"
   type    = "A"
   alias {
     name                   = data.aws_alb.app_nlb.dns_name
@@ -54,7 +54,7 @@ resource "aws_route53_record" "private_databases" {
 #setting up private dns entries for vault
 resource "aws_route53_record" "private_vault" {
   zone_id = aws_route53_zone.aais_private_zones.zone_id
-  name = var.aws_env != "prod" ? "${var.aws_env}-vault-${lookup(local.node_type, var.node_type)}-internal.${var.domain_info.domain_name}" : "vault-${lookup(local.node_type, var.node_type)}-internal.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-vault-${lookup(local.node_type, var.node_type)}" : "vault-${lookup(local.node_type, var.node_type)}"
   type    = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -62,5 +62,6 @@ resource "aws_route53_record" "private_vault" {
     evaluate_target_health = true
   }
 }
-#setting up ordererorg and ordererorg.net for aais node
+#yet to complete ordererorg, ordererorg-net, node-type-net for public and private 
+
 
