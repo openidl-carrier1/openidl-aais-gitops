@@ -64,8 +64,8 @@ resource "aws_route53_record" "private_vault" {
 }
 #setting up private dns entries on aais nodes specific
 resource "aws_route53_record" "private_aais" {
-  for_each = {for k in ["ordererorg", "ordererorg-net.orderorg"] : k => k if var.node_type == "aais" }
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-${each.value}.${var.domain_info.domain_name}" : "*.${each.value}.${var.domain_info.domain_name}"
+  for_each = {for k in ["ordererorg", "ordererorg-net.ordererorg"] : k => k if var.node_type == "aais" }
+  name = var.aws_env != "prod" ? "*.${var.aws_env}-${each.value}" : "*.${each.value}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id
   alias {
@@ -76,7 +76,7 @@ resource "aws_route53_record" "private_aais" {
 }
 #setting up private dns entries common for all node types
 resource "aws_route53_record" "private_common" {
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "*.${var.aws_env}-${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id
   alias {
