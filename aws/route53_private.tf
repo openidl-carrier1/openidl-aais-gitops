@@ -62,6 +62,28 @@ resource "aws_route53_record" "private_vault" {
     evaluate_target_health = true
   }
 }
-#yet to complete ordererorg, ordererorg-net, node-type-net for public and private 
+#setting up private dns entries on aais nodes specific
+resource "aws_route53_record" "private_aais" {
+  for_each = {for k in ["ordererorg", "ordererorg-net.orderorg"] : k => k if var.node_type == "aais" }
+  name = var.aws_env != "prod" ? "*.${var.aws_env}-${each.value}.${var.domain_info.domain_name}" : "*.${each.value}.${var.domain_info.domain_name}"
+  type = "A"
+  zone_id = aws_route53_zone.aais_private_zones.zone_id
+  alias {
+    evaluate_target_health = true
+    name = data.aws_alb.blk_nlb.dns_name
+    zone_id = data.aws_alb.blk_nlb.zone_id
+  }
+}
+#setting up private dns entries common for all node types
+resource "aws_route53_record" "private_common" {
+  name = var.aws_env != "prod" ? "*.${var.aws_env}-${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
+  type = "A"
+  zone_id = aws_route53_zone.aais_private_zones.zone_id
+  alias {
+    evaluate_target_health = true
+    name = data.aws_alb.blk_nlb.dns_name
+    zone_id = data.aws_alb.blk_nlb.zone_id
+  }
+}
 
 

@@ -31,7 +31,7 @@ module "app_eks_cluster" {
   cluster_version                                    = var.app_cluster_version
   subnets                                            = module.aais_app_vpc.private_subnets
   vpc_id                                             = module.aais_app_vpc.vpc_id
-  write_kubeconfig                                   = true
+  write_kubeconfig                                   = false
   cluster_service_ipv4_cidr                          = var.app_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
   cluster_endpoint_private_access                    = var.cluster_endpoint_private_access
@@ -175,7 +175,7 @@ module "blk_eks_cluster" {
   cluster_version                                    = var.blk_cluster_version
   subnets                                            = module.aais_blk_vpc.private_subnets
   vpc_id                                             = module.aais_blk_vpc.vpc_id
-  write_kubeconfig                                   = true
+  write_kubeconfig                                   = false
   cluster_service_ipv4_cidr                          = var.blk_cluster_service_ipv4_cidr
   kubeconfig_output_path                             = var.kubeconfig_output_path
   cluster_endpoint_private_access                    = var.cluster_endpoint_private_access
