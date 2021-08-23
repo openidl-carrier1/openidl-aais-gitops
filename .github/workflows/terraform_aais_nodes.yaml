@@ -100,7 +100,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${aws_input_bucket}/dev/aais.tfvars aais_dev.tfvars
+        aws s3 cp s3://${{env.aws_input_bucket}}/aais_node/dev/aais.tfvars aais_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
