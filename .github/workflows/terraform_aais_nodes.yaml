@@ -64,6 +64,7 @@ jobs:
       TF_VAR_aws_access_key: ${{ secrets.aws_access_key }}
       TF_VAR_aws_secret_key: ${{ secrets.aws_secret_key }}
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
+      aws_input_bucket : ${{ secrets.aws_input_bucket }}
 
 
     steps:
@@ -99,7 +100,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-        aws s3 cp s3://${{ secrets.aws_input_bucket }}/dev/aais.tfvars aais_dev.tfvars
+        aws s3 cp s3://${ env.aws_input_bucket }/dev/aais.tfvars aais_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
