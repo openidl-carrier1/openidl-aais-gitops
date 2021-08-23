@@ -64,6 +64,7 @@ jobs:
       TF_VAR_aws_access_key: ${{ secrets.aws_access_key }}
       TF_VAR_aws_secret_key: ${{ secrets.aws_secret_key }}
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
+      aws_input_bucket : ${{ secrets.aws_input_bucket }}
 
     steps:
      # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
@@ -98,6 +99,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/local/bin
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/dev/analytics.tfvars analytics_dev.tfvars
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
@@ -139,7 +141,7 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
     # env:
-      run: terraform plan -var-file=data_feed_in/analytics_node/dev/analytics.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
+      run: terraform plan -var-file=analytics_dev.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
       continue-on-error: true
 
     - name: Terraform Plan Status
@@ -151,7 +153,7 @@ jobs:
       id: apply
       #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
       if: github.ref == 'refs/heads/analytics_dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=data_feed_in/analytics_node/dev/analytics.tfvars
+      run: terraform apply -auto-approve -var-file=analytics_dev.tfvars
 
   anlytics_node_test:
     environment: analytics_test
@@ -177,6 +179,7 @@ jobs:
       TF_VAR_aws_access_key: ${{ secrets.aws_access_key }}
       TF_VAR_aws_secret_key: ${{ secrets.aws_secret_key }}
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
+      aws_input_bucket : ${{ secrets.aws_input_bucket }}
 
     steps:
       # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
@@ -211,6 +214,7 @@ jobs:
           sudo mv /tmp/eksctl /usr/local/bin
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/test/analytics.tfvars analytics_test.tfvars
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -252,7 +256,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         # env:
-        run: terraform plan -var-file=data_feed_in/analytics_node/test/analytics.tfvars -out=test_plan.out && terraform show -json test_plan.out > test_plan.out.json
+        run: terraform plan -var-file=analytics_test.tfvars -out=test_plan.out && terraform show -json test_plan.out > test_plan.out.json
         continue-on-error: true
 
       - name: Terraform Plan Status
@@ -264,7 +268,7 @@ jobs:
         id: apply
         #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
         if: github.ref == 'refs/heads/analytics_test' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var-file=data_feed_in/analytics_node/test/analytics.tfvars
+        run: terraform apply -auto-approve -var-file=analytics_test.tfvars
 
   analytics_node_prod:
     environment: analytics_prod
@@ -290,6 +294,7 @@ jobs:
       TF_VAR_aws_access_key: ${{ secrets.aws_access_key }}
       TF_VAR_aws_secret_key: ${{ secrets.aws_secret_key }}
       TF_VAR_aws_external_id: ${{ secrets.aws_external_id }}
+      aws_input_bucket : ${{ secrets.aws_input_bucket }}
 
     steps:
       # Option:1 Configuring aws cli utilizing secrets from GIT SECRETS
@@ -324,6 +329,7 @@ jobs:
           sudo mv /tmp/eksctl /usr/local/bin
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          aws s3 cp s3://${{env.aws_input_bucket}}/analytics_node/prod/analytics.tfvars analytics_prod.tfvars
 
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
@@ -365,7 +371,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         # env:
-        run: terraform plan -var-file=data_feed_in/analytics_node/prod/analytics.tfvars -out=prod_plan.out && terraform show -json prod_plan.out > prod_plan.out.json
+        run: terraform plan -var-file=analytics_prod.tfvars -out=prod_plan.out && terraform show -json prod_plan.out > prod_plan.out.json
         continue-on-error: true
 
       - name: Terraform Plan Status
@@ -377,5 +383,5 @@ jobs:
         id: apply
         #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
         if: github.ref == 'refs/heads/analytics_prod' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var-file=data_feed_in/analytics_node/prod/analytics.tfvars
+        run: terraform apply -auto-approve -var-file=analytics_prod.tfvars
 
