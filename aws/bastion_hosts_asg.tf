@@ -2,7 +2,6 @@
 #security group for the bastion hosts in application cluster vpc
 module "app_bastion_sg" {
   depends_on = [module.aais_app_vpc]
-  #for_each = {for k,v in local.bastion_sgs : k => v}
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-app-bastion-hosts-sg"
   description              = "Security group associated with app cluster bastion host"
@@ -34,7 +33,6 @@ module "app_bastion_nlb" {
   source     = "terraform-aws-modules/alb/aws"
   version    = "~> 6.0"
   name       = "${local.std_name}-app-bastion-hosts-nlb"
-  #name = local.app_bastion_nlb_name
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
@@ -145,7 +143,6 @@ module "app_bastion_host_asg" {
 #security group for the bastion hosts in blockchain cluster vpc
 module "blk_bastion_sg" {
   depends_on = [module.aais_blk_vpc]
-  #for_each = {for k,v in local.bastion_sgs : k => v}
   source                   = "terraform-aws-modules/security-group/aws"
   name                     = "${local.std_name}-blk-bastion-hosts-sg"
   description              = "Security group associated with blk cluster bastion host"

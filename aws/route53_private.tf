@@ -1,5 +1,5 @@
-#creating private hosted zones for internal vpc dns resolution
-resource "aws_route53_zone" "aais_private_zones" {
+#creating private hosted zones for internal vpc dns resolution - databases and vault
+resource "aws_route53_zone" "aais_private_zones_internal" {
   name    = "internal.${var.domain_info.domain_name}"
   comment = "Private hosted zones for dns resolution"
   vpc {
@@ -12,6 +12,23 @@ resource "aws_route53_zone" "aais_private_zones" {
     local.tags,
     {
       "Name"         = "${local.std_name}-internal.${var.domain_info.domain_name}"
+      "Cluster_type" = "both"
+  },)
+}
+#creating private hosted zones for internal vpc dns resolution - others
+resource "aws_route53_zone" "aais_private_zones" {
+  name    = "${var.domain_info.domain_name}"
+  comment = "Private hosted zones for dns resolution"
+  vpc {
+    vpc_id = module.aais_app_vpc.vpc_id
+  }
+  vpc {
+    vpc_id = module.aais_blk_vpc.vpc_id
+  }
+  tags = merge(
+    local.tags,
+    {
+      "Name"         = "${local.std_name}-${var.domain_info.domain_name}"
       "Cluster_type" = "both"
   },)
 }
@@ -42,7 +59,7 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
 #setting up private dns entries for couchdb and mongodb
 resource "aws_route53_record" "private_databases" {
   for_each = toset(["couchdb", "mongodb"])
-  zone_id = aws_route53_zone.aais_private_zones.zone_id
+  zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
   name = var.aws_env != "prod" ? "${var.aws_env}-${each.value}-${lookup(local.node_type, var.node_type)}" : "${each.value}-${lookup(local.node_type, var.node_type)}"
   type    = "A"
   alias {
@@ -53,7 +70,7 @@ resource "aws_route53_record" "private_databases" {
 }
 #setting up private dns entries for vault
 resource "aws_route53_record" "private_vault" {
-  zone_id = aws_route53_zone.aais_private_zones.zone_id
+  zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
   name = var.aws_env != "prod" ? "${var.aws_env}-vault-${lookup(local.node_type, var.node_type)}" : "vault-${lookup(local.node_type, var.node_type)}"
   type    = "A"
   alias {
