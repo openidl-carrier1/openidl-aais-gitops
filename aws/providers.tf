@@ -13,8 +13,6 @@ provider "kubernetes" {
     api_version = "client.authentication.k8s.io/v1alpha1"
     args        = ["eks", "get-token", "--cluster-name", "${data.aws_eks_cluster.app_eks_cluster.name}"]
     command     = "aws"
-    #args        = ["token", "-i", "${data.aws_eks_cluster.app_eks_cluster}"]
-    #command     = "aws-iam-authenticator"
   }
 
 }
