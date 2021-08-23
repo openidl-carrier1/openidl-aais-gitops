@@ -1,18 +1,3 @@
-aws_account_number = "577645632856"
-aws_user_arn = "arn:aws:iam::577645632856:user/terraform_user"
-aws_role_arn = "arn:aws:iam::577645632856:role/terraform_automation"
-aws_region = "us-east-2"
-app_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-blk_bastion_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-app_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-blk_eks_worker_nodes_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDYd94qYsR5MjO2ERHfzX6nY0pfTrZckwcVBXKpfdpjrQDI2GgraeWquDi3HEqbpyXxGKR4Cx5htG5k12IXZonpkAinXqtaAeFQicmQ/t0T/i9mx26DkyUKn2r8HSnzUIn+eFOmJbKCbyPdZ48G5GlKv6Ylagh7+ZQqSCImTiFpQkxFDmPLBtk6FhXfxRSLnbPtnNOIIjAybjKn3FF0u4o2rgB56eAQXDtJMH9hRMFRDP1BhlekDivuWQVlG+hvXL15kh/SlZ0/6WTHCU32KRQ6iF1dfmXaqhucfpuSLmQZj27TAABltK2na8M/SXkJKSQsP+SU7E/JDlWzd4/IhI5dSrEwsZ/ze3eaP856k/3tHM74p5hc0BJ7KGgDGNH1DzT2kX5sBx1kj0gVO7qItFGkHnyo+Q+3jm7gGrvRq5j85w+zn2UFLCl4bjd8Um3g1TDfceixx43O7/8OfYme32Ua9hJsxICpOb+4GN0GTiF2q116lulfIbanvytwn6MhmGM= ec2-user"
-ses_email_identity = ""
-userpool_email_source_arn = ""
-app_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
-blk_cluster_map_users = ["arn:aws:iam::577645632856:user/rajeshsanjeevi"]
-app_cluster_map_roles = []
-blk_cluster_map_roles = []
-
 #set to different node types like aais, carrier, analytics etc. Prefer 4 letter representation only.
 #example: aais|carr|anlt etc.,
 node_type = "aais" #set to aais|carr|anlt
@@ -157,13 +142,13 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 #--------------------------------------------------------------------------------------------------------------------
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
-app_cluster_version           = "1.19"
+app_cluster_version           = "1.20"
 app_cluster_service_ipv4_cidr = "172.20.0.0/16"
 
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "blk-cluster"
-blk_cluster_version           = "1.19"
+blk_cluster_version           = "1.20"
 blk_cluster_service_ipv4_cidr = "172.21.0.0/16"
 
 #--------------------------------------------------------------------------------------------------------------------

@@ -273,8 +273,10 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
 #reading NLB setup by ingress controller deployed in app EKS
 data aws_alb "app_nlb" {
   tags = { "kubernetes.io/cluster/${local.app_cluster_name}" = "owned"}
+  depends_on = [helm_release.app_haproxy]
 }
 #reading NLB setup by ingress controller deployed in blk EKS
 data aws_alb "blk_nlb" {
   tags = { "kubernetes.io/cluster/${local.blk_cluster_name}" = "owned"}
+  depends_on = [helm_release.blk_haproxy]
 }
