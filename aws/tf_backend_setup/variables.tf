@@ -46,4 +46,7 @@ variable "tf_backend_dynamodb_table" {
   type = string
   description = "The dynamodb table to manage terraform state file locking"
 }
-
+variable "tf_inputs_s3_bucket" {
+  type = string
+  description = "The name of s3 bucket to manage terraform input files"
+}

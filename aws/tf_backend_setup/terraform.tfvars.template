@@ -14,3 +14,5 @@ tf_backend_s3_bucket = "<globally unique s3 bucket name>"
 #Name of the dynamoDB table to manage terraform state files if required to have state locking
 tf_backend_dynamodb_table = "<dynamodb table name>"
 
+#name of the s3 bucket to use for managing input files for terraform
+tf_inputs_s3_bucket = "<bucket to manage terraform inputs>"
