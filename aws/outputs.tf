@@ -53,7 +53,7 @@ output "private_endpoint_ordererorg" {
   value = var.node_type == "aais" ? aws_route53_record.private_aais["ordererorg"].fqdn : null
 }
 output "private_endpoint_ordererorg-net" {
-  value = var.node_type == "aais" ? aws_route53_record.private_aais["ordererorg-net.ordererorg"].fqdn : null 
+  value = var.node_type == "aais" ? aws_route53_record.private_aais["ordererorg-net.ordererorg"].fqdn : null
 }
 output "public_endpoint_blk_nlb" {
   value = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? aws_route53_record.public_common_new_entry[0].fqdn : null
