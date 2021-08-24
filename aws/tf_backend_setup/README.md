@@ -1,5 +1,5 @@
 # terraform backend setup 
-This code can be cloned to an environment where terraform CLI is available/possible to initially setup terraform backend resources, i.e., S3 bucket for managing terraform state files and DynamoDB for handling state file locking. 
+This code can be cloned to an environment where terraform CLI is available/possible to initially setup terraform backend resources, i.e., S3 bucket for managing terraform state files and DynamoDB for handling state file locking and a S3 bucket to manage terraform input files
 
 ##Requirements:
    
