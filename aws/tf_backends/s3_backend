@@ -1,15 +1,15 @@
 #The below config declaration is applicable when using remote backend as S3 in terraform
-bucket               = "aais-node-terraform-state-mgmt"
+bucket               = "anlt-node-terraform-state-mgmt"
 key                  = "terraform.tfstate"
-region               = "us-east-2"
+region               = "us-east-1"
 encrypt              = true
 workspace_key_prefix = "environment"
 ##################reference example: https://dynamodb.us-east-1.amazonaws.com#################
-dynamodb_endpoint    = "https://dynamodb.us-east-2.amazonaws.com"
-dynamodb_table       = "aais-node-terraform-state-lock"
-role_arn             = "arn:aws:iam::577645632856:role/aais-tf-automation"
+dynamodb_endpoint    = "https://dynamodb.us-east-1.amazonaws.com"
+dynamodb_table       = "anlt-node-terraform-state-lock"
+role_arn             = "arn:aws:iam::577645632856:role/anlt-tf-automation"
 session_name         = "terraform-session"
-external_id          = "aais-terraform" #external id setup during IAM user and role setup for access
+external_id          = "anlt-terraform" #external id setup during IAM user and role setup for access
 
 
 
