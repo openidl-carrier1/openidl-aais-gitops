@@ -42,8 +42,7 @@ defaults:
 jobs:
   analytics_node_dev:
     environment: analytics_dev
-
-    if: github.ref == 'refs/heads/analytics_dev' || github.ref == 'refs/heads/analytics_dev'
+    if: github.base_ref == 'analytics_dev' || github.ref == 'refs/heads/analytics_dev'
     name: 'analytics-node-openidl-dev'
     runs-on: ubuntu-latest
     env:
@@ -158,7 +157,7 @@ jobs:
   anlytics_node_test:
     environment: analytics_test
 
-    if: github.ref == 'refs/heads/analytics_test' || github.ref == 'refs/heads/analytics_test'
+    if: github.base_ref == 'analytics_test' || github.ref == 'refs/heads/analytics_test'
     name: 'analytics-node-openidl-test'
     runs-on: ubuntu-latest
     env:
@@ -273,7 +272,7 @@ jobs:
   analytics_node_prod:
     environment: analytics_prod
 
-    if: github.ref == 'refs/heads/analytics_prod' || github.ref == 'refs/heads/analytics_prod'
+    if: github.base_ref == 'analytics_prod' || github.ref == 'refs/heads/analytics_prod'
     name: 'analytics-node-openidl-prod'
     runs-on: ubuntu-latest
     env:
