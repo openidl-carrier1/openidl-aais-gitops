@@ -178,7 +178,7 @@ resource "aws_s3_bucket_public_access_block" "tf_inputs_s3_bucket_public_access_
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-  bucket = aws_s3_bucket.tf_s3_bucket.id
+  bucket = aws_s3_bucket.tf_inputs_s3_bucket.id
   depends_on = [aws_s3_bucket.tf_inputs_s3_bucket,aws_s3_bucket_policy.tf_inputs_s3_bucket_policy]
 }
 resource "aws_s3_bucket_policy" "tf_inputs_s3_bucket_policy"{
