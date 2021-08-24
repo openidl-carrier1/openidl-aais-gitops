@@ -70,7 +70,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSCNIPolicy" {
 }
 #iam policy for the worker nodes to manage csi driver for persistent volumes
 resource "aws_iam_policy" "eks_worker_node_ebs_policy" {
-  name   = "AmazonEBS_CSI_Driver"
+  name   = "${local.std_name}-AmazonEBS_CSI_Driver"
   policy = file("resources/policies/nodegroup-role-ebs-ci-driver-policy.json")
   tags = merge(local.tags,
     { "Name" = "${local.std_name}-AmazonEBS_CSI_Driver",
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSEBSCSIDriverPo
 }
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_policy" {
-  name   = "AmazonEKSAdminPolicy"
+  name   = "${local.std_name}-AmazonEKSAdminPolicy"
   policy = file("resources/policies/eks-admin-policy.json")
   tags = merge(local.tags,
     { "Name" = "${local.std_name}-AmazonEKSAdminPolicy",
