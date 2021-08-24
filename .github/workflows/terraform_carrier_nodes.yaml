@@ -10,7 +10,7 @@ on:
     paths:
       - 'aws/**'
       - '!helm/**'
-      - '!aws/data_feed_in/*/*.template'
+      - '!aws/templates/*/*.template'
       - '!aws/tf_backend_setup/**'
       - '!aws/README.md'
       - '!README.md'
@@ -24,7 +24,7 @@ on:
     paths:
       - 'aws/**'
       - '!helm/**'
-      - '!aws/data_feed_in/*/*.template'
+      - '!aws/templates/*/*.template'
       - '!aws/tf_backend_setup/**'
       - '!aws/README.md'
       - '!README.md'
