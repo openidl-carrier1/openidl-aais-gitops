@@ -52,18 +52,12 @@ resource "aws_cloudtrail" "cloudtrail_events" {
 }
 #iam policy for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy" "cloudtrail_cloudwatch_logs" {
-  name   = "cloudtrail-cloudwatch-logs-policy"
+  name   = "${local.std_name}-ct-cloudwatch-logs"
   policy = data.aws_iam_policy_document.cloudtrail_cloudwatch_logs.json
 }
 #iam policy attachment for cloudwatch logs related to cloudtrail
 resource "aws_iam_policy_attachment" "main" {
-  name       = "cloudtrail-cloudwatch-logs-policy-attachment"
+  name       = "${local.std_name}-ct-cloudwatch-logs"
   policy_arn = aws_iam_policy.cloudtrail_cloudwatch_logs.arn
   roles      = [aws_iam_role.cloudtrail_cloudwatch_role.name]
 }
-
-
-
-
-
-
