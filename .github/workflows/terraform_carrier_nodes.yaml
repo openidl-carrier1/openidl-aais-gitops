@@ -43,7 +43,7 @@ jobs:
   carrier_node_dev:
     environment: carrier_dev
 
-    if: github.ref == 'refs/heads/carrier_dev' || github.ref == 'refs/heads/carrier_dev'
+    if: github.base_ref == 'carrier_dev' || github.ref == 'refs/heads/carrier_dev'
     name: 'carrier-node-openidl-dev'
     runs-on: ubuntu-latest
     env:
@@ -100,7 +100,6 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/dev/carrier.tfvars carrier_dev.tfvars
-
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
@@ -158,7 +157,7 @@ jobs:
   carrier_node_test:
     environment: carrier_test
 
-    if: github.ref == 'refs/heads/carrier_test' || github.ref == 'refs/heads/carrier_test'
+    if: github.base_ref == 'carrier_test' || github.ref == 'refs/heads/carrier_test'
     name: 'carrier-node-openidl-test'
     runs-on: ubuntu-latest
     env:
@@ -215,7 +214,6 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/test/carrier.tfvars carrier_test.tfvars
-
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
@@ -273,7 +271,7 @@ jobs:
   carrier_node_prod:
     environment: carrier_prod
 
-    if: github.ref == 'refs/heads/carrier_prod' || github.ref == 'refs/heads/carrier_prod'
+    if: github.base_ref == 'carrier_prod' || github.ref == 'refs/heads/carrier_prod'
     name: 'carrier-node-openidl-prod'
     runs-on: ubuntu-latest
     env:
@@ -330,7 +328,6 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/prod/carrier.tfvars carrier_prod.tfvars
-
       # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
@@ -384,4 +381,3 @@ jobs:
         #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
         if: github.ref == 'refs/heads/carrier_prod' && github.event_name == 'push'
         run: terraform apply -auto-approve -var-file=carrier_prod.tfvars
-
