@@ -1,4 +1,3 @@
-/*
 resource "helm_release" "app_haproxy" {
   depends_on = [module.app_eks_cluster]
   provider = helm.app_cluster
@@ -19,4 +18,3 @@ resource "helm_release" "blk_haproxy" {
   namespace = "blk-eks-ingress-controller"
   values = ["${file("resources/helm/haproxy/values.yaml")}"]
 }
-*/
