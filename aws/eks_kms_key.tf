@@ -114,6 +114,6 @@ resource "aws_kms_key" "eks_kms_key" {
 }
 resource "aws_kms_alias" "alias" {
   for_each      = toset(["app-eks", "blk-eks"])
-  name          = "alias/${local.std_name}-${each.value}"
+  name          = "alias/${local.std_name}-${each.value}-1"
   target_key_id = aws_kms_key.eks_kms_key["${each.value}"].id
 }
