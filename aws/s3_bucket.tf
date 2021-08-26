@@ -150,6 +150,6 @@ resource "aws_kms_key" "s3_kms_key" {
 }
 #setting up an alias for the kms key used with s3 bucket data encryption
 resource "aws_kms_alias" "s3_kms_key" {
-  name          = "alias/s3_key_${local.std_name}-${var.s3_bucket_name_cloudtrail}"
+  name          = "alias/s3_key_${local.std_name}-${var.s3_bucket_name_cloudtrail}-1"
   target_key_id = aws_kms_key.s3_kms_key.id
 }

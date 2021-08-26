@@ -131,6 +131,13 @@ module "app_eks_worker_node_group_sg" {
       protocol                 = "tcp"
       description              = "Inbound from node group sg to node group sg-1024-65535"
       source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
+  },
+  {
+      from_port                = 53
+      to_port                  = 53
+      protocol                 = "udp"
+      description              = "Inbound from node group sg to node group sg-53"
+      source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
   }]
   tags = merge(local.tags, {
     Name                                              = "${local.std_name}-app-eks-worker-node-group-sg"
@@ -187,6 +194,13 @@ module "blk_eks_worker_node_group_sg" {
       to_port                  = 65535
       protocol                 = "tcp"
       description              = "Inbound from node group sg to node group sg-1024-65535"
+      source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
+  },
+  {
+      from_port                = 53
+      to_port                  = 53
+      protocol                 = "udp"
+      description              = "Inbound from node group sg to node group sg-53"
       source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
   }]
   tags = merge(local.tags, {
