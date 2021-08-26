@@ -87,7 +87,7 @@ module "app_eks_worker_node_group_sg" {
   vpc_id                                                   = module.aais_app_vpc.vpc_id
   ingress_cidr_blocks                                      = [var.app_vpc_cidr]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
-  number_of_computed_ingress_with_source_security_group_id = 7
+  number_of_computed_ingress_with_source_security_group_id = 6
   egress_rules                                             = ["all-all"]
   computed_ingress_with_source_security_group_id = [
     {
@@ -151,7 +151,7 @@ module "blk_eks_worker_node_group_sg" {
   vpc_id                                                   = module.aais_blk_vpc.vpc_id
   ingress_cidr_blocks                                      = [var.blk_vpc_cidr]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
-  number_of_computed_ingress_with_source_security_group_id = 7
+  number_of_computed_ingress_with_source_security_group_id = 6
   egress_rules                                             = ["all-all"]
   computed_ingress_with_source_security_group_id = [
     {
