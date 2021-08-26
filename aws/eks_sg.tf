@@ -87,7 +87,7 @@ module "app_eks_worker_node_group_sg" {
   vpc_id                                                   = module.aais_app_vpc.vpc_id
   ingress_cidr_blocks                                      = [var.app_vpc_cidr]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
-  number_of_computed_ingress_with_source_security_group_id = 6
+  number_of_computed_ingress_with_source_security_group_id = 7
   egress_rules                                             = ["all-all"]
   computed_ingress_with_source_security_group_id = [
     {
@@ -131,6 +131,13 @@ module "app_eks_worker_node_group_sg" {
       protocol                 = "tcp"
       description              = "Inbound from node group sg to node group sg-1024-65535"
       source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
+  },
+    {
+      from_port                = 53
+      to_port                  = 53
+      protocol                 = "udp"
+      description              = "Inbound from node group sg to node group sg-53"
+      source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
   }]
   tags = merge(local.tags, {
     Name                                              = "${local.std_name}-app-eks-worker-node-group-sg"
@@ -144,7 +151,7 @@ module "blk_eks_worker_node_group_sg" {
   vpc_id                                                   = module.aais_blk_vpc.vpc_id
   ingress_cidr_blocks                                      = [var.blk_vpc_cidr]
   ingress_rules                                            = ["ssh-tcp", "https-443-tcp", "http-80-tcp"]
-  number_of_computed_ingress_with_source_security_group_id = 6
+  number_of_computed_ingress_with_source_security_group_id = 7
   egress_rules                                             = ["all-all"]
   computed_ingress_with_source_security_group_id = [
     {
@@ -187,6 +194,13 @@ module "blk_eks_worker_node_group_sg" {
       to_port                  = 65535
       protocol                 = "tcp"
       description              = "Inbound from node group sg to node group sg-1024-65535"
+      source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
+  },
+  {
+      from_port                = 53
+      to_port                  = 53
+      protocol                 = "udp"
+      description              = "Inbound from node group sg to node group sg-53"
       source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
   }]
   tags = merge(local.tags, {
