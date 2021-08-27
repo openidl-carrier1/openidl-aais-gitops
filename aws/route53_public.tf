@@ -86,7 +86,7 @@ resource "aws_route53_record" "blk_nlb_bastion_r53_record_new_entry" {
 resource "aws_route53_record" "public_aais_orderorg_reg_in_aws" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.node_type == "aais" ? 1 : 0
   zone_id = data.aws_route53_zone.data_zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-ordererorg.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -98,7 +98,7 @@ resource "aws_route53_record" "public_aais_orderorg_reg_in_aws" {
 resource "aws_route53_record" "public_aais_orderorg_new_entry" {
   count   = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-ordererorg.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -110,7 +110,7 @@ resource "aws_route53_record" "public_aais_orderorg_new_entry" {
 resource "aws_route53_record" "public_aais_orderorg-net_reg_in_aws" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.node_type == "aais" ? 1 : 0
   zone_id = data.aws_route53_zone.data_zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-ordererorg-net.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg-net.ordererorg.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.ordererorg-net.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg-net.ordererorg.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -122,7 +122,7 @@ resource "aws_route53_record" "public_aais_orderorg-net_reg_in_aws" {
 resource "aws_route53_record" "public_aais_orderorg-net_new_entry" {
   count   = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-ordererorg-net.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg-net.ordererorg.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.ordererorg-net.ordererorg.${var.domain_info.domain_name}" : "*.ordererorg-net.ordererorg.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -132,9 +132,9 @@ resource "aws_route53_record" "public_aais_orderorg-net_new_entry" {
 }
 #public route53 entries for all node types-aws registered
 resource "aws_route53_record" "public_common_reg_in_aws" {
-  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.node_type == "aais" ? 1 : 0
+  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
   zone_id = data.aws_route53_zone.data_zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -144,9 +144,9 @@ resource "aws_route53_record" "public_common_reg_in_aws" {
 }
 #public route53 entries for all node types-outside registered
 resource "aws_route53_record" "public_common_new_entry" {
-  count   = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? 1 : 0
+  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
-  name = var.aws_env != "prod" ? "*.${var.aws_env}-${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
+  name = var.aws_env != "prod" ? "${var.aws_env}-*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}.${var.domain_info.domain_name}"
   type = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
