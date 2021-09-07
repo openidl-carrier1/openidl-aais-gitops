@@ -56,7 +56,7 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
     evaluate_target_health = true
   }
 }
-#setting up private dns entries for couchdb and mongodb
+#setting up private dns entries for data call and insurance data manager services
 resource "aws_route53_record" "private_services" {
   for_each = toset(["data-call-app-service", "insurance-data-manager-service"])
   zone_id = aws_route53_zone.aais_private_zones_internal.zone_id

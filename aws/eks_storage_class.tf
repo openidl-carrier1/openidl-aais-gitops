@@ -15,7 +15,6 @@ resource "kubernetes_storage_class" "app_storage_class_aws_ebs" {
     encrypted = "true"
     fsType    = "ext4"
   }
-  #mount_options = ["file_mode=0700", "dir_mode=0777", "mfsymlinks", "uid=1000", "gid=1000", "nobrl", "cache=none"]
 }
 #storage class for the blockchain cluster
 resource "kubernetes_storage_class" "blk_storage_class_aws_ebs" {
@@ -34,6 +33,5 @@ resource "kubernetes_storage_class" "blk_storage_class_aws_ebs" {
     encrypted = "true"
     fsType    = "ext4"
   }
-  #mount_options = ["file_mode=0700", "dir_mode=0777", "mfsymlinks", "uid=1000", "gid=1000", "nobrl", "cache=none"]
 }
 

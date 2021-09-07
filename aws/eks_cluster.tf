@@ -23,8 +23,9 @@ module "app_eks_cluster" {
   providers = {
     kubernetes = kubernetes.app_cluster
   }
-  source                                             = "terraform-aws-modules/eks/aws"
-  version                                            = "17.1.0"
+  #source                                             = "terraform-aws-modules/eks/aws"
+  source                                              = "./modules/eks_cluster"
+  #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.app_cluster_name
   enable_irsa                                        = true
@@ -168,8 +169,9 @@ module "blk_eks_cluster" {
   providers = {
     kubernetes = kubernetes.blk_cluster
   }
-  source                                             = "terraform-aws-modules/eks/aws"
-  version                                            = "17.1.0"
+  #source                                             = "terraform-aws-modules/eks/aws"
+  source                                              = "./modules/eks_cluster"
+  #version                                            = "17.1.0"
   create_eks                                         = true
   cluster_name                                       = local.blk_cluster_name
   enable_irsa                                        = true
