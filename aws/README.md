@@ -12,7 +12,7 @@
     
 **Additional requirements:** 
     
-    1) S3 backend, Dynamodb table
+    1) S3 backend, Dynamodb table, s3 bucket for inputfile
     2) Iam user 
     3) Iam role 
     4) SSH keys for bastion host
@@ -57,29 +57,18 @@ List of sensitive data to configure as secrets under git environment section.
         15. blk_cluster_map_users # Required if any IAM user required EKS access, otherwise set to empty in git secrets
         16. app_cluster_map_roles # Required if any IAM role required EKS access, otherwise set to empty in git secrets
         17. blk_cluster_map_roles  # Required if any IAM role required EKS access, otherwise set to empty in git secrets
+        18. aws_input_bucket #s3 bucket used to store terraform input file 
 
 7. Clone the repository 
-8. Prepare input file for the specific node and specific environment. 
-
-    |    node_type         |            path                       |    input file      |
-    |----------------------|---------------------------------------|--------------------|
-    | aais_node/dev        |  aws/data_feed_in/aais_node/dev       |  aais.tfvars       |   
-    | aais_node/test       |  aws/data_feed_in/aais_node/test      |  aais.tfvars       |    
-    | aais_node/prod       |  aws/data_feed_in/aais_node/prod      |  aais.tfvars       | 
-    |                      |                                       |                    | 
-    | carrier_node/dev     |  aws/data_feed_in/carrier_node/dev    |  carrier.tfvars    |  
-    | carrier_node/test    |  aws/data_feed_in/carrier_node/test   |  carrier.tfvars    |  
-    | carrier_node/prod    |  aws/data_feed_in/carrier_node/prod   |  carrier.tfvars    |  
-    |                      |                                       |                    |  
-    | analytics_node/dev   |  aws/data_feed_in/analytics_node/dev  |  analytics.tfvars  |  
-    | analytics_node/test  |  aws/data_feed_in/analytics_node/test |  analytics.tfvars  |  
-    | analytics_node/prod  |  aws/data_feed_in/analytics_node/prod |  analytics.tfvars  |  
-
-4. Commit the updates to a feature branch, ensure the name starts with base branch name (ex: for aais_dev, feature branch: aais_dev<*>)
-5. Push the feature branch to git repository
-6. Submit Pull request and upon review and approve submit merge to successfully get the code updates
-7. The pull request will trigger github actions to run terraform plan
-8. The merge request will trigger github actions to run terraform apply
+8. Prepare input file for the specific node and specific environment, refer to directory "templates" for reference template.
+9. Once input file is prepared, upload to S3 under a relevant directory based on node type and environment type. Example of carrier node for dev, upload to the path as below. 
+    Path: S3://<bucket>/carrier_node/dev/carrier.tfvars
+ 
+10. Commit the updates to a feature branch, ensure the name starts with base branch name (ex: for aais_dev, feature branch: aais_dev<*>)
+11. Push the feature branch to git repository
+12. Submit Pull request and upon review and approve submit merge to successfully get the code updates
+13. The pull request will trigger github actions to run terraform plan
+14. The merge request will trigger github actions to run terraform apply
 
 
 

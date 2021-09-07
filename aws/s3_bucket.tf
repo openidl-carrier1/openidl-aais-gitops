@@ -60,7 +60,19 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
                     "s3:x-amz-acl": "bucket-owner-full-control"
                 }
             }
+        },
+      {
+        Sid       = "HTTPRestrict"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = "arn:aws:s3:::${local.std_name}-${var.s3_bucket_name_cloudtrail}/*",
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
         }
+      }
     ]
 })
 }

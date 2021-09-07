@@ -27,6 +27,9 @@ app_cluster_map_roles = ["<rolearn>","<rolearn>"] #Optional, if not required set
 #When no additional IAM roles are required to enable EKS access, set the below as empty in git secrets
 blk_cluster_map_users = ["<userarn>","<userarn>"] #Optional, if not required set to empty in git secrets
 blk_cluster_map_roles = ["<rolearn>","<rolearn>"] #Optional, if not required set to empty in git secrets
+#Name of S3 bucket to hold terraform input file
+aws_input_bucket = ""
+
 
 ################end of sensitive data that goes to git secrets#####################
 
@@ -34,6 +37,8 @@ blk_cluster_map_roles = ["<rolearn>","<rolearn>"] #Optional, if not required set
 #Prefer 4 letter representation only.
 #For example: aais|carr|anlt
 node_type = "anlt" #set to aais|carr|anlt
+#set org name when node_type is set to "carr", otherwise set to empty
+org_name = "" #set to a valid org name, when node type is carrier. Example org_name = "travelers" | "trv"
 
 aws_env = "<env>" #set to dev|test|prod
 
@@ -90,8 +95,7 @@ blk_bastion_sg_egress =   [
 domain_info = {
   domain_registrar = "others", #Options: aws|others
   domain_name = "<domain_name>", #primary domain registered
-  registered = "" #registered already: yes, otherwise: no
-  app_sub_domain_name = "<subdomain_name>" , #subdomain, this helps to generate application UI access endpoint
+  registered = "" #registered already in AWS: yes, otherwise: no
   comments = "<comments>"
 }
 
@@ -192,13 +196,11 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 # application cluster EKS specifications
 app_cluster_name              = "<app_cluster_name>"
 app_cluster_version           = "<version>"
-app_cluster_service_ipv4_cidr = "<service_cidr>"
 
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "<blk_cluster_name>"
 blk_cluster_version           = "<version>"
-blk_cluster_service_ipv4_cidr = "<service_cidr>"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related

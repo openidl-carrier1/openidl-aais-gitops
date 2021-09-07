@@ -36,7 +36,7 @@ resource "aws_route53_zone" "aais_private_zones" {
 resource "aws_route53_record" "private_record_app_nlb_bastion" {
   count = var.bastion_host_nlb_external ? 0 : 1
   zone_id = aws_route53_zone.aais_private_zones.zone_id
-  name = "${local.std_name}-app-bastion"
+  name = "app-bastion.${var.org_name}"
   type    = "A"
   alias {
     name                   = module.app_bastion_nlb.lb_dns_name
@@ -48,7 +48,7 @@ resource "aws_route53_record" "private_record_app_nlb_bastion" {
 resource "aws_route53_record" "private_record_blk_nlb_bastion" {
   count = var.bastion_host_nlb_external ? 0 : 1
   zone_id = aws_route53_zone.aais_private_zones.zone_id
-  name = "${local.std_name}-blk-bastion"
+  name = "blk-bastion.${var.org_name}"
   type    = "A"
   alias {
     name                   = module.blk_bastion_nlb.lb_dns_name
@@ -57,10 +57,10 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
   }
 }
 #setting up private dns entries for couchdb and mongodb
-resource "aws_route53_record" "private_databases" {
-  for_each = toset(["couchdb", "mongodb"])
+resource "aws_route53_record" "private_services" {
+  for_each = toset(["data-call-app-service", "insurance-data-manager-service"])
   zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
-  name = var.aws_env != "prod" ? "${var.aws_env}-${each.value}-${lookup(local.node_type, var.node_type)}" : "${each.value}-${lookup(local.node_type, var.node_type)}"
+  name = var.aws_env != "prod" ? "${each.value}.${var.org_name}.${var.aws_env}" : "${each.value}.${var.org_name}"
   type    = "A"
   alias {
     name                   = data.aws_alb.app_nlb.dns_name
@@ -71,7 +71,7 @@ resource "aws_route53_record" "private_databases" {
 #setting up private dns entries for vault
 resource "aws_route53_record" "private_vault" {
   zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
-  name = var.aws_env != "prod" ? "${var.aws_env}-vault-${lookup(local.node_type, var.node_type)}" : "vault-${lookup(local.node_type, var.node_type)}"
+  name = var.aws_env != "prod" ? "vault.${var.org_name}.${var.aws_env}" : "vault.${var.org_name}"
   type    = "A"
   alias {
     name                   = data.aws_alb.blk_nlb.dns_name
@@ -81,8 +81,8 @@ resource "aws_route53_record" "private_vault" {
 }
 #setting up private dns entries on aais nodes specific
 resource "aws_route53_record" "private_aais" {
-  for_each = {for k in ["ordererorg", "ordererorg-net.ordererorg"] : k => k if var.node_type == "aais" }
-  name = var.aws_env != "prod" ? "${var.aws_env}-*.${each.value}" : "*.${each.value}"
+  for_each = {for k in ["*.ordererorg", "ca.ordererorg-net", "ca.aais-net"] : k => k if var.node_type == "aais" }
+  name = var.aws_env != "prod" ? "${each.value}.${var.aws_env}" : "${each.value}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id
   alias {
@@ -93,7 +93,7 @@ resource "aws_route53_record" "private_aais" {
 }
 #setting up private dns entries common for all node types
 resource "aws_route53_record" "private_common" {
-  name = var.aws_env != "prod" ? "${var.aws_env}-*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}" : "*.${lookup(local.node_type, var.node_type)}-net.${lookup(local.node_type, var.node_type)}"
+  name = var.aws_env != "prod" ? "*.${var.org_name}-net.${var.org_name}.${var.aws_env}" : "*.${var.org_name}-net.${var.org_name}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id
   alias {

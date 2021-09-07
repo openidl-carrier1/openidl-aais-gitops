@@ -68,7 +68,19 @@ resource "aws_s3_bucket_policy" "tf_bucket_policy"{
             },
             "Action": "s3:ListBucket",
             "Resource": "arn:aws:s3:::${var.tf_backend_s3_bucket}"
+        },
+      {
+        Sid       = "HTTPRestrict"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = "arn:aws:s3:::${var.tf_backend_s3_bucket}/*",
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
         }
+      },
     ]
   })
 }
@@ -208,7 +220,19 @@ resource "aws_s3_bucket_policy" "tf_inputs_s3_bucket_policy"{
             },
             "Action": "s3:ListBucket",
             "Resource": "arn:aws:s3:::${var.tf_inputs_s3_bucket}"
+        },
+      {
+        Sid       = "HTTPRestrict"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = "arn:aws:s3:::${var.tf_inputs_s3_bucket}/*",
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
         }
+      }
     ]
   })
 }

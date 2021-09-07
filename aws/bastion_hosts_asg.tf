@@ -3,7 +3,7 @@
 module "app_bastion_sg" {
   depends_on = [module.aais_app_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
-  name                     = "${local.std_name}-app-bastion-hosts-sg"
+  name                     = "${local.std_name}-app-bastion-sg"
   description              = "Security group associated with app cluster bastion host"
   vpc_id                   = module.aais_app_vpc.vpc_id
   ingress_with_cidr_blocks = var.app_bastion_sg_ingress
@@ -18,7 +18,7 @@ module "app_bastion_sg" {
 module "app_bastion_host_key_pair_external" {
   depends_on = [module.aais_app_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
-  key_name   = "${local.std_name}-app-bastion-hosts-external"
+  key_name   = "${local.std_name}-app-bastion-external"
   public_key = var.app_bastion_ssh_key
   tags = merge(
     local.tags,
@@ -32,7 +32,7 @@ module "app_bastion_nlb" {
   depends_on = [data.aws_subnet_ids.app_vpc_public_subnets, module.aais_app_vpc]
   source     = "terraform-aws-modules/alb/aws"
   version    = "~> 6.0"
-  name       = "${local.std_name}-app-bastion-hosts-nlb"
+  name       = "${local.std_name}-app-bastion-nlb"
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
@@ -89,7 +89,7 @@ module "app_bastion_host_asg" {
   depends_on = [module.aais_app_vpc, module.app_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
-  name       = "${local.std_name}-app-bastion-host-asg"
+  name       = "${local.std_name}-app-bastion-asg"
   create_lt  = true
   create_asg = true
 
@@ -144,7 +144,7 @@ module "app_bastion_host_asg" {
 module "blk_bastion_sg" {
   depends_on = [module.aais_blk_vpc]
   source                   = "terraform-aws-modules/security-group/aws"
-  name                     = "${local.std_name}-blk-bastion-hosts-sg"
+  name                     = "${local.std_name}-blk-bastion-sg"
   description              = "Security group associated with blk cluster bastion host"
   vpc_id                   = module.aais_blk_vpc.vpc_id
   ingress_with_cidr_blocks = var.blk_bastion_sg_ingress
@@ -159,12 +159,12 @@ module "blk_bastion_sg" {
 module "blk_bastion_host_key_pair_external" {
   depends_on = [module.aais_blk_vpc]
   source     = "terraform-aws-modules/key-pair/aws"
-  key_name   = "${local.std_name}-blk-bastion-hosts-external"
+  key_name   = "${local.std_name}-blk-bastion-external"
   public_key = var.blk_bastion_ssh_key
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-blk-bastion-hosts-external"
+      "Name"         = "${local.std_name}-blk-bastion-external"
       "Cluster_type" = "blockchain"
   }, )
 }
@@ -173,7 +173,7 @@ module "blk_bastion_nlb" {
   depends_on                       = [data.aws_subnet_ids.blk_vpc_public_subnets, module.aais_blk_vpc]
   source                           = "terraform-aws-modules/alb/aws"
   version                          = "~> 6.0"
-  name                             = "${local.std_name}-blk-bastion-hosts-nlb"
+  name                             = "${local.std_name}-blk-bastion-nlb"
   create_lb                        = true
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
@@ -230,7 +230,7 @@ module "blk_bastion_host_asg" {
   depends_on = [module.aais_blk_vpc, module.blk_bastion_sg]
   source     = "terraform-aws-modules/autoscaling/aws"
   version    = "~> 4.0"
-  name       = "${local.std_name}-blk-bastion-host-asg"
+  name       = "${local.std_name}-blk-bastion-asg"
   create_lt  = true
   create_asg = true
 
