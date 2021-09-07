@@ -132,7 +132,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
     principals {
       type = "AWS"
 
-      identifiers = ["arn:aws:iam::${var.aws_account_number}:root"]
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
 
     resources = ["*"]
@@ -181,7 +181,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
 
     resources = ["*"]
@@ -206,7 +206,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
 
     condition {
@@ -235,7 +235,7 @@ data "aws_iam_policy_document" "cloudtrail_kms_policy_doc" {
 
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["arn:aws:iam::${var.aws_account_number}:root", "${var.aws_role_arn}"]
     }
 
     condition {
