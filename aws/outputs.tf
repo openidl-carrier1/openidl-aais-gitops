@@ -58,13 +58,13 @@ output "private_vault_fqdn" {
   value = aws_route53_record.private_vault.fqdn
 }
 output "private_ordererorg_fqdn" {
-  value = var.node_type == "aais" ? aws_route53_record.private_aais["*.ordererorg"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_aais["*.ordererorg"].fqdn : null
 }
 output "private_ca-ordererorg-net_fqdn" {
-  value = var.node_type == "aais" ? aws_route53_record.private_aais["ca.ordererorg-net"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.ordererorg-net"].fqdn : null
 }
 output "private_ca-aais-net_fqdn" {
-  value = var.node_type == "aais" ? aws_route53_record.private_aais["ca.aais-net"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.aais-net"].fqdn : null
 }
 output "private_common_fqdn" {
   value = aws_route53_record.private_common.fqdn
@@ -75,6 +75,12 @@ output "public_insurance_manager_service_fqdn" {
 }
 output "public_insurance_manager_service_dns_entry" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_insurance_manager_reg_in_aws[0].fqdn : null
+}
+output "public_utilities_service_fqdn" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_utilities_service_new_entry[0].fqdn : null
+}
+output "public_utilities_service_dns_entry" {
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_utilities_service_reg_in_aws[0].fqdn : null
 }
 output "public_data_call_service_fqdn" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_data_call_new_entry[0].fqdn : null
@@ -89,10 +95,10 @@ output "public_common_dns_entry" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_common_reg_in_aws[0].fqdn : null
 }
 output "public_ordererog_fqdn" {
-  value = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? aws_route53_record.public_aais_orderorg_new_entry[0].fqdn : null
+  value = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.org_name == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.org_name == "aais") ? aws_route53_record.public_aais_orderorg_new_entry[0].fqdn : null
 }
 output "public_ordererorg_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.node_type == "aais" ? aws_route53_record.public_aais_orderorg_reg_in_aws[0].fqdn : null
+  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.org_name == "aais" ? aws_route53_record.public_aais_orderorg_reg_in_aws[0].fqdn : null
 }
 output "public_blk_bastion_fqdn" {
   value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.blk_nlb_bastion_r53_record_new_entry[0].fqdn : null

@@ -81,7 +81,7 @@ resource "aws_route53_record" "private_vault" {
 }
 #setting up private dns entries on aais nodes specific
 resource "aws_route53_record" "private_aais" {
-  for_each = {for k in ["*.ordererorg", "ca.ordererorg-net", "ca.aais-net"] : k => k if var.node_type == "aais" }
+  for_each = {for k in ["*.ordererorg", "ca.ordererorg-net", "ca.aais-net"] : k => k if var.org_name == "aais" }
   name = var.aws_env != "prod" ? "${each.value}.${var.aws_env}" : "${each.value}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id

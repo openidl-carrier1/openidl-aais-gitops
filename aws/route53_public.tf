@@ -84,7 +84,7 @@ resource "aws_route53_record" "blk_nlb_bastion_r53_record_new_entry" {
 }
 #public route53 entries for aais specific related to orderorg and orderorg-net-aws registered
 resource "aws_route53_record" "public_aais_orderorg_reg_in_aws" {
-  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.node_type == "aais" ? 1 : 0
+  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.org_name == "aais" ? 1 : 0
   zone_id = data.aws_route53_zone.data_zones[0].id
   name = var.aws_env != "prod" ? "*.ordererorg.${var.aws_env}.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
   type = "A"
@@ -96,7 +96,7 @@ resource "aws_route53_record" "public_aais_orderorg_reg_in_aws" {
 }
 #public route53 entries for aais specific related to orderorg and orderorg-net-outside registered
 resource "aws_route53_record" "public_aais_orderorg_new_entry" {
-  count   = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.node_type == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.node_type == "aais") ? 1 : 0
+  count   = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.org_name == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.org_name == "aais") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
   name = var.aws_env != "prod" ? "*.ordererorg.${var.aws_env}.${var.domain_info.domain_name}" : "*.ordererorg.${var.domain_info.domain_name}"
   type = "A"
@@ -142,7 +142,6 @@ resource "aws_route53_record" "public_data_call_reg_in_aws" {
     evaluate_target_health = true
   }
 }
-#public route53 entries for all node types-outside registered
 resource "aws_route53_record" "public_data_call_new_entry" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
@@ -165,7 +164,6 @@ resource "aws_route53_record" "public_insurance_manager_reg_in_aws" {
     evaluate_target_health = true
   }
 }
-#public route53 entries for all node types-outside registered
 resource "aws_route53_record" "public_insurance_manager_new_entry" {
   count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? 1 : 0
   zone_id = aws_route53_zone.zones[0].id
@@ -177,6 +175,27 @@ resource "aws_route53_record" "public_insurance_manager_new_entry" {
     evaluate_target_health = true
   }
 }
-
+resource "aws_route53_record" "public_utilities_service_reg_in_aws" {
+  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? 1 : 0
+  zone_id = data.aws_route53_zone.data_zones[0].id
+  name = var.aws_env != "prod" ? "utilities-service.${var.org_name}.${var.aws_env}.${var.domain_info.domain_name}" : "utilities-service.${var.org_name}.${var.aws_env}.${var.domain_info.domain_name}"
+  type = "A"
+  alias {
+    name                   = data.aws_alb.app_nlb.dns_name
+    zone_id                = data.aws_alb.app_nlb.zone_id
+    evaluate_target_health = true
+  }
+}
+resource "aws_route53_record" "public_utilities_service_new_entry" {
+  count   = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? 1 : 0
+  zone_id = aws_route53_zone.zones[0].id
+  name = var.aws_env != "prod" ? "utilities-service.${var.org_name}.${var.aws_env}.${var.domain_info.domain_name}" : "utilities-service.${var.org_name}.${var.aws_env}.${var.domain_info.domain_name}"
+  type = "A"
+  alias {
+    name                   = data.aws_alb.app_nlb.dns_name
+    zone_id                = data.aws_alb.app_nlb.zone_id
+    evaluate_target_health = true
+  }
+}
 
 

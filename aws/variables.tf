@@ -20,10 +20,11 @@ variable "aws_account_number" {
   type        = string
   description = "The aws account number on which core application infra is to setup/exists"
 }
-variable "node_type" {
-  type        = string
-  description = "The name of the node type will be setup"
-}
+
+#variable "node_type" {
+#  type        = string
+#  description = "The name of the node type will be setup"
+#}
 variable "aws_user_arn" {
   type        = string
   description = "The iam user will have access to s3 bucket and kms key"

@@ -119,22 +119,22 @@ module "transit_gateway" {
     app_vpc = {
       vpc_id                                          = module.aais_app_vpc.vpc_id
       vpc_route_table_ids                             = module.aais_app_vpc.private_route_table_ids
-      tgw_destination_cidr                            = var.app_tgw_destination_cidr
+      tgw_destination_cidr                            = local.app_tgw_destination_cidr
       subnet_ids                                      = module.aais_app_vpc.private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
-      tgw_routes                                      = var.app_tgw_routes
+      tgw_routes                                      = local.app_tgw_routes
     },
     blk_vpc = {
       vpc_id                                          = module.aais_blk_vpc.vpc_id
       vpc_route_table_ids                             = module.aais_blk_vpc.private_route_table_ids
-      tgw_destination_cidr                            = var.blk_tgw_destination_cidr
+      tgw_destination_cidr                            = local.blk_tgw_destination_cidr
       subnet_ids                                      = module.aais_blk_vpc.private_subnets
       dns_support                                     = true
       transit_gateway_default_route_table_association = true
       transit_gateway_default_route_table_propagation = true
-      tgw_routes                                      = var.blk_tgw_routes
+      tgw_routes                                      = local.blk_tgw_routes
     }
   }
   tags                         = merge(local.tags, { "Cluster_type" = "both" })

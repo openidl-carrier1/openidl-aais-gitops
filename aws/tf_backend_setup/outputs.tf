@@ -1,4 +1,4 @@
-output "s3_bucket_arn" {
+output "s3_bucket_arn_terraform_backend" {
   value = aws_s3_bucket.tf_s3_bucket.arn
 }
 output "dynamodb_table_arn"{
