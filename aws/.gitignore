@@ -1,0 +1,11 @@
+.terraform/*
+tf_backend_setup/aws/terraform.tfvars
+tf_backend_setup/aws/.terraform/*
+tf_backend_setup/aws/*.tfstate
+tf_backend_setup/aws/*.tfstate.*
+aws/terraform.tfstate
+aws/terraform.tfstate.*
+aws/terraform.tfstate.d/.*
+aws/.terraform.tfstate.lock.info
+
+
