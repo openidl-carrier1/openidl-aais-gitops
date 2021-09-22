@@ -45,9 +45,9 @@ blk_bastion_sg_egress  = [
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
 domain_info = {
-  domain_registrar = "others", # alternate option: aws
+  r53_public_hosted_zone_required = "yes", # Options: yes | no
   domain_name = "analyticsdemo.com", #primary domain registered
-  registered = "no" #registered already in aws: yes, otherwise: no
+  sub_domain_name = "analytics"
   comments = "analytics node dns name resolutions"
 }
 #-------------------------------------------------------------------------------------------------------------------
@@ -58,9 +58,9 @@ tgw_amazon_side_asn = "64532" #default is 64532
 #Cognito specifications
 userpool_name                = "openidl"
 client_app_name              = "openidl-client"
-client_callback_urls         = ["https://openidl.analytics.dev.analyticsdemo.com/callback", "https://openidl.analytics.test.analyticsdemo.com/redirect"]
-client_default_redirect_url  = "https://openidl.analytics.dev.analyticsdemo.com/redirect"
-client_logout_urls           = ["https://openidl.analytics.dev.analyticsdemo.com/signout"]
+client_callback_urls         = ["https://openidl.dev.analytics.analyticsdemo.com/callback", "https://openidl.dev.analytics.analyticsdemo.com/redirect"]
+client_default_redirect_url  = "https://openidl.dev.analytics.analyticsdemo.com/redirect"
+client_logout_urls           = ["https://openidl.dev.analytics.analyticsdemo.com/signout"]
 cognito_domain               = "analyticsdemo" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 # COGNITO_DEFAULT - Uses cognito default and SES related inputs goes to empty in git secrets
@@ -114,4 +114,8 @@ blk_cluster_version           = "1.20"
 #cloudtrail related
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-logs"
+
+#--------------------------------------------------------------------------------------------------------------------
+#Setting a random value to this variable will rotate password in AWS secret manager which may further required to update in VAULT instance
+vault_password_reset = "set" #set a random string to this variable when password required to reset
 

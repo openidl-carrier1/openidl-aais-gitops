@@ -1,6 +1,5 @@
 ##local variables and their manipulation are here
 locals {
-  #std_name          = var.org_name == "" || var.org_name == "aais" || var.org_name == "anlt" ? "${var.node_type}-${var.aws_env}" : "${var.node_type}-${substr(var.org_name,0,4)}-${var.aws_env}"
   std_name          = "${substr(var.org_name,0,4)}-${var.aws_env}"
   app_cluster_name  = "${local.std_name}-${var.app_cluster_name}"
   blk_cluster_name  = "${local.std_name}-${var.blk_cluster_name}"
@@ -22,14 +21,14 @@ locals {
     "organizationId"]
   #application cluster (eks) config-map (aws auth) - iam user to map
   app_cluster_map_users = [{
-    userarn = aws_iam_user.baf_automation.arn
+    userarn = aws_iam_user.baf_user.arn
     username = "admin"
     groups = ["system:masters"]
   }]
 
   #application cluster (eks) config-map (aws auth) - iam user to map
   blk_cluster_map_users = [{
-    userarn = aws_iam_user.baf_automation.arn
+    userarn = aws_iam_user.baf_user.arn
     username = "admin"
     groups = ["system:masters"]
   }]
@@ -50,6 +49,14 @@ locals {
         "system:masters",
         "system:nodes",
         "system:bootstrappers"]
+  },
+  {
+      rolearn  = aws_iam_role.git_actions_admin_role.arn
+      username = "admin"
+      groups = [
+        "system:masters",
+        "system:nodes",
+        "system:bootstrappers"]
   }]
   #blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
@@ -63,6 +70,14 @@ locals {
   },
     {
       rolearn  = aws_iam_role.eks_admin_role.arn
+      username = "admin"
+      groups = [
+        "system:masters",
+        "system:nodes",
+        "system:bootstrappers"]
+  },
+  {
+      rolearn  = aws_iam_role.git_actions_admin_role.arn
       username = "admin"
       groups = [
         "system:masters",
@@ -163,4 +178,40 @@ locals {
   blk_tgw_routes = [{destination_cidr_block = var.app_vpc_cidr}]
   app_tgw_destination_cidr = ["${var.blk_vpc_cidr}"]
   blk_tgw_destination_cidr = ["${var.app_vpc_cidr}"]
+  dns_entries_list_non_prod = [
+    "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "*.ordererorg.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "data-call-app-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "insurance-data-manager-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "utilities-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+  ]
+    dns_entries_list_prod = [
+    "openidl.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "*.ordererorg.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "data-call-app-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "insurance-data-manager-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
+    "utilities-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+  ]
+  vault_secrets_set_non_prod = {
+    url = "http://vault.${var.org_name}.${var.aws_env}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+    username = "config-${var.org_name}"
+    password = random_password.vault_password.result
+    orgName = "${var.org_name}"
+    vaultPath = "config-${var.org_name}"
+    apiVersion = "v1"
+  }
+  vault_secrets_set_prod = {
+    url = "http://vault.${var.org_name}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
+    username = "config-${var.org_name}"
+    password = random_password.vault_password.result
+    orgName = "${var.org_name}"
+    vaultPath = "config-${var.org_name}"
+    apiVersion = "v1"
+  }
 }

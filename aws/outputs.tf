@@ -13,16 +13,11 @@ output "cognito_client_secret" {
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
-#Route 53 hosted zones and endpoint information
-output "aws_name_servers" {
-  value       = (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_zone.zones[0].name_servers : null
-  description = "The list of name servers to be added into the registered domain with 3rd party registrar"
+output "git_actions_iam_user" {
+  value = aws_iam_user.git_actions_user.arn
 }
-output "baf_user" {
-  value = aws_iam_user.baf_automation.arn
-}
-output "baf_user_secret_key" {
-  value = aws_iam_access_key.baf_automation_access_key.secret
+output "git_actions_iam_user_secret_key" {
+  value = aws_iam_access_key.git_actions_access_key.secret
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
@@ -61,61 +56,51 @@ output "private_ordererorg_fqdn" {
   value = var.org_name == "aais" ? aws_route53_record.private_aais["*.ordererorg"].fqdn : null
 }
 output "private_ca-ordererorg-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.ordererorg-net"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.ordererorg-net.ordererorg"].fqdn : null
 }
 output "private_ca-aais-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.aais-net"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.aais-net.aais"].fqdn : null
 }
 output "private_common_fqdn" {
   value = aws_route53_record.private_common.fqdn
 }
+#Route 53 hosted zones and endpoint information
+output "aws_name_servers" {
+  value       = var.domain_info.r53_public_hosted_zone_required == "yes"  ? aws_route53_zone.zones[0].name_servers : null
+  description = "The name servers to be updated in the domain registrar"
+}
 #Route53 public entries
-output "public_insurance_manager_service_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_insurance_manager_new_entry[0].fqdn : null
-}
-output "public_insurance_manager_service_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_insurance_manager_reg_in_aws[0].fqdn : null
-}
-output "public_utilities_service_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_utilities_service_new_entry[0].fqdn : null
-}
-output "public_utilities_service_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_utilities_service_reg_in_aws[0].fqdn : null
-}
-output "public_data_call_service_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_data_call_new_entry[0].fqdn : null
-}
-output "public_data_call_service_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_data_call_reg_in_aws[0].fqdn : null
-}
-output "public_common_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no")  || (lookup(var.domain_info, "domain_registrar") == "others") ? aws_route53_record.public_common_new_entry[0].fqdn : null
-}
-output "public_common_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.public_common_reg_in_aws[0].fqdn : null
-}
-output "public_ordererog_fqdn" {
-  value = ((lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") && var.org_name == "aais") || (lookup(var.domain_info, "domain_registrar") == "others" && var.org_name == "aais") ? aws_route53_record.public_aais_orderorg_new_entry[0].fqdn : null
-}
-output "public_ordererorg_dns_entry" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") && var.org_name == "aais" ? aws_route53_record.public_aais_orderorg_reg_in_aws[0].fqdn : null
+output "public_app_ui_url" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.app_nlb_r53_record[0].fqdn : null
 }
 output "public_blk_bastion_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.blk_nlb_bastion_r53_record_new_entry[0].fqdn : null
-}
-output "public_blk_bastion_dns_entry" {
-  value =  (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.blk_nlb_bastion_r53_record_registered_in_aws[0].fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.blk_nlb_bastion_r53_record[0].fqdn : null
 }
 output "public_app_bastion_fqdn" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_bastion_r53_record_new_entry[0].fqdn : null
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.app_nlb_bastion_r53_record[0].fqdn : null
 }
-output "public_app_bastion_dns_entry" {
-  value =  (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.app_nlb_bastion_r53_record_registered_in_aws[0].fqdn : null
+output "public_ordererog_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.org_name == "aais" ? aws_route53_record.public_aais_orderorg_r53_record[0].fqdn : null
 }
-output "public_app_url" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "no") || lookup(var.domain_info, "domain_registrar") == "others" ? aws_route53_record.app_nlb_r53_record_new_entry[0].fqdn : null
+output "public_common_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.public_common_r53_record[0].fqdn : null
 }
-output "public_app_ui_url" {
-  value = (lookup(var.domain_info, "domain_registrar") == "aws" && lookup(var.domain_info, "registered") == "yes") ? aws_route53_record.app_nlb_r53_record_registered_in_aws[0].fqdn : null
+output "public_data_call_service_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.public_data_call_r53_record[0].fqdn : null
+}
+output "public_insurance_manager_service_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.public_insurance_manager_r53_record[0].fqdn : null
+}
+output "public_utilities_service_fqdn" {
+  value = var.domain_info.r53_public_hosted_zone_required == "yes" ? aws_route53_record.public_utilities_service_r53_record[0].fqdn : null
+}
+output "dns_entries_required_to_update" {
+  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env == "prod" ? local.dns_entries_list_prod : null
+}
+output "dns_entries_required_to_add" {
+  value = var.domain_info.r53_public_hosted_zone_required == "no" && var.aws_env != "prod" ? local.dns_entries_list_non_prod : null
+}
+output "secret_manager_vault_secret_arn" {
+  value = aws_secretsmanager_secret.vault_secret.arn
 }
 

@@ -1,5 +1,10 @@
+#set org name as below
+#when nodetype is aais set org_name="aais"
+#when nodetype is analytics set org_name="analytics"
+#when nodetype is aais's dummy carrier set org_name="carrier" and for other carriers refer to next line.
+#when nodetype is other carrier set org_name="<carrier_org_name>" , example: org_name = "travelers" etc.,
 
-org_name = "travelers" # For aais set to aais, for analytics set to analytics, for carriers set their org name, ex: travelers
+org_name = "trv" # For aais set to aais, for analytics set to analytics, for carriers set their org name, ex: travelers
 aws_env = "dev" #set to dev|test|prod
 #--------------------------------------------------------------------------------------------------------------------
 #Application cluster VPC specifications
@@ -45,9 +50,9 @@ blk_bastion_sg_egress  = [
 #--------------------------------------------------------------------------------------------------------------------
 #Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
 domain_info = {
-  domain_registrar = "others", # alternate option: aws
+  r53_public_hosted_zone_required = "yes",  #options: yes | no
   domain_name = "travelersdemo.com", #primary domain registered
-  registered = "no" #registered already in aws: yes, otherwise: no
+  sub_domain_name = "trv", #subdomain name
   comments = "travelers node dns name resolutions"
 }
 #-------------------------------------------------------------------------------------------------------------------
@@ -58,9 +63,9 @@ tgw_amazon_side_asn = "64532" #default is 64532
 #Cognito specifications
 userpool_name                = "openidl"
 client_app_name              = "openidl-client"
-client_callback_urls         = ["https://openidl.travelers.test.travelersdemo.com/callback", "https://openidl.travelers.test.travelersdemo.com/redirect"]
-client_default_redirect_url  = "https://openidl.travelers.test.travelersdemo.com/redirect"
-client_logout_urls           = ["https://openidl.travelers.test.travelersdemo.com/signout"]
+client_callback_urls         = ["https://openidl.dev.trv.travelersdemo.com/callback", "https://openidl.dev.trv.travelersdemo.com/redirect"]
+client_default_redirect_url  = "https://openidl.dev.trv.travelersdemo.com/redirect"
+client_logout_urls           = ["https://openidl.dev.trv.travelersdemo.com/signout"]
 cognito_domain               = "travelersdemo" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 # COGNITO_DEFAULT - Uses cognito default and SES related inputs goes to empty in git secrets
@@ -116,4 +121,8 @@ blk_cluster_version           = "1.20"
 #cloudtrail related
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-logs"
+
+#--------------------------------------------------------------------------------------------------------------------
+#Setting a random value to this variable will rotate password in AWS secret manager which may further required to update in VAULT instance
+vault_password_reset = "set" #set a random string to this variable when password required to reset
 

@@ -638,3 +638,7 @@ variable "org_name" {
   description = "The short name of the carrier node"
   default = ""
 }
+variable "vault_password_reset" {
+  type = string
+  description = "A random string to be set/changed when password vault password in AWS secrets manager required to reset"
+}
