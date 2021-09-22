@@ -178,26 +178,26 @@ locals {
   blk_tgw_routes = [{destination_cidr_block = var.app_vpc_cidr}]
   app_tgw_destination_cidr = ["${var.blk_vpc_cidr}"]
   blk_tgw_destination_cidr = ["${var.app_vpc_cidr}"]
-  dns_entries_list_non_prod = [
-    "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "*.ordererorg.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "data-call-app-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "insurance-data-manager-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "utilities-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
-  ]
-    dns_entries_list_prod = [
-    "openidl.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "*.ordererorg.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "data-call-app-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "insurance-data-manager-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}",
-    "utilities-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
-  ]
+  dns_entries_list_non_prod = {
+    "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.app_bastion_nlb.lb_dns_name,
+    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"= module.blk_bastion_nlb.lb_dns_name,
+    "*.ordererorg.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
+    "data-call-app-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "insurance-data-manager-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "utilities-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
+  }
+    dns_entries_list_prod = {
+    "openidl.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.app_bastion_nlb.lb_dns_name,
+    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.blk_bastion_nlb.lb_dns_name,
+    "*.ordererorg.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
+    "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
+    "data-call-app-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "insurance-data-manager-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
+    "utilities-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
+  }
   vault_secrets_set_non_prod = {
     url = "http://vault.${var.org_name}.${var.aws_env}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
     username = "config-${var.org_name}"
