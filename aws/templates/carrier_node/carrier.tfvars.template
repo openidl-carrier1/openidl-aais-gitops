@@ -91,7 +91,7 @@ blk_bastion_sg_egress =   [
     ]
 
 #--------------------------------------------------------------------------------------------------------------------
-#Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
+#Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
   r53_public_hosted_zone_required = "<yes>" #Options: yes | no
   domain_name = "<domain_name>", #primary domain registered

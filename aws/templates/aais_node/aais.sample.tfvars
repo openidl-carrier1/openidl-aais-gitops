@@ -44,7 +44,7 @@ blk_bastion_sg_egress  = [
   {rule="ssh-tcp", cidr_blocks = "172.27.0.0/16"}] #additional ip_address|cidr_block should be included for ssh
 
 #--------------------------------------------------------------------------------------------------------------------
-#Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
+#Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
   r53_public_hosted_zone_required = "yes", #Option: yes | no
   domain_name = "aaisonline.com", #primary domain registered
