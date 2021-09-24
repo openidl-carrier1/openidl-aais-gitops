@@ -44,25 +44,25 @@ output "private_blk_bastion_nlb_private_fqdn" {
   value = var.bastion_host_nlb_external ? null : aws_route53_record.private_record_blk_nlb_bastion[0].fqdn
 }
 output "private_data_call_service_fqdn" {
-  value = aws_route53_record.private_services["data-call-app-service"].fqdn
+  value = aws_route53_record.private_record_services["data-call-app-service"].fqdn
 }
 output "private_insurance_manager_service_fqdn" {
-  value = aws_route53_record.private_services["insurance-data-manager-service"].fqdn
+  value = aws_route53_record.private_record_services["insurance-data-manager-service"].fqdn
 }
 output "private_vault_fqdn" {
-  value = aws_route53_record.private_vault.fqdn
+  value = aws_route53_record.private_record_vault.fqdn
 }
 output "private_ordererorg_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_aais["*.ordererorg"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["*.ordererorg"].fqdn : null
 }
 output "private_ca-ordererorg-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.ordererorg-net.ordererorg"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["ca.ordererorg-net.ordererorg"].fqdn : null
 }
 output "private_ca-aais-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_aais["ca.aais-net.aais"].fqdn : null
+  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["ca.aais-net.aais"].fqdn : null
 }
 output "private_common_fqdn" {
-  value = aws_route53_record.private_common.fqdn
+  value = aws_route53_record.private_record_common.fqdn
 }
 #Route 53 hosted zones and endpoint information
 output "aws_name_servers" {

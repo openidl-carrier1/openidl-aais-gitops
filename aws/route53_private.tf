@@ -57,7 +57,7 @@ resource "aws_route53_record" "private_record_blk_nlb_bastion" {
   }
 }
 #setting up private dns entries for data call and insurance data manager services
-resource "aws_route53_record" "private_services" {
+resource "aws_route53_record" "private_record_services" {
   for_each = toset(["data-call-app-service", "insurance-data-manager-service"])
   zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
   name = var.aws_env != "prod" ? "${each.value}.${var.aws_env}.${var.domain_info.sub_domain_name}" : "${each.value}.${var.domain_info.sub_domain_name}"
@@ -69,7 +69,7 @@ resource "aws_route53_record" "private_services" {
   }
 }
 #setting up private dns entries for vault
-resource "aws_route53_record" "private_vault" {
+resource "aws_route53_record" "private_record_vault" {
   zone_id = aws_route53_zone.aais_private_zones_internal.zone_id
   name = var.aws_env != "prod" ? "vault.${var.aws_env}.${var.domain_info.sub_domain_name}" : "vault.${var.domain_info.sub_domain_name}"
   type    = "A"
@@ -80,7 +80,7 @@ resource "aws_route53_record" "private_vault" {
   }
 }
 #setting up private dns entries on aais nodes specific
-resource "aws_route53_record" "private_aais" {
+resource "aws_route53_record" "private_record_aais" {
   for_each = {for k in ["*.ordererorg", "ca.ordererorg-net.ordererorg", "ca.aais-net.aais"] : k => k if var.org_name == "aais" }
   name = var.aws_env != "prod" ? "${each.value}.${var.aws_env}.${var.domain_info.sub_domain_name}" : "${each.value}.${var.domain_info.sub_domain_name}"
   type = "A"
@@ -92,7 +92,7 @@ resource "aws_route53_record" "private_aais" {
   }
 }
 #setting up private dns entries common for all node types
-resource "aws_route53_record" "private_common" {
+resource "aws_route53_record" "private_record_common" {
   name = var.aws_env != "prod" ? "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}" : "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}"
   type = "A"
   zone_id = aws_route53_zone.aais_private_zones.zone_id

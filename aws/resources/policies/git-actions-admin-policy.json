@@ -81,6 +81,16 @@
             ],
             "Effect": "Allow",
             "Resource": "*"
+        },
+        {
+            "Sid": "ListRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListRoles"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/"
+            ]
         }
     ]
 }

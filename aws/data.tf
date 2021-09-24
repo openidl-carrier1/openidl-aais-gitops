@@ -32,12 +32,6 @@ data "aws_ami" "eks_blk_worker_nodes_ami" {
     values = ["amazon-eks-node-${var.blk_cluster_version}-v*"]
   }
 }
-
-#extracting zone info if the domain is already registered in aws
-#data "aws_route53_zone" "data_zones" {
-#  count = (lookup(var.domain_info, "registered") == "yes" && lookup(var.domain_info, "domain_registrar") == "aws") ? 1 : 0
-#  name  = lookup(var.domain_info, "domain_name")
-#}
 #reading identifying iam identity
 data "aws_caller_identity" "current" {
 }

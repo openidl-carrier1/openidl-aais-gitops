@@ -28,8 +28,8 @@ resource "aws_secretsmanager_secret" "vault_secret" {
     }]
   }
   POLICY
-  recovery_window_in_days = 30
-  tags = merge(local.tags, { Name = "${var.aws_env}-${var.org_name}-vault", Node_type = var.org_name })
+  recovery_window_in_days = 7
+  tags = merge(local.tags, { Name = "${var.aws_env}-${var.org_name}-vault", Cluster_type = "both" })
 }
 #setting up vault secret in secret manager
 resource "aws_secretsmanager_secret_version" "vault_secret_version" {
