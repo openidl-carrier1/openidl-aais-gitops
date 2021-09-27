@@ -16,8 +16,23 @@ output "cognito_client_secret" {
 output "git_actions_iam_user" {
   value = aws_iam_user.git_actions_user.arn
 }
+output "git_actions_iam_user_access_key" {
+  value = aws_iam_access_key.git_actions_access_key.id
+  sensitive = true
+}
 output "git_actions_iam_user_secret_key" {
   value = aws_iam_access_key.git_actions_access_key.secret
+  sensitive = true
+}
+output "baf_automation_user" {
+  value = aws_iam_user.baf_user.arn
+}
+output "baf_automation_user_access_key" {
+  value = aws_iam_access_key.baf_user_access_key.id
+  sensitive = true
+}
+output "baf_automation_user_secret_key" {
+  value = aws_iam_access_key.baf_user_access_key.secret
   sensitive = true
 }
 #-----------------------------------------------------------------------------------------------------------------
