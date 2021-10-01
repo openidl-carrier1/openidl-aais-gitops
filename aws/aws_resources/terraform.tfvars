@@ -38,7 +38,7 @@ userpool_email_verficiation_message              = "Your username is {username} 
 #EKS cluster specifications
 eks_worker_instance_type             = "t3.medium"
 kubeconfig_output_path               = "./kubeconfig_file/"
-manage_aws_auth                      = true
+manage_aws_auth                      = false
 cluster_endpoint_private_access      = true
 cluster_endpoint_public_access       = true
 cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
@@ -61,8 +61,5 @@ eks_wg_ebs_volume_size      = 100
 eks_wg_ebs_volume_type      = "gp2"
 eks_wg_ebs_vol_encrypted    = true
 eks_wg_health_check_type    = "EC2"
-
-
-
 
 

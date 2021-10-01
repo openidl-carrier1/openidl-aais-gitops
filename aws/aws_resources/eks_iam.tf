@@ -45,7 +45,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEC2ContainerRegistr
 resource "aws_iam_role" "eks_nodegroup_role" {
   for_each           = toset(["app-node-group", "blk-node-group"])
   name               = "${local.std_name}-${each.value}"
-  assume_role_policy = file("resources/policies/nodegroup-role-trust-policy.json")
+  assume_role_policy = file("resources/policies/workergroup-role-trust-policy.json")
   tags = merge(
     local.tags,
     {
@@ -71,7 +71,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSCNIPolicy" {
 #iam policy for the worker nodes to manage csi driver for persistent volumes
 resource "aws_iam_policy" "eks_worker_node_ebs_policy" {
   name   = "${local.std_name}-AmazonEBSCSIDriver"
-  policy = file("resources/policies/nodegroup-role-ebs-ci-driver-policy.json")
+  policy = file("resources/policies/workergroup-role-ebs-ci-driver-policy.json")
   tags = merge(local.tags,
     { "Name" = "${local.std_name}-AmazonEBSCSIDriver",
   "Cluster_type" = "both" })

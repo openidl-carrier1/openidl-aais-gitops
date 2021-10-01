@@ -24,22 +24,23 @@ resource "aws_s3_bucket_public_access_block" "tf_s3_bucket_public_access_block" 
   depends_on = [aws_s3_bucket.tf_s3_bucket,aws_s3_bucket_policy.tf_bucket_policy]
 }
 resource "aws_dynamodb_table" "tf_state_lock" {
-  name = var.tf_backend_dynamodb_table
-  billing_mode = "PROVISIONED"
-  read_capacity = 5
-  write_capacity = 5
-  tags = local.tags
-  hash_key = "LockID"
-  server_side_encryption {
-    enabled = true
-  }
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-  point_in_time_recovery {
-    enabled = true
-  }
+  for_each = toset(["${var.tf_backend_dynamodb_table_aws_resources}", "${var.tf_backend_dynamodb_table_k8s_resources}"])
+    name = each.value
+    billing_mode = "PROVISIONED"
+    read_capacity = 5
+    write_capacity = 5
+    tags = local.tags
+    hash_key = "LockID"
+    server_side_encryption {
+      enabled = true
+    }
+    attribute {
+      name = "LockID"
+      type = "S"
+    }
+    point_in_time_recovery {
+      enabled = true
+    }
 }
 resource "aws_s3_bucket_policy" "tf_bucket_policy"{
   bucket = aws_s3_bucket.tf_s3_bucket.id

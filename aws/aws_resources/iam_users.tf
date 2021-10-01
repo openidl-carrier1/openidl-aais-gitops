@@ -12,7 +12,7 @@ resource "aws_iam_user_policy_attachment" "baf_user_policy_attach" {
   user       = aws_iam_user.baf_user.name
   policy_arn = aws_iam_policy.eks_admin_policy.arn
 }
-#prepare git_actions user to assume a role #yet to update the code
+#IAM user and relevant credentials to use with github actions for EKS resource provisioning
 resource "aws_iam_user" "git_actions_user" {
   name = "${local.std_name}-gitactions-eksadm"
   force_destroy = true
@@ -22,7 +22,7 @@ resource "aws_iam_access_key" "git_actions_access_key" {
   user = aws_iam_user.git_actions_user.name
   status = "Active"
 }
-#secrets_manager_policy
+#IAM policy to assume git actions role for git actions user
 resource "aws_iam_user_policy" "git_actions_policy" {
   name = "${local.std_name}-gitactions-eksadm"
   user = aws_iam_user.git_actions_user.name

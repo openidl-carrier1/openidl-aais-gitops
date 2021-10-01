@@ -11,8 +11,13 @@ aws_external_id = "<external_id_setup_during_IAM_credentials_setup>"
 
 #Unique s3 bucket name to store terraform state files
 tf_backend_s3_bucket = "<globally_unique_s3_bucket_name>"
-#Name of the dynamoDB table to manage terraform state files if required to have state locking
-tf_backend_dynamodb_table = "<dynamodb_table_name>"
 
-#name of the s3 bucket to use for managing input files for terraform
+#Unique s3 bucket name to use for managing input files for terraform
 tf_inputs_s3_bucket = "<bucket_to_manage_terraform_inputs>"
+
+#Name of the dynamoDB table to manage terraform state files for AWS resource provisioning module
+tf_backend_dynamodb_table_aws_resources = "<dynamodb_table_name_aws_resources>"
+
+#Name of the dynamoDB table to manage terraform state files for K8S resource provisioning module
+tf_backend_dynamodb_table_k8s_resources = "<dynamodb_table_name_k8s_resources>"
+

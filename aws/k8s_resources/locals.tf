@@ -10,31 +10,23 @@ locals {
     Managed_by  = "terraform"
     Node_type   = var.org_name
   }
-  bastion_host_userdata = filebase64("resources/bootstrap_scripts/bastion_host.sh")
-  worker_nodes_userdata = filebase64("resources/bootstrap_scripts/worker_nodes.sh")
-  #cognito custom attributes
-  custom_attributes = [
-    "role",
-    "stateCode",
-    "stateName",
-    "organizationId"]
   #application cluster (eks) config-map (aws auth) - iam user to map
   app_cluster_map_users = [{
-    userarn = aws_iam_user.baf_user.arn
+    userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
     groups = ["system:masters"]
   }]
 
   #application cluster (eks) config-map (aws auth) - iam user to map
   blk_cluster_map_users = [{
-    userarn = aws_iam_user.baf_user.arn
+    userarn = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
     username = "admin"
     groups = ["system:masters"]
   }]
   #application cluster (eks) config-map (aws auth) - iam roles to map
   app_cluster_map_roles = [
     {
-      rolearn  = aws_iam_role.eks_nodegroup_role["app-node-group"].arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.app_eks_nodegroup_role_arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups = [
         "system:masters",
@@ -42,7 +34,7 @@ locals {
         "system:bootstrappers"]
   },
   {
-      rolearn  = aws_iam_role.eks_admin_role.arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
       username = "admin"
       groups = [
         "system:masters",
@@ -50,7 +42,7 @@ locals {
         "system:bootstrappers"]
   },
   {
-      rolearn  = aws_iam_role.git_actions_admin_role.arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.git_actions_admin_role_arn
       username = "admin"
       groups = [
         "system:masters",
@@ -60,7 +52,7 @@ locals {
   #blockchain cluster (eks) config-map (aws auth) - iam roles to map
   blk_cluster_map_roles = [
     {
-      rolearn  = aws_iam_role.eks_nodegroup_role["blk-node-group"].arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.blk_eks_nodegroup_role_arn
       username = "system:node:{{EC2PrivateDNSName}}"
       groups = [
         "system:masters",
@@ -68,7 +60,7 @@ locals {
         "system:bootstrappers"]
   },
     {
-      rolearn  = aws_iam_role.eks_admin_role.arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.eks_admin_role_arn
       username = "admin"
       groups = [
         "system:masters",
@@ -76,7 +68,7 @@ locals {
         "system:bootstrappers"]
   },
   {
-      rolearn  = aws_iam_role.git_actions_admin_role.arn
+      rolearn  = data.terraform_remote_state.base_setup.outputs.git_actions_admin_role_arn
       username = "admin"
       groups = [
         "system:masters",
@@ -110,107 +102,24 @@ locals {
       username = "admin"
       groups   = ["system:masters"]
   }]
-  app_def_sg_ingress = [{
-    cidr_blocks = var.app_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.app_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.app_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "8443"
-    to_port     = "8443"
-    protocol    = "tcp"
-  }]
-  blk_def_sg_ingress = [{
-    cidr_blocks = var.blk_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "22"
-    to_port     = "22"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.blk_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = var.blk_vpc_cidr
-    description = "Inbound SSH traffic"
-    from_port   = "8443"
-    to_port     = "8443"
-    protocol    = "tcp"
-  }]
-  def_sg_egress = [{
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "80"
-    to_port     = "80"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "443"
-    to_port     = "443"
-    protocol    = "tcp"
-  },
-  {
-    cidr_blocks = "0.0.0.0/0"
-    description = "Outbound SSH traffic"
-    from_port   = "8443"
-    to_port     = "8443"
-    protocol    = "tcp"
-  }]
-  app_tgw_routes = [{destination_cidr_block = var.blk_vpc_cidr}]
-  blk_tgw_routes = [{destination_cidr_block = var.app_vpc_cidr}]
-  app_tgw_destination_cidr = ["${var.blk_vpc_cidr}"]
-  blk_tgw_destination_cidr = ["${var.app_vpc_cidr}"]
   dns_entries_list_non_prod = {
     "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.app_bastion_nlb.lb_dns_name,
-    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"= module.blk_bastion_nlb.lb_dns_name,
+    "app-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
+    "blk-bastion.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"= var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
     "*.ordererorg.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
     "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
     "data-call-app-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
     "insurance-data-manager-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
     "utilities-service.${var.aws_env}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
   }
-    dns_entries_list_prod = {
+  dns_entries_list_prod = {
     "openidl.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
-    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.app_bastion_nlb.lb_dns_name,
-    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = module.blk_bastion_nlb.lb_dns_name,
+    "app-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null,
+    "blk-bastion.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null,
     "*.ordererorg.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
     "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.blk_nlb.dns_name,
     "data-call-app-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
     "insurance-data-manager-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name,
     "utilities-service.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}" = data.aws_alb.app_nlb.dns_name
-  }
-  vault_secrets_set_non_prod = {
-    url = "http://vault.${var.org_name}.${var.aws_env}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
-    username = "config-${var.org_name}"
-    password = random_password.vault_password.result
-    orgName = "${var.org_name}"
-    vaultPath = "config-${var.org_name}"
-    apiVersion = "v1"
-  }
-  vault_secrets_set_prod = {
-    url = "http://vault.${var.org_name}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
-    username = "config-${var.org_name}"
-    password = random_password.vault_password.result
-    orgName = "${var.org_name}"
-    vaultPath = "config-${var.org_name}"
-    apiVersion = "v1"
   }
 }

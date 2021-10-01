@@ -126,3 +126,6 @@ s3_bucket_name_cloudtrail = "cloudtrail-logs"
 #Setting a random value to this variable will rotate password in AWS secret manager which may further required to update in VAULT instance
 vault_password_reset = "set" #set a random string to this variable when password required to reset
 
+#--------------------------------------------------------------------------------------------------------------------
+#Name of the S3 bucket managing terraform state files
+terraform_state_s3_bucket_name = "trv-dev-tfstate-mgmt"

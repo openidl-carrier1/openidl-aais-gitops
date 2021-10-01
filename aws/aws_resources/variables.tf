@@ -20,11 +20,6 @@ variable "aws_account_number" {
   type        = string
   description = "The aws account number on which core application infra is to setup/exists"
 }
-
-#variable "node_type" {
-#  type        = string
-#  description = "The name of the node type will be setup"
-#}
 variable "aws_user_arn" {
   type        = string
   description = "The iam user will have access to s3 bucket and kms key"
@@ -586,15 +581,6 @@ variable "eks_wg_ebs_vol_encrypted" {
 variable "eks_wg_health_check_type" {
   description = "Type of Health check for worker group"
 }
-/*
-variable "app_cluster_service_ipv4_cidr" {
-  description = "The app eks cluster service ipv4 cidr"
-  type        = string
-}
-variable "blk_cluster_service_ipv4_cidr" {
-  description = "The app eks cluster service ipv4 cidr"
-  type        = string
-}*/
 variable "app_eks_worker_nodes_ssh_key" {
   type        = string
   description = "The ssh public key to setup on worker nodes in app cluster eks for remote access"
@@ -641,4 +627,8 @@ variable "org_name" {
 variable "vault_password_reset" {
   type = string
   description = "A random string to be set/changed when password vault password in AWS secrets manager required to reset"
+}
+variable "terraform_state_s3_bucket_name" {
+  type = string
+  description = "The name of the s3 bucket will manage terraform state files"
 }
