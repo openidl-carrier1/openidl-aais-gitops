@@ -321,6 +321,7 @@ resource "aws_kms_alias" "tf_inputs_s3_bucket_alias" {
   target_key_id = aws_kms_key.tf_inputs_s3_bucket_kms_key.id
 }
 #object setup inside s3 bucket configured for terraform inputs
+/*
 resource "aws_s3_bucket_object" "aais_object" {
   for_each = toset(["aais_node/dev/", "aais_node/test/", "aais_node/prod/",
                   "carrier_node/dev/", "carrier_node/test/", "carrier_node/prod/",
@@ -333,6 +334,6 @@ resource "aws_s3_bucket_object" "aais_object" {
   storage_class = "STANDARD"
   tags = local.tags
 
-}
+}*/
 
 
