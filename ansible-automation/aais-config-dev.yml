@@ -1,0 +1,43 @@
+access_id: ""
+access_key: ""
+region: ""
+cluster_name: ""
+account: ""
+
+ordererorg_domain: "aais.techiething.com"
+domain: "aais.techiething.com"
+internal_domain: "aais.internal.techiething.com"
+env: "dev"
+
+network:
+  org_name: "aais"
+  ordererorg: "true"
+  ordererorg_name: "ordererorg"
+  add_org: false
+  organizations:
+    - name: "analytics"
+      domain: "analytics.techiething.com"
+      org_status: "new"
+  gitops:
+    repo_url: "github.com/openidl-org/openidl-aais-gitops.git"
+    repo_branch: "baf-automation"
+    repo_user: ""
+    repo_user_token: ""
+    repo_user_email: ""
+  channels:
+  - name: analytics-aais
+    chaincode:
+      name: openidl-cc-aais-carriers
+      version: 1
+      repo_url: github.com/openidl-org/openidl-main.git
+      repo_branch: cognito-fabric-node14-helm
+      repo_path: openidl-chaincode/chaincode/openidl
+      collectionconfig:
+        name: "analytics_aais_pdc"
+        policy: "OR('analyticsMSP.member', 'aaisMSP.member')"
+  - name: defaultchannel
+    chaincode:
+      name: openidl-cc-default
+      repo_url: github.com/openidl-org/openidl-main.git
+      repo_branch: cognito-fabric-node14-helm
+      repo_path: openidl-chaincode/chaincode/openidl
