@@ -1,14 +1,28 @@
-# This is a manual workflow, hence it must be placed in the default branch of a repository to activate and use
+# This is a manual workflow, hence it must be placed in the default branch of a repository to enable and use
 #Author: Rajesh Sanjeevi
 #version: 1.0
 
-name: Manual BAF Deployment
+name: Deploy Blockhain Network
 on:
   workflow_dispatch:
     inputs:
-      role:
-        description: "ansible role name"
+      org_name:
+        description: "ORGANIZATION NAME"
         required: true
+        default: ""
+      role:
+        description: "ROLE NAME"
+        required: true
+        default: ""
+      channel_name:
+        description: "CHANNEL NAME"
+        default: ""
+        required: true
+      extra_vars:
+        description: "EXTRA ARGUMENTS"
+        default: ""
+      skip_tags:
+        description: "SKIP TASKS"
         default: ""
 
 env:
@@ -44,15 +58,18 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
         with:
-          aws-access-key-id: ${{ env.aws_access_key }}
-          aws-secret-access-key: ${{ env.aws_secret_key }}
-          aws-region: ${{ env.aws_region }}
+          aws-access-key-id: ${{ secrets.gitactions_user_access_key  }}
+          aws-secret-access-key: ${{ secrets.gitactions_user_secret_key }}
+          aws-region: ${{ secrets.aws_region }}
+          role-to-assume: ${{ secrets.gitactions_eksadm_role }}
+          role-external-id: ${{ secrets.gitactions_external_id }}
+          role-duration-seconds: 7200 # session valid for 60 minutes
+          role-session-name: git-actions
 
       - name: Install Ansible and dependencies
         run: |
           pip3 install openshift
-          sudo apt-get install -y python3-requests-oauthlib
-          sudo apt-get install -y python-yaml
+          sudo apt-get install -y python3-requests-oauthlib python-yaml jq
           python -m pip install --user ansible==2.9.11
 
       - name: Install ansible galaxy collection for docker and k8s
@@ -80,6 +97,33 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Playbook
+      - name: Deploy network
+        if: github.event.inputs.role == 'deploy_network'
         run: |
-          ansible-playbook deploy-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }} package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}" 
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
+      - name: Reset node
+        if: github.event.inputs.role == 'reset'
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
+      - name: Deploy add_new_org
+        if: github.event.inputs.role == 'add_new_org' && github.event.inputs.channel_name == 'analytics-aais'
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "org_json=$ORG_JSON" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
+      - name: Deploy add_new_channel
+        if: github.event.inputs.role == 'add_new_channel' && github.event.inputs.channel_name == 'analytics-aais'
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
+      - name: Deploy chaincode (channel_name = "")
+        if: github.event.inputs.role == 'chaincode' && github.event.inputs.channel_name == ''
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "skip_tags=${{ github.event.inputs.skip_tags }}"-e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
+      - name: Deploy chaincode (channel_name=analytics-aais)
+        if: github.event.inputs.role == 'chaincode' && github.event.inputs.channel_name == 'analytics-aais'
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./aais-config.yml" -e "channel_name=${{ github.event.inputs.channel_name }}" -e "skip_tags=${{ github.event.inputs.skip_tags }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+
