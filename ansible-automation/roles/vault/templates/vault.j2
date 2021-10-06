@@ -1,0 +1,39 @@
+global:
+  enabled: true
+server:
+  extraEnvironmentVars:
+    AWS_REGION: {{ vault_kms_region }}
+  extraSecretEnvironmentVars:
+    - envName: AWS_ACCESS_KEY_ID
+      secretName: {{aws_vault_secret}}
+      secretKey: AWS_ACCESS_KEY_ID
+    - envName: AWS_SECRET_ACCESS_KEY
+      secretName: {{aws_vault_secret}}
+      secretKey: AWS_SECRET_ACCESS_KEY
+
+  ha:
+    enabled: false
+    replicas: 3
+    apiAddr: null
+    raft:
+      enabled: false
+      setNodeId: false
+      config: |
+        ui = true
+
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+
+        storage "raft" {
+          path = "/vault/data" 
+        }
+
+        service_registration "kubernetes" {}
+
+        seal "awskms" {
+          region = "{{ region }}"
+          kms_key_id  = "{{ vault_kms_key_id | default('') }}"
+        }
