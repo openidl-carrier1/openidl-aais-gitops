@@ -7,18 +7,18 @@ on:
   workflow_dispatch:
     inputs:
       role:
-        description: "ansible role name"
+        description: "ROLE NAME"
         required: true
         default: ""
       channel_name:
-        description: "name of the channel"
+        description: "CHANNEL NAME"
         default: ""
         required: true
       extra_vars:
-        description: "additional arguments to ansible automation"
+        description: "EXTRA ARGUMENTS"
         default: ""
       skip_tags:
-        description: "ansible tasks to skip"
+        description: "SKIP TASKS"
         default: ""
 
 env:
