@@ -136,9 +136,9 @@ jobs:
             -e "access_id=${{ env.access_id }}" \
             -e "access_key=${{ env.access_key }}" \
             -e "account=${{ env.account }}" \
-            -e "repo_user=${{ env.repo_user }}" \
-            -e "repo_user_token=${{ env.repo_user_token }}" \
-            -e "repo_user_email=${{ env.repo_user_email }}"
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}"
 
       - name: Reset node
         if: github.event.inputs.role == 'reset'
@@ -151,11 +151,11 @@ jobs:
             -e "access_id=${{ env.access_id }}" \
             -e "access_key=${{ env.access_key }}" \
             -e "account=${{ env.account }}" \
-            -e "repo_user=${{ env.repo_user }}" \
-            -e "repo_user_token=${{ env.repo_user_token }}" \
-            -e "repo_user_email=${{ env.repo_user_email }}"
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}"
 
-      - name: Deploy chaincode (channel_name=analytics-aais)
+      - name: Deploy chaincode
         if: github.event.inputs.role == 'chaincode'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
@@ -166,9 +166,9 @@ jobs:
             -e "access_id=${{ env.access_id }}" \
             -e "access_key=${{ env.access_key }}" \
             -e "account=${{ env.account }}" \
-            -e "repo_user=${{ env.repo_user }}" \
-            -e "repo_user_token=${{ env.repo_user_token }}" \
-            -e "repo_user_email=${{ env.repo_user_email }}" \
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}"
 
@@ -183,9 +183,9 @@ jobs:
             -e "access_id=${{ env.access_id }}" \
             -e "access_key=${{ env.access_key }}" \
             -e "account=${{ env.account }}" \
-            -e "repo_user=${{ env.repo_user }}" \
-            -e "repo_user_token=${{ env.repo_user_token }}" \
-            -e "repo_user_email=${{ env.repo_user_email }}" \
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}"
 
@@ -200,8 +200,8 @@ jobs:
             -e "access_id=${{ env.access_id }}" \
             -e "access_key=${{ env.access_key }}" \
             -e "account=${{ env.account }}" \
-            -e "repo_user=${{ env.repo_user }}" \
-            -e "repo_user_token=${{ env.repo_user_token }}" \
-            -e "repo_user_email=${{ env.repo_user_email }}" \
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.events.inputs.channel_name }}" \
             -e "org_json=${{ github.events.inputs.org_json }}"
