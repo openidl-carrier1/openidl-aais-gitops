@@ -1,16 +1,6 @@
 global:
   enabled: true
 server:
-  extraEnvironmentVars:
-    AWS_REGION: {{ vault_kms_region }}
-  extraSecretEnvironmentVars:
-    - envName: AWS_ACCESS_KEY_ID
-      secretName: {{aws_vault_secret}}
-      secretKey: AWS_ACCESS_KEY_ID
-    - envName: AWS_SECRET_ACCESS_KEY
-      secretName: {{aws_vault_secret}}
-      secretKey: AWS_SECRET_ACCESS_KEY
-
   ha:
     enabled: false
     replicas: 3

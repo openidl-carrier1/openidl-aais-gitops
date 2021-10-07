@@ -12,6 +12,13 @@
     dest: "./network-setup.yml"
     mode: 0755
 
+- name: Create a k8s namespace
+  community.kubernetes.k8s:
+    name: openidl-baf
+    api_version: v1
+    kind: Namespace
+    state: present
+
 - name: Create secret for network details
   community.kubernetes.k8s:
     state: present
@@ -24,13 +31,6 @@
         namespace: openidl-baf     
       data:
         org.creds: "{{ org_json | default('') }}"
-
-- name: Create a k8s namespace
-  community.kubernetes.k8s:
-    name: openidl-baf
-    api_version: v1
-    kind: Namespace
-    state: present
 
 - name: Create secret for aws credentials
   community.kubernetes.k8s:
@@ -45,10 +45,6 @@
       data:
         ID: "{{ access_id | b64encode }}"
         KEY: "{{ access_key | b64encode }}"
-
-# - name: Get vault token
-#   shell: aws ssm 
-#   register: output
 
 - name: Create configmap for network configuration file
   shell: |
@@ -90,9 +86,9 @@
           - name: ORDERERORG
             value: "{{ network.ordererorg }}"
           - name: DOMAIN
-            value: "{{ network.domain }}"
+            value: "{{ domain }}"
           - name: ENV
-            value: "{{ network.env }}"
+            value: "{{ env }}"
           - name: CHANNEL_NAME
             value: "{{ channel_name | default('defaultchannel') }}"
           - name: EXTRA_VARS
@@ -172,11 +168,19 @@
   debug:
     msg: '{{ baf_logs.stdout_lines }}'
 
-- name: Delete baf pob
+- name: Delete baf pod
   community.kubernetes.k8s:
     name: openidl-baf
     namespace: openidl-baf
     api_version: v1
     kind: Pod
+    state: absent
+    wait: yes
+
+- name: Delete k8s namespace
+  community.kubernetes.k8s:
+    name: openidl-baf
+    api_version: v1
+    kind: Namespace
     state: absent
     wait: yes

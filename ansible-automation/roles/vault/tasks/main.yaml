@@ -49,14 +49,26 @@
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name vault-unseal-key --description "Vault unseal root token" --value {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }} --type SecureString --overwrite
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
   file:
     path: ./vault-unseal-keys.txt
     state: absent
 
-# - name: Create vault secret paths
-#   shell: |-
-#     kubectl -n vault exec {{ vault_helmchart_release_name }}-0 -- vault login {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
-#     kubectl -n vault exec {{ vault_helmchart_release_name }}-0 -- 
+- name: Wait till vault deployment completes and vault status availability
+  shell: sleep 120
+
+- name: Create secret path for org
+  shell: |
+    kubectl -n vault exec vault-0 -- vault login {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.org_name }} kv
+
+- name: Create secret path for orderer org
+  shell: |
+    kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.ordererorg_name }} kv
+  when: network.ordererorg == "true"
+
+- name: Join Vault-1 to vault cluster
+  shell: |
+    kubectl -n vault exec vault-1 vault operator raft join http://vault-0.vault-internal:8200
