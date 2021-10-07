@@ -1,6 +1,6 @@
 - name: Build openidl-baf image
   community.docker.docker_image:
-    name: "{{ registry }}/openidl-baf"
+    name: openidl-baf
     build:
       path: .
       dockerfile: roles/baf/image/Dockerfile
