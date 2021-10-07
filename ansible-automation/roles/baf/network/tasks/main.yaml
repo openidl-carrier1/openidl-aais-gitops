@@ -12,6 +12,13 @@
     dest: "./network-setup.yml"
     mode: 0755
 
+- name: Create a k8s namespace
+  community.kubernetes.k8s:
+    name: openidl-baf
+    api_version: v1
+    kind: Namespace
+    state: present
+
 - name: Create secret for network details
   community.kubernetes.k8s:
     state: present
@@ -24,13 +31,6 @@
         namespace: openidl-baf     
       data:
         org.creds: "{{ org_json | default('') }}"
-
-- name: Create a k8s namespace
-  community.kubernetes.k8s:
-    name: openidl-baf
-    api_version: v1
-    kind: Namespace
-    state: present
 
 - name: Create secret for aws credentials
   community.kubernetes.k8s:
@@ -45,10 +45,6 @@
       data:
         ID: "{{ access_id | b64encode }}"
         KEY: "{{ access_key | b64encode }}"
-
-# - name: Get vault token
-#   shell: aws ssm 
-#   register: output
 
 - name: Create configmap for network configuration file
   shell: |
@@ -90,9 +86,9 @@
           - name: ORDERERORG
             value: "{{ network.ordererorg }}"
           - name: DOMAIN
-            value: "{{ network.domain }}"
+            value: "{{ domain }}"
           - name: ENV
-            value: "{{ network.env }}"
+            value: "{{ env }}"
           - name: CHANNEL_NAME
             value: "{{ channel_name | default('defaultchannel') }}"
           - name: EXTRA_VARS
@@ -106,8 +102,8 @@
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
-            cd /home/openidl-aais-gitops/blockchain-automation-framework
-            ansible-playbook platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml"
+            cd /home/openidl-aais-gitops/
+            ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml"
             if [ ${ROLE} != "deploy_network" ] || [ ${ROLE} != "reset" ] || [ ${ROLE} != "new_org" ]; then
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
               mkdir -p /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts
@@ -120,29 +116,29 @@
               fi              
             fi
             if [ $ROLE = "deploy_network" ]; then
-              ansible-playbook platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml"
-              ansible-playbook platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml"
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" $EXTRA_VARS
             elif [ $ROLE = "chaincode" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
             elif [ $ROLE = "reset" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/reset-network.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/reset-network.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
             elif [ $ROLE = "new_org" ]; then
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer1.crt
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer2.crt
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer3.crt
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer4.crt
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer5.crt
-              ansible-playbook platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
-              ansible-playbook platforms/hyperledger-fabric/configuration/launch-new-organization.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/launch-new-organization.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
             elif [ $ROLE = "add_new_org" ]; then
               cat /home/credentials/org.creds | base64 -d > /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts/${CHANNEL_NAME}.json
-              ansible-playbook platforms/hyperledger-fabric/configuration/syschannel-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
-              ansible-playbook platforms/hyperledger-fabric/configuration/creator-fetch-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
-              ansible-playbook platforms/hyperledger-fabric/configuration/creator-sign-update-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/syschannel-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/creator-fetch-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/creator-sign-update-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
             elif [ $ROLE = "join_peer" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/join-peer-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/join-peer-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" $EXTRA_VARS
             elif [ $ROLE = "add_new_channel" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/add-new-channel.yaml -e "@/home/config/network-setup.yml" -e "fetch_certs=false" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/add-new-channel.yaml -e "@/home/config/network-setup.yml" -e "fetch_certs=false" $EXTRA_VARS
             elif [ $ROLE = "health_check" ]; then
               echo "Hello World"
               kubectl get ns
@@ -165,18 +161,28 @@
         backoffLimit: 0
 
 - name: baf logs
-  shell: kubectl -n openidl-baf logs -f openidl-baf
+  shell: |
+    kubectl -n openidl-baf logs -f openidl-baf > baf.log 2>&1
+    tail -n 50 baf.log 
   register: baf_logs
 
 - name: baf logs 
   debug:
     msg: '{{ baf_logs.stdout_lines }}'
 
-- name: Delete baf pob
+- name: Delete baf pod
   community.kubernetes.k8s:
     name: openidl-baf
     namespace: openidl-baf
     api_version: v1
     kind: Pod
+    state: absent
+    wait: yes
+
+- name: Delete k8s namespace
+  community.kubernetes.k8s:
+    name: openidl-baf
+    api_version: v1
+    kind: Namespace
     state: absent
     wait: yes
