@@ -163,7 +163,6 @@
 - name: baf logs
   shell: |
     kubectl -n openidl-baf logs -f openidl-baf > baf.log 2>&1
-    tail -n 50 baf.log 
   register: baf_logs
 
 - name: baf logs 
