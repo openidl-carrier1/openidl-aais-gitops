@@ -161,14 +161,14 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https" # Option for git over https or ssh
-        git_url: "https://{{ network.gitops.repo_url }}"         # Gitops https or ssh url for flux value files 
-        branch: "{{ network.gitops.repo_branch }}"           # Git branch where release is being made
+        git_url: "https://{{ gitops_repo_url }}"         # Gitops https or ssh url for flux value files 
+        branch: "{{ gitops_repo_branch }}"           # Git branch where release is being made
         release_dir: "blockchain-automation-framework/platforms/hyperledger-fabric/releases/{{ env }}" # Relative Path in the Git repo for flux sync per environment. 
         chart_source: "blockchain-automation-framework/platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "{{ network.gitops.repo_url }}"   # Gitops git repository URL for git push  (without https://)
-        username: "{{ network.gitops.repo_user }}"          # Git Service user who has rights to check-in in all branches
-        password: "{{ network.gitops.repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
-        email: "{{ network.gitops.repo_user_email }}"                # Email to use in git config
+        git_repo: "{{ gitops_repo_url }}"   # Gitops git repository URL for git push  (without https://)
+        username: "{{ gitops_repo_user }}"          # Git Service user who has rights to check-in in all branches
+        password: "{{ gitops_repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
+        email: "{{ gitops_repo_user_email }}"                # Email to use in git config
         private_key: ""          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
      
       # Services maps to the pods that will be deployed on the k8s cluster
@@ -239,14 +239,14 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https" # Option for git over https or ssh
-        git_url: "https://{{ network.gitops.repo_url }}"         # Gitops https or ssh url for flux value files 
-        branch: "{{ network.gitops.repo_branch }}"           # Git branch where release is being made
+        git_url: "https://{{ gitops_repo_url }}"         # Gitops https or ssh url for flux value files 
+        branch: "{{ gitops_repo_branch }}"           # Git branch where release is being made
         release_dir: "platforms/hyperledger-fabric/releases/{{ env }}" # Relative Path in the Git repo for flux sync per environment. 
         chart_source: "platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "{{ network.gitops.repo_url }}"   # Gitops git repository URL for git push  (without https://)
-        username: "{{ network.gitops.repo_user }}"          # Git Service user who has rights to check-in in all branches
-        password: "{{ network.gitops.repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
-        email: "{{ network.gitops.repo_user_email }}"                # Email to use in git config
+        git_repo: "{{ gitops_repo_url }}"   # Gitops git repository URL for git push  (without https://)
+        username: "{{ gitops_repo_user }}"          # Git Service user who has rights to check-in in all branches
+        password: "{{ gitops_repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
+        email: "{{ gitops_repo_user_email }}"                # Email to use in git config
         private_key: ""          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
 
       # The participating nodes are peers
@@ -335,15 +335,15 @@ network:
       # Do not check-in git_access_token
       gitops:
         git_protocol: "https" # Option for git over https or ssh
-        git_url: "https://github.com/suryalanka-cy/blockchain-automation-framework.git"         # Gitops https or ssh url for flux value files 
-        branch: "main"           # Git branch where release is being made
+        git_url: "https://{{ gitops_repo_url }}"         # Gitops https or ssh url for flux value files 
+        branch: "{{ gitops_repo_branch }}"           # Git branch where release is being made
         release_dir: "platforms/hyperledger-fabric/releases/{{ env }}" # Relative Path in the Git repo for flux sync per environment. 
         chart_source: "platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "github.com/suryalanka-cy/blockchain-automation-framework.git"   # Gitops git repository URL for git push  (without https://)
-        username: "suryalanka-cy"          # Git Service user who has rights to check-in in all branches
-        password: ""          # Git Server user password/token (Optional for ssh; Required for https)
-        email: "surya.lanka@chainyard.com"                # Email to use in git config
-        private_key: "../gitops"          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
+        git_repo: "{{ gitops_repo_url }}"   # Gitops git repository URL for git push  (without https://)
+        username: "{{ gitops_repo_user }}"          # Git Service user who has rights to check-in in all branches
+        password: "{{ gitops_repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
+        email: "{{ gitops_repo_user_email }}"                # Email to use in git config
+        private_key: ""          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
 
       # The participating nodes are peers
       # This organization hosts it's own CA server

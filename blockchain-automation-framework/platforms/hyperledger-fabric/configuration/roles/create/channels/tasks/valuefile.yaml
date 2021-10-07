@@ -36,5 +36,5 @@
     org_query: "organizations[?name=='{{peer.name}}']"
     GIT_DIR: "{{ playbook_dir }}/../../../../"
     gitops: "{{ org.gitops }}"
-    GIT_RESET_PATH: "platforms/hyperledger-fabric/configuration"
+    GIT_RESET_PATH: "blockchain-automation-framework/platforms/hyperledger-fabric/configuration"
     msg: "[ci skip] Pushing channel-create files"

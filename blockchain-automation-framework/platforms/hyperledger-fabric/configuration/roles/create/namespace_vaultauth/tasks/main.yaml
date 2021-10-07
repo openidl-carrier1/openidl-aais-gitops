@@ -77,7 +77,7 @@
   vars:
     GIT_DIR: "{{ playbook_dir }}/../../../../"
     gitops: "{{ item.gitops }}"
-    GIT_RESET_PATH: "platforms/hyperledger-fabric/configuration"
+    GIT_RESET_PATH: "blockchain-automation-framework/platforms/hyperledger-fabric/configuration"
     msg: "[ci skip] Pushing deployment files for namespace, service accounts and clusterrolebinding"
   tags:
     - notest

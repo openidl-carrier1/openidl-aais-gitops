@@ -1,6 +1,6 @@
 - name: Build openidl-baf image
   community.docker.docker_image:
-    name: openidl-baf
+    name: "{{ registry }}/openidl-baf"
     build:
       path: .
       dockerfile: roles/baf/image/Dockerfile
@@ -10,6 +10,6 @@
 - name: Push openidl-baf image
   community.docker.docker_image:
     name: openidl-baf
-    repository: suryalnvs/openidl-baf
+    repository: "{{ registry }}/openidl-baf"
     push: yes
     source: local
