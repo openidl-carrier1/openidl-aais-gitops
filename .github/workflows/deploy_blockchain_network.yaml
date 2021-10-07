@@ -90,7 +90,7 @@ jobs:
 
       - name: Update kubeconfig and set context to blockchain cluster
         run: |
-          aws eks update-kubeconfig --region ${{ env.aws_region }} --name ${{ env.cluster_name }}
+          aws eks update-kubeconfig --region ${{ env.region }} --name ${{ env.cluster_name }}
 
       - name: Install Docker
         run: |
