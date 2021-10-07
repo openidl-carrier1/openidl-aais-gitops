@@ -39,9 +39,9 @@
   include_role: 
     name: "{{ playbook_dir }}/../../shared/configuration/roles/git_push"
   vars:
-    GIT_DIR: "{{ playbook_dir }}/../../../../"
+    GIT_DIR: "{{ playbook_dir }}/../../../"
     gitops: "{{ item.gitops }}"
-    GIT_RESET_PATH: "blockchain-automation-framework/platforms/hyperledger-fabric/configuration"
+    GIT_RESET_PATH: "platforms/hyperledger-fabric/configuration"
     msg: "[ci skip] Pushing Peer files"
   tags:
     - notest
