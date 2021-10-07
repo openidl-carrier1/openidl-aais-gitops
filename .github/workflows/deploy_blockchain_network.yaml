@@ -39,6 +39,7 @@ env:
   repo_user_token: ${{ secrets.repo_user_token }}
   repo_user_email: ${{ secrets.repo_user_email }}
   registry: ghcr.io/${{ github.actor }}/openidl-org
+  config_file: ${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml
 
 defaults:
   run:
@@ -104,32 +105,32 @@ jobs:
       - name: Deploy network
         if: github.event.inputs.role == 'deploy_network'
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Reset node
         if: github.event.inputs.role == 'reset'
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Deploy add_new_org
         if: github.event.inputs.role == 'add_new_org' && github.event.inputs.channel_name == 'analytics-aais'
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "org_json=$ORG_JSON" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "org_json=$ORG_JSON" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Deploy add_new_channel
         if: github.event.inputs.role == 'add_new_channel' && github.event.inputs.channel_name == 'analytics-aais'
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "channel_name=${{ github.events.inputs.channel_name }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Deploy chaincode (channel_name = "")
         if: github.event.inputs.role == 'chaincode' && github.event.inputs.channel_name == ''
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "skip_tags=${{ github.event.inputs.skip_tags }}"-e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "skip_tags=${{ github.event.inputs.skip_tags }}"-e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Deploy chaincode (channel_name=analytics-aais)
         if: github.event.inputs.role == 'chaincode' && github.event.inputs.channel_name == 'analytics-aais'
         run: |
-          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" -e "channel_name=${{ github.event.inputs.channel_name }}" -e "skip_tags=${{ github.event.inputs.skip_tags }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners -e "role=${{ github.event.inputs.role }}" -e "@./${{ github.event.inputs.config_file }}" -e "channel_name=${{ github.event.inputs.channel_name }}" -e "skip_tags=${{ github.event.inputs.skip_tags }}" -e "package_repo=${{ env.registry }}/openidl-baf cluster_name=${{ env.cluster_name }} region=${{ env.region }} access_id=${{ env.access_id }} access_key=${{ env.access_key }} account=${{ env.account }} repo_user=${{ env.repo_user }} repo_user_token=${{ env.repo_user_token }} repo_user_email=${{ env.repo_user_email }}"
 
       - name: Deploy vault
         if: github.event.inputs.role == 'vault'
