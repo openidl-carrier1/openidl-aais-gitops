@@ -10,7 +10,7 @@ spec:
   chart:
     git: https://github.com/openidl-org/openidl-aais-gitops.git
     ref: baf-automation
-    path: platforms/hyperledger-fabric/charts/ca    
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
   values:
     metadata:
       namespace: aais-net
