@@ -12,12 +12,12 @@ ordererorg_domain: "aais.techiething.com"
 domain: "aais.techiething.com"
 internal_domain: "aais.internal.techiething.com"
 env: "dev"
+add_org: false 
 
 network:
   org_name: "aais"
   ordererorg: "true"
   ordererorg_name: "ordererorg"
-  add_org: false
   organizations:
     - name: "analytics"
       domain: "analytics.techiething.com"
