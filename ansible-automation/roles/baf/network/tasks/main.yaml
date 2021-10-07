@@ -102,8 +102,8 @@
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
-            cd /home/openidl-aais-gitops/blockchain-automation-framework
-            ansible-playbook platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml"
+            cd /home/openidl-aais-gitops/
+            ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml"
             if [ ${ROLE} != "deploy_network" ] || [ ${ROLE} != "reset" ] || [ ${ROLE} != "new_org" ]; then
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
               mkdir -p /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts
@@ -116,12 +116,12 @@
               fi              
             fi
             if [ $ROLE = "deploy_network" ]; then
-              ansible-playbook platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml"
-              ansible-playbook platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml"
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" $EXTRA_VARS
             elif [ $ROLE = "chaincode" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
             elif [ $ROLE = "reset" ]; then
-              ansible-playbook platforms/hyperledger-fabric/configuration/reset-network.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/reset-network.yaml -e "@/home/config/network-setup.yml" $EXTRA_VARS
             elif [ $ROLE = "new_org" ]; then
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer1.crt
               cat /home/credentials/org.creds | base64 -d > /home/blockchain-automation-framework/build/orderer2.crt
