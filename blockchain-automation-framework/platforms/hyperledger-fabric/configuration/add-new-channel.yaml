@@ -11,7 +11,6 @@
 - hosts: ansible_provisioners
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
-  display_args_to_stdout: "false"
 
   tasks:
 
@@ -48,6 +47,7 @@
         name: "create/configtx"
       vars:
         config_file: "./build/configtx.yaml"
+      no_log: true
 
     # This role generate channeltx
     - include_role:
@@ -61,6 +61,7 @@
         fetch_certs: "true"
       loop: "{{ network['channels'] }}"
       when: item.channel_status == 'new'
+      no_log: true
 
     # This role creates the value file for creating channel from creator organization
     # to the vault.
@@ -72,6 +73,7 @@
         docker_url: "{{ network.docker.url }}"
       loop: "{{ network['channels'] }}"
       when: item.channel_status == 'new'
+      no_log: true
 
     # This role creates the value file for joining channel from each participating peer
     # to the vault.
@@ -83,6 +85,7 @@
         docker_url: "{{ network.docker.url }}"
       loop: "{{ network['channels'] }}"
       when: item.channel_status == 'new'
+      no_log: true
       tags:
         - join
     # This role creates the value file for anchor peer update over channel for
@@ -95,6 +98,7 @@
         docker_url: "{{ network.docker.url }}"
       loop: "{{ network['channels'] }}"
       when: item.channel_status == 'new'
+      no_log: true
       tags:
         - anchorpeer
     # delete build directory
