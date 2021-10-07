@@ -69,8 +69,8 @@ jobs:
           aws-region: ${{ secrets.aws_region }}
           role-to-assume: ${{ secrets.gitactions_eksadm_role }}
           role-external-id: ${{ secrets.gitactions_external_id }}
-          role-duration-seconds: 7200 # session valid for 60 minutes
-          role-session-name: git-actions
+          role-duration-seconds: 3600 # session valid for 60 minutes
+          role-session-name: github-actions
 
       - name: Install Ansible and dependencies
         run: |
