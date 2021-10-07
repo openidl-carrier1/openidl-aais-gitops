@@ -11,6 +11,7 @@
 - hosts: ansible_provisioners
   gather_facts: no
   no_log: "{{ no_ansible_log | default(false) }}"
+  display_args_to_stdout: False
   tasks:
 
 #    # delete build directory
