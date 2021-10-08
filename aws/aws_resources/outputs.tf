@@ -135,6 +135,14 @@ output "r53_private_hosted_zone_id"{
 output "r53_private_hosted_zone_internal_id" {
   value = aws_route53_zone.aais_private_zones_internal.zone_id
 }
+#-----------------------------------------------------------------------------------------------------------------
+#KMS key related to vault unseal
+output "kms_key_arn_vault_unseal" {
+  value = aws_kms_key.vault_kms_key.arn
+}
+output "kms_key_id_vault_unseal" {
+  value = aws_kms_alias.vault_kms_key_alias.name
+}
 
 
 

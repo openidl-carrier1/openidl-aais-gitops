@@ -1,16 +1,15 @@
-#kms key for application cluster and blockchain cluster encryption
-resource "aws_kms_key" "eks_kms_key" {
-  for_each                = toset(["app-eks", "blk-eks"])
-  description             = "The KMS key for app eks"
+#kms key for hcp vault cluster unseal
+resource "aws_kms_key" "vault_kms_key" {
+  description             = "The KMS key for vault cluster"
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
   enable_key_rotation     = true
   policy = jsonencode({
-    "Id" : "${local.std_name}-${each.value}",
+    "Id" : "${local.std_name}-vault-kmskey-policy",
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "Enable IAM User Permissions",
+        "Sid" : "EnableIAMUserPermissions",
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : "arn:aws:iam::${var.aws_account_number}:root"
@@ -19,10 +18,10 @@ resource "aws_kms_key" "eks_kms_key" {
         "Resource" : "*"
       },
       {
-        "Sid" : "Allow access for Key Administrators",
+        "Sid" : "AllowaccessforKeyAdministrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
+          "AWS" : ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
         },
         "Action" : [
           "kms:Create*",
@@ -48,10 +47,10 @@ resource "aws_kms_key" "eks_kms_key" {
         "Resource" : "*"
       },
       {
-        "Sid" : "Allow attachment of persistent resources",
+        "Sid" : "Allowattachmentofpersistentresources",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_role_arn}"
+          "AWS" : ["${var.aws_role_arn}", aws_iam_role.git_actions_admin_role.arn, aws_iam_role.eks_nodegroup_role["app-node-group"].arn, aws_iam_role.eks_nodegroup_role["blk-node-group"].arn ]
         },
         "Action" : [
           "kms:CreateGrant",
@@ -64,37 +63,17 @@ resource "aws_kms_key" "eks_kms_key" {
             "kms:GrantIsForAWSResource" : "true"
           }
         }
-      },
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "logs.${var.aws_region}.amazonaws.com"
-        },
-        "Action" : [
-          "kms:Encrypt*",
-          "kms:Decrypt*",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:Describe*"
-        ],
-        "Resource" : "*",
-        "Condition" : {
-          "ArnLike" : {
-            "kms:EncryptionContext:aws:logs:arn" : "arn:aws:logs:${var.aws_region}:${var.aws_account_number}:*"
-          }
-        }
       }
     ]
   })
   tags = merge(
     local.tags,
     {
-      "Name"         = "${local.std_name}-${each.value}"
-      "Cluster_type" = "${each.value}"
+      "Name"         = "${local.std_name}-vault-kmskey"
+      "Cluster_type" = "both"
   }, )
 }
-resource "aws_kms_alias" "alias" {
-  for_each      = toset(["app-eks", "blk-eks"])
-  name          = "alias/${local.std_name}-${each.value}"
-  target_key_id = aws_kms_key.eks_kms_key["${each.value}"].id
+resource "aws_kms_alias" "vault_kms_key_alias" {
+  name          = "alias/${local.std_name}-vault-kmskey"
+  target_key_id = aws_kms_key.vault_kms_key.id
 }

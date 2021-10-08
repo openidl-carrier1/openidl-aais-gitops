@@ -30,16 +30,12 @@ resource "aws_iam_user_policy" "git_actions_policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "sts:TagSession",
-            "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.git_actions_admin_role.name}"
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": "sts:AssumeRole",
+            "Action": [
+                "sts:AssumeRole",
+                "sts:TagSession"
+            ],
             "Resource": "arn:aws:iam::${var.aws_account_number}:role/${aws_iam_role.git_actions_admin_role.name}",
+            "Effect": "Allow",
             "Condition": {
                 "StringEquals": {
                     "sts:ExternalId": "git-actions"
@@ -47,7 +43,7 @@ resource "aws_iam_user_policy" "git_actions_policy" {
             }
         }
     ]
-})
+  })
 }
 #iam policy for git actions role
 resource "aws_iam_policy" "git_actions_admin_policy" {
@@ -60,35 +56,26 @@ resource "aws_iam_policy" "git_actions_admin_policy" {
 #iam role - to perform git actions on EKS resources
 resource "aws_iam_role" "git_actions_admin_role" {
   name = "${local.std_name}-gitactions-eksadm"
-  assume_role_policy = jsonencode(
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowIamUserAssumeRole",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.git_actions_user.name}"
-      },
-      "Action": "sts:AssumeRole",
-      "Condition": {
-        "StringEquals": {
-          "sts:ExternalId": "git-actions"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "sts:AssumeRole",
+                "sts:TagSession"
+            ],
+            "Principal": { "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.git_actions_user.name}"},
+            "Effect": "Allow",
+            "Condition": {
+                "StringEquals": {
+                    "sts:ExternalId": "git-actions"
+                }
+            }
         }
-      }
-    },
-    {
-      "Sid": "AllowPassSessionTags",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${var.aws_account_number}:user/${aws_iam_user.git_actions_user.name}"
-      },
-      "Action": "sts:TagSession"
-    }
-  ]
-})
+    ]
+  })
   managed_policy_arns = [aws_iam_policy.git_actions_admin_policy.arn]
   tags = merge(local.tags, {Name = "${local.std_name}-gitactions-eksadm", Cluster_type = "both"})
   description = "The iam role that is used to manage EKS cluster resources using git actions"
-  max_session_duration = 3600
+  max_session_duration = 7200
 }
