@@ -50,7 +50,7 @@
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-6 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
   file:
@@ -113,7 +113,7 @@
       spec:
         containers:
         - name: config-user-script
-          image: suryalnvs/openidl-baf
+          image: "{{ registry }}/openidl-baf"
           env:
           - name: VAULT_CONFIG_USER
             valueFrom:
@@ -198,7 +198,7 @@
 
 - name: Upload config user credentials to secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-config-vault-6 --description "Vault Credentials for config user" --secret-string file://creds.json
+    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-config-vault --description "Vault Credentials for config user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file
   file:
@@ -216,7 +216,7 @@
 
 - name: Upload config user credentials to secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-kvs-vault-6 --description "Vault Credentials for kvs user" --secret-string file://creds.json
+    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-kvs-vault --description "Vault Credentials for kvs user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file
   file:

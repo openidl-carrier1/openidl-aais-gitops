@@ -13,6 +13,7 @@ domain: "aais.techiething.com"
 internal_domain: "aais.internal.techiething.com"
 env: "dev"
 add_org: false 
+registry: ""
 
 network:
   org_name: "aais"

@@ -27,7 +27,8 @@ preRegisterUser() {
         curl -X PUT ${COUCH_URL}
     fi
     mkdir -p ${PWD}/organizations/fabric-ca/${ORG}
-    curl -H "X-Vault-Token: ${VAULT_ROOT_TOKEN}" ${VAULT_URL}/v1/${VAULT_ORG}/crypto/peerOrganizations/${VAULT_ORG}-net/peers/peer0.${VAULT_ORG}-net/msp | jq -r .data.cacerts > ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
+    mkdir -p ${PWD}/organizations/peerOrganizations/${ORG}
+    curl -H "X-Vault-Token: ${VAULT_ROOT_TOKEN}" ${VAULT_URL}/v1/${ORG}/crypto/peerOrganizations/${ORG}-net/peers/peer0.${ORG}-net/msp | jq -r .data.cacerts > ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
     export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/${ORG}/
     # enroll admin
     fabric-ca-client enroll -u https://${CA_ADMIN_USERNAME}:${CA_ADMIN_PASSWORD}@${CA_URL} --caname ${CA_NAME} --tls.certfiles ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
@@ -35,7 +36,7 @@ preRegisterUser() {
     read -r -a USERNAMES <<<"$USERNAMES"
     for user in ${USERNAMES[@]}; do
         # register user
-        fabric-ca-client register --caname ${CA_NAME} --id.name ${user} --id.secret password --id.type client --id.attrs 'orgType=advisory:ecert' --tls.certfiles ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
+        fabric-ca-client register --caname ${CA_NAME} --id.name ${user} --id.secret ${CA_USER_PASSWORD} --id.type client --id.attrs 'orgType=advisory:ecert' --tls.certfiles ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
         # enroll user
         rm -rf ${FABRIC_CA_CLIENT_HOME}/users/${user}@${ORG}
         fabric-ca-client enroll -u https://${user}:${CA_USER_PASSWORD}@${CA_URL} --caname ${CA_NAME} -M ${FABRIC_CA_CLIENT_HOME}/users/${user}@${ORG}/msp --tls.certfiles ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
