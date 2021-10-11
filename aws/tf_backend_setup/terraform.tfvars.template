@@ -1,0 +1,23 @@
+#aws account credential details
+aws_account_id = "<aws_account_number>"
+aws_access_key = "<aws_iam_user_access_key>"
+aws_secret_key = "<aws_iam_user_secret_key>"
+aws_user_arn = "<aws_iam_user_arn>"
+aws_role_arn = "<aws_iam_role_arn>"
+
+#aws region to setup terraform background?
+aws_region = "<aws_region>"
+aws_external_id = "<external_id_setup>"
+
+#Unique s3 bucket name to store terraform state files
+tf_backend_s3_bucket = "<bucket_name_tf_state_file>"
+
+#name of the s3 bucket to use for managing input files for terraform
+tf_inputs_s3_bucket = "<bucket-name_tf_input_file>"
+
+#Name of the dynamoDB table to manage terraform state files for AWS resource provisioning module
+tf_backend_dynamodb_table_aws_resources = "<table_name_state_lock_AWS_RESOURCES>"
+
+#Name of the dynamoDB table to manage terraform state files for K8S resource provisioning module
+tf_backend_dynamodb_table_k8s_resources = "<table_name_state_lock_K8S_RESOURCES>"
+

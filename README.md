@@ -1,3 +1,3 @@
 # openidl-aais-gitops
 
-This repository holds the artifacts to build the AAIS openIDL nodes.
+##refer to aws directory to deploy aais/carrier/analytics nodes on aws using github actions pipeline. 

@@ -1,0 +1,532 @@
+# This workflow is used to deploy carrier_node in aws using terraform with github actions pipeline
+# On pull request to carrier_dev/test/prod this will run terraform init, fmt, validate and plan.
+# On push event to carrier_dev/test/prod this will run terraform apply
+# Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
+# Documentation for  `aws-actions/configure-aws-credentials` is located here: https://github.com/aws-actions/configure-aws-credentials
+
+name: 'carrier-node-openidl-pipeline-v1.0'
+on:
+  push:
+    paths:
+      - 'aws/**'
+      - '!helm/**'
+      - '!aws/templates/*/*.template'
+      - '!aws/tf_backend_setup/**'
+      - '!aws/README.md'
+      - '!README.md'
+
+    branches:
+      - carrier_dev
+      - carrier_test
+      - carrier_prod
+
+  pull_request:
+    paths:
+      - 'aws/**'
+      - '!helm/**'
+      - '!aws/templates/*/*.template'
+      - '!aws/tf_backend_setup/**'
+      - '!aws/README.md'
+      - '!README.md'
+
+    branches:
+      - carrier_dev
+      - carrier_test
+      - carrier_prod
+
+defaults:
+  run:
+    shell: bash
+    working-directory: aws
+
+jobs:
+  carrier_node_dev:
+    environment: carrier_dev
+
+    if: github.base_ref == 'carrier_dev' || github.ref == 'refs/heads/carrier_dev'
+    name: 'carrier-node-openidl-dev'
+    runs-on: ubuntu-latest
+
+    steps:
+    # Option:1 Referencing hashicorp vault for secrets
+    - name: Import Secrets
+      uses: hashicorp/vault-action@v2.1.0
+      with:
+    #################################################################################
+    # Auth option 1 (use one of the auth option only and comment out the other)
+        url: ${{ secrets.VAULT_ADDRRESS }}
+        method: approle
+        roleId: ${{ secrets.VAULT_ROLE_ID }}
+        secretId: ${{ secrets.VAULT_SECRET_ID }}
+        namespace: ${{ secrets.VAULT_NAMESPACE }}
+        exportToken: true
+        caCertificate: ${{ secrets.VAULT_CA }}
+
+    # Auth option 2 (use one of the auth option only and comment out the other)
+        url: ${{ secrets.VAULT_ADDRRESS }}
+        method: token
+        namespace: ${{ secrets.VAULT_SECRET_ID }}
+        token: ${{ secrets.VAULT_TOKEN }}
+        caCertificate: ${{ secrets.VAULT_CA }}
+    ##################################################################################
+        secrets: |
+          <path/to_secret> aws_account_number | TF_VAR_aws_account_number
+          <path/to_secret> aws_role_arn | TF_VAR_aws_role_arn
+          <path/to_secret> aws_user_arn | TF_VAR_aws_user_arn
+          <path/to_secret> app_bastion_ssh_key | TF_VAR_app_bastion_ssh_key
+          <path/to_secret> blk_bastion_ssh_key | TF_VAR_blk_bastion_ssh_key
+          <path/to_secret> app_eks_worker_nodes_ssh_key | TF_VAR_app_eks_worker_nodes_ssh_key
+          <path/to_secret> blk_eks_worker_nodes_ssh_key | TF_VAR_blk_eks_worker_nodes_ssh_key
+          <path/to_secret> ses_email_identity | TF_VAR_ses_email_identity
+          <path/to_secret> userpool_email_source_arn | TF_VAR_userpool_email_source_arn
+          <path/to_secret> app_cluster_map_users | TF_VAR_app_cluster_map_users
+          <path/to_secret> blk_cluster_map_user | TF_VAR_blk_cluster_map_users
+          <path/to_secret> app_cluster_map_roles | TF_VAR_app_cluster_map_roles
+          <path/to_secret> blk_cluster_map_roles | TF_VAR_blk_cluster_map_roles
+          <path/to_secret> aws_input_bucket | aws_input_bucket
+
+          <path/to_secret> aws_region | AWS_REGION
+          <path/to_secret> aws_access_key | AWS_ACCESS_KEY_ID ;
+          <path/to_secret> aws_secret_key | AWS_SECRET_ACCESS_KEY ;
+          <path/to_secret>  aws_iam_role_arn | AWS_IAM_ROLE;
+          <path/to_secret> aws_external_id | AWS_EXTERNAL_ID
+
+    # Verify the secrets pulled from hcp vault
+    - name: Verify secrets
+      run: |
+        if [ ${#AWS_ACCESS_KEY_ID} -lt 1 ]; then echo "error with aws access key" ; exit; fi
+        if [ ${#AWS_SECRET_ACCESS_KEY} -lt 1 ]; then echo "error with aws secret key" ; exit; fi
+        if [ ${#AWS_IAM_ROLE} -lt 1 ]; then echo "error with aws iam role" ; exit; fi
+        if [ ${#AWS_REGION} -lt 1 ]; then echo "error with aws region" ; exit; fi
+        if [ ${#AWS_EXTERNAL_ID} -lt 1 ]; then echo "error with aws external id" ; exit; fi
+
+        if [ ${#TF_VAR_aws_account_number} -lt 1 ]; then echo "error with aws account number" ; exit; fi
+        if [ ${#TF_VAR_aws_role_arn} -lt 1 ]; then echo "error with aws role arn" ; exit; fi
+        if [ ${#TF_VAR_aws_user_arn} -lt 1 ]; then echo "error with aws user arn" ; exit; fi
+        if [ ${#TF_VAR_app_bastion_ssh_key} -lt 1 ]; then echo "error with app_bastion_ssh_key" ; exit; fi
+        if [ ${#TF_VAR_blk_bastion_ssh_key} -lt 1 ]; then echo "error with blk_bastion_ssh_key" ; exit; fi
+        if [ ${#TF_VAR_app_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with app_eks_worker_nodes_ssh_key" ; exit; fi
+        if [ ${#TF_VAR_blk_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with blk_eks_worker_nodes_ssh_key" ; exit; fi
+        if [ ${#TF_VAR_ses_email_identity} -lt 1 ]; then echo "error with ses_email_identity" ; exit; fi
+        if [ ${#TF_VAR_userpool_email_source_arn} -lt 1 ]; then echo "error with userpool_email_source_arn" ; exit; fi
+        if [ ${#TF_VAR_app_cluster_map_users} -lt 1 ]; then echo "error with app_cluster_map_users" ; exit; fi
+        if [ ${#TF_VAR_blk_cluster_map_users} -lt 1 ]; then echo "error with blk_cluster_map_users" ; exit; fi
+        if [ ${#TF_VAR_app_cluster_map_roles} -lt 1 ]; then echo "error with app_cluster_map_roles" ; exit; fi
+        if [ ${#TF_VAR_blk_cluster_map_roles} -lt 1 ]; then echo "error with blk_cluster_map_roles" ; exit; fi
+        if [ ${#aws_input_bucket} -lt 1 ]; then echo "error with aws_input_bucket" ; exit; fi
+
+      # Configuring aws cli utilizing secrets
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ env.AWS_IAM_ROLE }}
+        role-external-id: ${{ env.AWS_EXTERNAL_ID }}
+        role-duration-seconds: 3600 # session valid for 60 minutes
+        role-session-name: terraform-session
+
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout Code
+      uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+    - name: Setup utilities
+      id: utilities
+      run: |
+        sudo apt-get update
+        sudo apt install curl
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        sudo unzip awscliv2.zip >> /dev/null
+        sudo ./aws/install || sudo ./aws/install --update
+        curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+        sudo chmod +x ./aws-iam-authenticator
+        mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+        echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+        curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+        sudo mv /tmp/eksctl /usr/local/bin
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/dev/carrier.tfvars carrier_dev.tfvars
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
+      with:
+        terraform_version: 1.0.0
+        terraform_wrapper: true
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      id: format
+      run: terraform fmt -recursive
+      #continue-on-error: true
+
+    ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      id: init
+      run: terraform init -backend-config=tf_s3_backend/s3_backend
+
+    # Sets up terraform workspace
+    - name: Terraform Workspace if push event
+      id: workspace-push
+      if: github.event_name == 'push'
+      run: terraform workspace select ${GITHUB_REF##*/} || terraform workspace new ${GITHUB_REF##*/}
+
+    - name: Terraform Workspace if pull event
+      id: workspace-pull
+      if: github.event_name == 'pull_request'
+      run: terraform workspace select ${{github.base_ref}} || terraform workspace new ${{github.base_ref}}
+
+    # Checks that all Terraform configuration files adhere for syntax
+    - name: Terraform Syntax
+      id: validate
+      run: terraform validate -no-color -json
+      #continue-on-error: true
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == 'pull_request'
+    # env:
+      run: terraform plan -var-file=carrier_dev.tfvars -out=dev_plan.out && terraform show -json dev_plan.out > dev_plan.out.json
+      continue-on-error: true
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    # On push to main, build or change infrastructure according to Terraform configuration files
+    - name: Terraform Apply
+      id: apply
+      #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
+      if: github.ref == 'refs/heads/carrier_dev' && github.event_name == 'push'
+      run: terraform apply -auto-approve -var-file=carrier_dev.tfvars
+
+  carrier_node_test:
+    environment: carrier_test
+
+    if: github.base_ref == 'carrier_test' || github.ref == 'refs/heads/carrier_test'
+    name: 'carrier-node-openidl-test'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Option:1 Referencing hashicorp vault for secrets
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.1.0
+        with:
+          #################################################################################
+          # Auth option 1 (use one of the auth option only and comment out the other)
+          url: ${{ secrets.VAULT_ADDRRESS }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          namespace: ${{ secrets.VAULT_NAMESPACE }}
+          exportToken: true
+          caCertificate: ${{ secrets.VAULT_CA }}
+
+          # Auth option 2 (use one of the auth option only and comment out the other)
+          url: ${{ secrets.VAULT_ADDRRESS }}
+          method: token
+          namespace: ${{ secrets.VAULT_SECRET_ID }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          caCertificate: ${{ secrets.VAULT_CA }}
+          ##################################################################################
+          secrets: |
+            <path/to_secret> aws_account_number | TF_VAR_aws_account_number
+            <path/to_secret> aws_role_arn | TF_VAR_aws_role_arn
+            <path/to_secret> aws_user_arn | TF_VAR_aws_user_arn
+            <path/to_secret> app_bastion_ssh_key | TF_VAR_app_bastion_ssh_key
+            <path/to_secret> blk_bastion_ssh_key | TF_VAR_blk_bastion_ssh_key
+            <path/to_secret> app_eks_worker_nodes_ssh_key | TF_VAR_app_eks_worker_nodes_ssh_key
+            <path/to_secret> blk_eks_worker_nodes_ssh_key | TF_VAR_blk_eks_worker_nodes_ssh_key
+            <path/to_secret> ses_email_identity | TF_VAR_ses_email_identity
+            <path/to_secret> userpool_email_source_arn | TF_VAR_userpool_email_source_arn
+            <path/to_secret> app_cluster_map_users | TF_VAR_app_cluster_map_users
+            <path/to_secret> blk_cluster_map_user | TF_VAR_blk_cluster_map_users
+            <path/to_secret> app_cluster_map_roles | TF_VAR_app_cluster_map_roles
+            <path/to_secret> blk_cluster_map_roles | TF_VAR_blk_cluster_map_roles
+            <path/to_secret> aws_input_bucket | aws_input_bucket
+
+            <path/to_secret> aws_region | AWS_REGION
+            <path/to_secret> aws_access_key | AWS_ACCESS_KEY_ID ;
+            <path/to_secret> aws_secret_key | AWS_SECRET_ACCESS_KEY ;
+            <path/to_secret>  aws_iam_role_arn | AWS_IAM_ROLE;
+            <path/to_secret> aws_external_id | AWS_EXTERNAL_ID
+
+      # Verify the secrets pulled from hcp vault
+      - name: Verify secrets
+        run: |
+          if [ ${#AWS_ACCESS_KEY_ID} -lt 1 ]; then echo "error with aws access key" ; exit; fi
+          if [ ${#AWS_SECRET_ACCESS_KEY} -lt 1 ]; then echo "error with aws secret key" ; exit; fi
+          if [ ${#AWS_IAM_ROLE} -lt 1 ]; then echo "error with aws iam role" ; exit; fi
+          if [ ${#AWS_REGION} -lt 1 ]; then echo "error with aws region" ; exit; fi
+          if [ ${#AWS_EXTERNAL_ID} -lt 1 ]; then echo "error with aws external id" ; exit; fi
+
+          if [ ${#TF_VAR_aws_account_number} -lt 1 ]; then echo "error with aws account number" ; exit; fi
+          if [ ${#TF_VAR_aws_role_arn} -lt 1 ]; then echo "error with aws role arn" ; exit; fi
+          if [ ${#TF_VAR_aws_user_arn} -lt 1 ]; then echo "error with aws user arn" ; exit; fi
+          if [ ${#TF_VAR_app_bastion_ssh_key} -lt 1 ]; then echo "error with app_bastion_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_blk_bastion_ssh_key} -lt 1 ]; then echo "error with blk_bastion_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_app_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with app_eks_worker_nodes_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_blk_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with blk_eks_worker_nodes_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_ses_email_identity} -lt 1 ]; then echo "error with ses_email_identity" ; exit; fi
+          if [ ${#TF_VAR_userpool_email_source_arn} -lt 1 ]; then echo "error with userpool_email_source_arn" ; exit; fi
+          if [ ${#TF_VAR_app_cluster_map_users} -lt 1 ]; then echo "error with app_cluster_map_users" ; exit; fi
+          if [ ${#TF_VAR_blk_cluster_map_users} -lt 1 ]; then echo "error with blk_cluster_map_users" ; exit; fi
+          if [ ${#TF_VAR_app_cluster_map_roles} -lt 1 ]; then echo "error with app_cluster_map_roles" ; exit; fi
+          if [ ${#TF_VAR_blk_cluster_map_roles} -lt 1 ]; then echo "error with blk_cluster_map_roles" ; exit; fi
+          if [ ${#aws_input_bucket} -lt 1 ]; then echo "error with aws_input_bucket" ; exit; fi
+
+        # Configuring aws cli utilizing secrets
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_IAM_ROLE }}
+          role-external-id: ${{ env.AWS_EXTERNAL_ID }}
+          role-duration-seconds: 3600 # session valid for 60 minutes
+          role-session-name: terraform-session
+
+          # Checkout the repository to the GitHub Actions runner
+      - name: Checkout Code
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+      - name: Setup utilities
+        id: utilities
+        run: |
+          sudo apt-get update
+          sudo apt install curl
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          sudo unzip awscliv2.zip >> /dev/null
+          sudo ./aws/install || sudo ./aws/install --update
+          curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+          sudo chmod +x ./aws-iam-authenticator
+          mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+          echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/test/carrier.tfvars carrier_test.tfvars
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
+        with:
+          terraform_version: 1.0.0
+          terraform_wrapper: true
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        id: format
+        run: terraform fmt -recursive
+        #continue-on-error: true
+
+      ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config=tf_s3_backend/s3_backend
+
+      # Sets up terraform workspace
+      - name: Terraform Workspace if push event
+        id: workspace-push
+        if: github.event_name == 'push'
+        run: terraform workspace select ${GITHUB_REF##*/} || terraform workspace new ${GITHUB_REF##*/}
+
+      - name: Terraform Workspace if pull event
+        id: workspace-pull
+        if: github.event_name == 'pull_request'
+        run: terraform workspace select ${{github.base_ref}} || terraform workspace new ${{github.base_ref}}
+
+      # Checks that all Terraform configuration files adhere for syntax
+      - name: Terraform Syntax
+        id: validate
+        run: terraform validate -no-color -json
+        #continue-on-error: true
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        # env:
+        run: terraform plan -var-file=carrier_test.tfvars -out=test_plan.out && terraform show -json test_plan.out > test_plan.out.json
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      # On push to main, build or change infrastructure according to Terraform configuration files
+      - name: Terraform Apply
+        id: apply
+        #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
+        if: github.ref == 'refs/heads/carrier_test' && github.event_name == 'push'
+        run: terraform apply -auto-approve -var-file=carrier_test.tfvars
+
+  carrier_node_prod:
+    environment: carrier_prod
+
+    if: github.base_ref == 'carrier_prod' || github.ref == 'refs/heads/carrier_prod'
+    name: 'carrier-node-openidl-prod'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Option:1 Referencing hashicorp vault for secrets
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.1.0
+        with:
+          #################################################################################
+          # Auth option 1 (use one of the auth option only and comment out the other)
+          url: ${{ secrets.VAULT_ADDRRESS }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          namespace: ${{ secrets.VAULT_NAMESPACE }}
+          exportToken: true
+          caCertificate: ${{ secrets.VAULT_CA }}
+
+          # Auth option 2 (use one of the auth option only and comment out the other)
+          url: ${{ secrets.VAULT_ADDRRESS }}
+          method: token
+          namespace: ${{ secrets.VAULT_SECRET_ID }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          caCertificate: ${{ secrets.VAULT_CA }}
+          ##################################################################################
+          secrets: |
+            <path/to_secret> aws_account_number | TF_VAR_aws_account_number
+            <path/to_secret> aws_role_arn | TF_VAR_aws_role_arn
+            <path/to_secret> aws_user_arn | TF_VAR_aws_user_arn
+            <path/to_secret> app_bastion_ssh_key | TF_VAR_app_bastion_ssh_key
+            <path/to_secret> blk_bastion_ssh_key | TF_VAR_blk_bastion_ssh_key
+            <path/to_secret> app_eks_worker_nodes_ssh_key | TF_VAR_app_eks_worker_nodes_ssh_key
+            <path/to_secret> blk_eks_worker_nodes_ssh_key | TF_VAR_blk_eks_worker_nodes_ssh_key
+            <path/to_secret> ses_email_identity | TF_VAR_ses_email_identity
+            <path/to_secret> userpool_email_source_arn | TF_VAR_userpool_email_source_arn
+            <path/to_secret> app_cluster_map_users | TF_VAR_app_cluster_map_users
+            <path/to_secret> blk_cluster_map_user | TF_VAR_blk_cluster_map_users
+            <path/to_secret> app_cluster_map_roles | TF_VAR_app_cluster_map_roles
+            <path/to_secret> blk_cluster_map_roles | TF_VAR_blk_cluster_map_roles
+            <path/to_secret> aws_input_bucket | aws_input_bucket
+
+            <path/to_secret> aws_region | AWS_REGION
+            <path/to_secret> aws_access_key | AWS_ACCESS_KEY_ID ;
+            <path/to_secret> aws_secret_key | AWS_SECRET_ACCESS_KEY ;
+            <path/to_secret>  aws_iam_role_arn | AWS_IAM_ROLE;
+            <path/to_secret> aws_external_id | AWS_EXTERNAL_ID
+
+      # Verify the secrets pulled from hcp vault
+      - name: Verify secrets
+        run: |
+          if [ ${#AWS_ACCESS_KEY_ID} -lt 1 ]; then echo "error with aws access key" ; exit; fi
+          if [ ${#AWS_SECRET_ACCESS_KEY} -lt 1 ]; then echo "error with aws secret key" ; exit; fi
+          if [ ${#AWS_IAM_ROLE} -lt 1 ]; then echo "error with aws iam role" ; exit; fi
+          if [ ${#AWS_REGION} -lt 1 ]; then echo "error with aws region" ; exit; fi
+          if [ ${#AWS_EXTERNAL_ID} -lt 1 ]; then echo "error with aws external id" ; exit; fi
+
+          if [ ${#TF_VAR_aws_account_number} -lt 1 ]; then echo "error with aws account number" ; exit; fi
+          if [ ${#TF_VAR_aws_role_arn} -lt 1 ]; then echo "error with aws role arn" ; exit; fi
+          if [ ${#TF_VAR_aws_user_arn} -lt 1 ]; then echo "error with aws user arn" ; exit; fi
+          if [ ${#TF_VAR_app_bastion_ssh_key} -lt 1 ]; then echo "error with app_bastion_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_blk_bastion_ssh_key} -lt 1 ]; then echo "error with blk_bastion_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_app_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with app_eks_worker_nodes_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_blk_eks_worker_nodes_ssh_key} -lt 1 ]; then echo "error with blk_eks_worker_nodes_ssh_key" ; exit; fi
+          if [ ${#TF_VAR_ses_email_identity} -lt 1 ]; then echo "error with ses_email_identity" ; exit; fi
+          if [ ${#TF_VAR_userpool_email_source_arn} -lt 1 ]; then echo "error with userpool_email_source_arn" ; exit; fi
+          if [ ${#TF_VAR_app_cluster_map_users} -lt 1 ]; then echo "error with app_cluster_map_users" ; exit; fi
+          if [ ${#TF_VAR_blk_cluster_map_users} -lt 1 ]; then echo "error with blk_cluster_map_users" ; exit; fi
+          if [ ${#TF_VAR_app_cluster_map_roles} -lt 1 ]; then echo "error with app_cluster_map_roles" ; exit; fi
+          if [ ${#TF_VAR_blk_cluster_map_roles} -lt 1 ]; then echo "error with blk_cluster_map_roles" ; exit; fi
+          if [ ${#aws_input_bucket} -lt 1 ]; then echo "error with aws_input_bucket" ; exit; fi
+
+        # Configuring aws cli utilizing secrets
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@230d25f14e841bc8e06b5f4ff89ccd6989fc1d71
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_IAM_ROLE }}
+          role-external-id: ${{ env.AWS_EXTERNAL_ID }}
+          role-duration-seconds: 3600 # session valid for 60 minutes
+          role-session-name: terraform-session
+
+
+          # Checkout the repository to the GitHub Actions runner
+      - name: Checkout Code
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+      - name: Setup utilities
+        id: utilities
+        run: |
+          sudo apt-get update
+          sudo apt install curl
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          sudo unzip awscliv2.zip >> /dev/null
+          sudo ./aws/install || sudo ./aws/install --update
+          curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.21.2/2021-07-05/bin/linux/amd64/aws-iam-authenticator
+          sudo chmod +x ./aws-iam-authenticator
+          mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+          echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          aws s3 cp s3://${{env.aws_input_bucket}}/carrier_node/prod/carrier.tfvars carrier_prod.tfvars
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@a504130155a42639c3c62d0fafc9ff047dcfdb8b
+        with:
+          terraform_version: 1.0.0
+          terraform_wrapper: true
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        id: format
+        run: terraform fmt -recursive
+        #continue-on-error: true
+
+      ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        id: init
+        run: terraform init -backend-config=tf_s3_backend/s3_backend
+
+      # Sets up terraform workspace
+      - name: Terraform Workspace if push event
+        id: workspace-push
+        if: github.event_name == 'push'
+        run: terraform workspace select ${GITHUB_REF##*/} || terraform workspace new ${GITHUB_REF##*/}
+
+      - name: Terraform Workspace if pull event
+        id: workspace-pull
+        if: github.event_name == 'pull_request'
+        run: terraform workspace select ${{github.base_ref}} || terraform workspace new ${{github.base_ref}}
+
+      # Checks that all Terraform configuration files adhere for syntax
+      - name: Terraform Syntax
+        id: validate
+        run: terraform validate -no-color -json
+        #continue-on-error: true
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        # env:
+        run: terraform plan -var-file=carrier_prod.tfvars -out=prod_plan.out && terraform show -json prod_plan.out > prod_plan.out.json
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      # On push to main, build or change infrastructure according to Terraform configuration files
+      - name: Terraform Apply
+        id: apply
+        #if: ((github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/dev') && (github.event_name == 'push'))
+        if: github.ref == 'refs/heads/carrier_prod' && github.event_name == 'push'
+        run: terraform apply -auto-approve -var-file=carrier_prod.tfvars
+
