@@ -14,8 +14,8 @@ on:
         description: "ENVIRONMENT"
         required: true
         default: ""
-      role:
-        description: "ROLE NAME"
+      action:
+        description: "ACTION"
         required: true
         default: ""
       channel_name:
@@ -27,7 +27,7 @@ on:
         default: ""
         required: false
       org_json:
-        description: "Organization credentials (when role=add_new_org) or Orderer tls certificate (when role=new_org)"
+        description: "Organization credentials (when action=add_new_org) or Orderer tls certificate (when action=new_org)"
         default: ""
         required: false
 
@@ -109,7 +109,7 @@ jobs:
           version: v3.6.3
 
       - name: Deploy Vault cluster
-        if: github.event.inputs.role == 'vault'
+        if: github.event.inputs.action == 'vault'
         run: |
           ansible-playbook vault-setup.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
@@ -120,16 +120,16 @@ jobs:
             -e "account=${{ env.account }}"
 
       - name: Build and publish baf image
-        if: github.event.inputs.role == 'baf_image'
+        if: github.event.inputs.action == 'baf_image'
         run: |
           ansible-playbook baf-image.yml -i ./inventory/ansible_provisioners \
             -e "registry=${{ env.registry }}"
 
       - name: Deploy network
-        if: github.event.inputs.role == 'deploy_network'
+        if: github.event.inputs.action == 'deploy_network'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
-            -e "role=${{ github.event.inputs.role }}" \
+            -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "cluster_name=${{ env.cluster_name }}" \
             -e "region=${{ env.region }}" \
@@ -138,13 +138,14 @@ jobs:
             -e "account=${{ env.account }}" \
             -e "gitops_repo_user=${{ env.repo_user }}" \
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
-            -e "gitops_repo_user_email=${{ env.repo_user_email }}"
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
+            -e "registry=${{ env.registry }}"
 
       - name: Reset node
-        if: github.event.inputs.role == 'reset'
+        if: github.event.inputs.action == 'reset'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
-            -e "role=${{ github.event.inputs.role }}" \
+            -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "cluster_name=${{ env.cluster_name }}" \
             -e "region=${{ env.region }}" \
@@ -153,13 +154,14 @@ jobs:
             -e "account=${{ env.account }}" \
             -e "gitops_repo_user=${{ env.repo_user }}" \
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
-            -e "gitops_repo_user_email=${{ env.repo_user_email }}"
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
+            -e "registry=${{ env.registry }}"
 
       - name: Deploy chaincode
-        if: github.event.inputs.role == 'chaincode'
+        if: github.event.inputs.action == 'chaincode'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
-            -e "role=${{ github.event.inputs.role }}" \
+            -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "cluster_name=${{ env.cluster_name }}" \
             -e "region=${{ env.region }}" \
@@ -170,13 +172,14 @@ jobs:
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
-            -e "extra_vars=${{ github.event.inputs.extra_vars }}"
+            -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
+            -e "registry=${{ env.registry }}"
 
       - name: Deploy add_new_channel
-        if: github.event.inputs.role == 'add_new_channel'
+        if: github.event.inputs.action == 'add_new_channel'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
-            -e "role=${{ github.event.inputs.role }}" \
+            -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "cluster_name=${{ env.cluster_name }}" \
             -e "region=${{ env.region }}" \
@@ -187,13 +190,14 @@ jobs:
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
-            -e "extra_vars=${{ github.event.inputs.extra_vars }}"
+            -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
+            -e "registry=${{ env.registry }}"
 
       - name: Deploy add_new_org
-        if: github.event.inputs.role == 'add_new_org'
+        if: github.event.inputs.action == 'add_new_org'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
-            -e "role=${{ github.event.inputs.role }}" \
+            -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "cluster_name=${{ env.cluster_name }}" \
             -e "region=${{ env.region }}" \
@@ -204,4 +208,19 @@ jobs:
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.events.inputs.channel_name }}" \
-            -e "org_json=${{ github.events.inputs.org_json }}"
+            -e "org_json=${{ github.events.inputs.org_json }}" \
+            -e "registry=${{ env.registry }}"
+
+      - name: Pre-register users for application
+        if: github.event.inputs.action == 'register_users'
+        run: |
+          ansible-playbook pre-register-users.yml -i ./inventory/ansible_provisioners \
+            -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
+            -e "cluster_name=${{ env.cluster_name }}" \
+            -e "region=${{ env.region }}" \
+            -e "access_id=${{ env.access_id }}" \
+            -e "access_key=${{ env.access_key }}" \
+            -e "account=${{ env.account }}" \
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}"
