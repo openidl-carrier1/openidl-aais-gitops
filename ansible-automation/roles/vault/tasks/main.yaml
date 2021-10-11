@@ -50,7 +50,7 @@
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-6 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
   file:
@@ -104,7 +104,6 @@
 - name: Launch Pod for vault user
   community.kubernetes.k8s:
     state: present
-    wait: yes
     definition:
       apiVersion: v1
       kind: Pod
@@ -180,6 +179,7 @@
 
 - name: Pod logs
   shell: |
+    sleep 30
     kubectl -n vault logs -f vault-user-script
   register: baf_logs
 
@@ -187,13 +187,41 @@
   debug:
     msg: '{{ baf_logs.stdout_lines }}'
 
-- name: Upload config user credentials to secrets manager
-  shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-config-vault-1 --description "Vault Credentials for config user" --secret-string {"url":"http://vault.{{ env }}.{{ internal_domain }}","username":"{{ vault_config_user }}","password":"{{ vault_config_user_token }}","orgName":"config","vaultPath":"config-{{ network.org_name }}","apiVersion":"v1"}
+- name: Generate user credentials json
+  template:
+    src: templates/creds.json.j2
+    dest: ./creds.json
+  vars:
+    vault_path: "config-{{ network.org_name }}"
+    vault_user: "{{ vault_config_user }}"
+    vault_user_token: "{{ vault_config_user_token }}"
 
 - name: Upload config user credentials to secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-kvs-vault-1 --description "Vault Credentials for kvs user" --secret-string {"url":"http://vault.{{ env }}.{{ internal_domain }}","username":"{{ vault_kvs_user }}","password":"{{ vault_kvs_user_token }}","orgName":"kvs","vaultPath":"kvs-{{ network.org_name }}","apiVersion":"v1"}
+    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-config-vault-6 --description "Vault Credentials for config user" --secret-string file://creds.json
+
+- name: Delete config user credentials json file
+  file:
+    state: absent
+    path: ./creds.json
+
+- name: Generate user credentials json
+  template:
+    src: templates/creds.json.j2
+    dest: ./creds.json
+  vars:
+    vault_path: "kvs-{{ network.org_name }}"
+    vault_user: "{{ vault_kvs_user }}"
+    vault_user_token: "{{ vault_kvs_user_token }}"
+
+- name: Upload config user credentials to secrets manager
+  shell: |
+    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-kvs-vault-6 --description "Vault Credentials for kvs user" --secret-string file://creds.json
+
+- name: Delete config user credentials json file
+  file:
+    state: absent
+    path: ./creds.json
 
 - name: Delete user script pod
   community.kubernetes.k8s:
@@ -224,3 +252,8 @@
   file:
     state: absent
     path: ./add-vault-user.sh
+
+- name: Delete vault values file
+  file:
+    state: absent
+    path: ./vault-values.yaml
