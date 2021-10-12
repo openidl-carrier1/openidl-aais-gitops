@@ -31,22 +31,6 @@ on:
         default: ""
         required: false
 
-env:
-  cluster_name: ${{ secrets.blk_cluster_name }}
-  region: ${{ secrets.aws_region }}
-  access_id: ${{ secrets.baf_user_access_key }}
-  access_key: ${{ secrets.baf_user_secret_key }}
-  account: ${{ secrets.aws_account_number }}
-  repo_user: ${{ secrets.repo_user }}
-  repo_user_token: ${{ secrets.repo_user_token }}
-  repo_user_email: ${{ secrets.repo_user_email }}
-  registry: ghcr.io/${{ github.actor }}/openidl-org
-
-defaults:
-  run:
-    shell: bash
-    working-directory: ansible-automation
-
 jobs:
 
   blk-cluster-pipeline:
