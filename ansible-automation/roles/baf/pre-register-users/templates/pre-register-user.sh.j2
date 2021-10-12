@@ -29,6 +29,7 @@ preRegisterUser() {
     mkdir -p ${PWD}/organizations/fabric-ca/${ORG}
     mkdir -p ${PWD}/organizations/peerOrganizations/${ORG}
     curl -H "X-Vault-Token: ${VAULT_ROOT_TOKEN}" ${VAULT_URL}/v1/${ORG}/crypto/peerOrganizations/${ORG}-net/peers/peer0.${ORG}-net/msp | jq -r .data.cacerts > ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem
+    export CA_ADMIN_PASSWORD=$(curl -H "X-Vault-Token: ${VAULT_ROOT_TOKEN}" ${VAULT_URL}/v1/${ORG}/credentials/${ORG}-net/ca/${ORG} | jq -r .data.user)
     export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/${ORG}/
     # enroll admin
     fabric-ca-client enroll -u https://${CA_ADMIN_USERNAME}:${CA_ADMIN_PASSWORD}@${CA_URL} --caname ${CA_NAME} --tls.certfiles ${PWD}/organizations/fabric-ca/${ORG}/tls-cert.pem

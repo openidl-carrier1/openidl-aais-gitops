@@ -81,7 +81,6 @@
             cd /home/
             apk add bash curl jq
             ./config/pre-register-users.sh -N ${ORG_NAME}-admin \
-            -P ${ORG_NAME}-adminpw \
             -p ${CA_USER_TOKEN} \
             -u ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}:8443 \
             -n ca.${ORG_NAME}-net \
