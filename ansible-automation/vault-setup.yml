@@ -4,9 +4,9 @@
   tasks:
     - name: Get KMS ID
       shell: |
-        aws kms describe-key --key-id alias/{{ network.org_name }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
+        aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
       register: output
-
+    
     - set_fact:
         config_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
 
