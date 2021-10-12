@@ -54,7 +54,7 @@ jobs:
       repo_user: ${{ secrets.git_repo_user }}
       repo_user_token: ${{ secrets.git_repo_user_token }}
       repo_user_email: ${{ secrets.git_repo_user_email }}
-      registry: ghcr.io/${{ github.actor }}/openidl-org
+      registry: suryalnvs
 
     steps:
       - name: Checkout code
@@ -91,20 +91,17 @@ jobs:
       - name: Update kubeconfig and set context to blockchain cluster
         run: |
           aws eks update-kubeconfig --region ${{ env.region }} --name ${{ env.cluster_name }}
-          kubectl get ns
-          kubectl create ns test
-          kubectl delete ns test
 
       - name: Install Docker
         run: |
           pip3 install docker
 
-      - name: Log into GitHub Docker Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.registry }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Log into GitHub Docker Registry
+#         uses: docker/login-action@v1
+#         with:
+#           registry: ${{ env.registry }}
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Helm
         uses: azure/setup-helm@v1
