@@ -2,7 +2,7 @@
 #Author: Rajesh Sanjeevi
 #version: 1.0
 
-name: Deploy Blockhain Network
+name: Blk Cluster Pipelines
 on:
   workflow_dispatch:
     inputs:
@@ -27,7 +27,7 @@ on:
         default: ""
         required: false
       org_json:
-        description: "Organization credentials (when action=add_new_org) or Orderer tls certificate (when action=new_org)"
+        description: "ORGANIZATION CREDENTIALS (when action=add_new_org) or ORDERER TLS CERTIFICATE (when action=new_org)"
         default: ""
         required: false
 
