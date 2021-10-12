@@ -50,7 +50,7 @@
 
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-1 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-2 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
   file:
