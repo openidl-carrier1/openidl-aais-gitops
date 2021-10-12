@@ -130,7 +130,8 @@ jobs:
         run: |
           ansible-playbook vault-setup.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
-            -e "region=${{ env.region }}"
+            -e "region=${{ env.region }}" \
+            -e "registry=${{ env.registry }}"
 
       - name: Build and publish baf image
         if: github.event.inputs.action == 'baf_image'
