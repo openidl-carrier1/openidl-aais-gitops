@@ -1,78 +1,78 @@
-# - name: generate vault values template from vault.j2 file
-#   template:
-#     src: templates/vault.j2
-#     dest: "./vault-values.yaml"
-#     mode: 0755
+- name: generate vault values template from vault.j2 file
+  template:
+    src: templates/vault.j2
+    dest: "./vault-values.yaml"
+    mode: 0755
 
-# - name: Create a k8s namespace
-#   community.kubernetes.k8s:
-#     name: vault
-#     api_version: v1
-#     kind: Namespace
-#     state: present
+- name: Create a k8s namespace
+  community.kubernetes.k8s:
+    name: vault
+    api_version: v1
+    kind: Namespace
+    state: present
 
-# - name: Add vault Helm chart repo
-#   shell: |
-#     helm repo add hashicorp https://helm.releases.hashicorp.com
-#     helm repo update
-#   tags:
-#     - hashicorp-vault
-#     - hashicorp-vault-helm
-#     - hashicorp-vault
+- name: Add vault Helm chart repo
+  shell: |
+    helm repo add hashicorp https://helm.releases.hashicorp.com
+    helm repo update
+  tags:
+    - hashicorp-vault
+    - hashicorp-vault-helm
+    - hashicorp-vault
 
-# - name: Install vault helm chart
-#   shell: |
-#     helm --namespace=vault install vault hashicorp/vault -f ./vault-values.yaml \
-#     --set server.ha.enabled=true \
-#     --set server.ha.raft.enabled=true \
-#     --set tlsDisable=false \
-#     --set server.ingress.enabled=true \
-#     --set server.ingress.hosts[0].host=vault.{{ env }}.{{ internal_domain }} \
-#     --set server.ingress.annotations."kubernetes\.io/ingress\.class"=haproxy \
-#     --set server.dataStorage.storageClass=openidl-sc
-#   tags:
-#     - hashicorp-vault
-#     - hashicorp-vault-helm
-#     - hashicorp-vault
+- name: Install vault helm chart
+  shell: |
+    helm --namespace=vault install vault hashicorp/vault -f ./vault-values.yaml \
+    --set server.ha.enabled=true \
+    --set server.ha.raft.enabled=true \
+    --set tlsDisable=false \
+    --set server.ingress.enabled=true \
+    --set server.ingress.hosts[0].host=vault.{{ env }}.{{ internal_domain }} \
+    --set server.ingress.annotations."kubernetes\.io/ingress\.class"=haproxy \
+    --set server.dataStorage.storageClass=openidl-sc
+  tags:
+    - hashicorp-vault
+    - hashicorp-vault-helm
+    - hashicorp-vault
 
-# - name: Wait till vault deployment completes and vault status availability
-#   shell: |
-#     sleep 60
+- name: Wait till vault deployment completes and vault status availability
+  shell: |
+    sleep 60
 
-# - name: Initialize and unseal the vault
-#   shell: |
-#     kubectl -n vault exec vault-0 -- vault operator init > ./vault-unseal-keys.txt
+- name: Initialize and unseal the vault
+  shell: |
+    kubectl -n vault exec vault-0 -- vault operator init > ./vault-unseal-keys.txt
 
-# - name: Get the vault-unseal-key from the server
-#   slurp:
-#     src: "./vault-unseal-keys.txt"
-#   register: unsealkey
+- name: Get the vault-unseal-key from the server
+  slurp:
+    src: "./vault-unseal-keys.txt"
+  register: unsealkey
 
-# - name: upload Vault unseal keys to aws secrets manager
-#   shell: |
-#     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+- name: upload Vault unseal keys to aws secrets manager
+  shell: |
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-1 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
-# - name: Delete unseal keys file
-#   file:
-#     path: ./vault-unseal-keys.txt
-#     state: absent
+- name: Delete unseal keys file
+  file:
+    path: ./vault-unseal-keys.txt
+    state: absent
 
-# - name: Wait till vault deployment completes and vault status availability
-#   shell: sleep 120
+- name: Wait till vault deployment completes and vault status availability
+  shell: sleep 120
 
-# - name: Create secret path for org
-#   shell: |
-#     kubectl -n vault exec vault-0 -- vault login {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
-#     kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.org_name }} kv
+- name: Create secret path for org
+  shell: |
+    kubectl -n vault exec vault-0 -- vault login {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.org_name }} kv
 
-# - name: Create secret path for orderer org
-#   shell: |
-#     kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.ordererorg_name }} kv
-#   when: network.ordererorg == "true"
+- name: Create secret path for orderer org
+  shell: |
+    kubectl -n vault exec vault-0 -- vault secrets enable -version=1 -path={{ network.ordererorg_name }} kv
+  when: network.ordererorg == "true"
 
-# - name: Join Vault-1 to vault cluster
-#   shell: |
-#     kubectl -n vault exec vault-1 vault operator raft join http://vault-0.vault-internal:8200
+- name: Join Vault-1 to vault cluster
+  shell: |
+    kubectl -n vault exec vault-1 vault operator raft join http://vault-0.vault-internal:8200
 
 - name: Generate vault-add-user script
   template:
