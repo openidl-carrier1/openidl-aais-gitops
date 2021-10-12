@@ -4,7 +4,7 @@
   tasks:
     - name: Get KMS ID
       shell: |
-        aws kms describe-key --key-id alias/vault-test-kms-key | jq -r .KeyMetadata.KeyId
+        aws kms describe-key --key-id alias/{{ network.org_name }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
       register: output
 
     - set_fact:
