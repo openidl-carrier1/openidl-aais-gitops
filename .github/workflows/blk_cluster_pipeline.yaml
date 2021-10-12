@@ -44,7 +44,7 @@ env:
   repo_user: ${{ secrets.git_repo_user }}
   repo_user_token: ${{ secrets.git_repo_user_token }}
   repo_user_email: ${{ secrets.git_repo_user_email }}
-  registry: "suryalnvs"
+  registry: ghcr.io/${{ github.actor }}/openidl-org
 
 jobs:
   blk-cluster-pipeline:
@@ -114,7 +114,7 @@ jobs:
           ansible-playbook vault-setup.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "region=${{ env.region }}" \
-            -e "registry=${{ env.registry }}"
+            -e "registry=suryalnvs"
 
       - name: Build and publish baf image
         if: github.event.inputs.action == 'baf_image'
