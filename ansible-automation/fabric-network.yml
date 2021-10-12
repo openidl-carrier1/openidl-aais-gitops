@@ -4,7 +4,7 @@
   tasks:
     - name: Get vault root token
       shell: |
-        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key-2 --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key-3 --version-stage AWSCURRENT | jq -r .SecretString
       register: vault
 
     - include_role:
