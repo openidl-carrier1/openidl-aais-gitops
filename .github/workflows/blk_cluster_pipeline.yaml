@@ -63,14 +63,14 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.gitactions_user_access_key  }}
-          aws-secret-access-key: ${{ secrets.gitactions_user_secret_key }}
+          aws-access-key-id: ${{ secrets.baf_user_access_key  }}
+          aws-secret-access-key: ${{ secrets.baf_user_secret_key }}
           aws-region: ${{ secrets.aws_region }}
-          role-to-assume: ${{ secrets.gitactions_eksadm_role }}
-          role-external-id: ${{ secrets.gitactions_external_id }}
-          role-duration-seconds: 3600 # session valid for 60 minutes
-          role-session-name: github-actions
-          role-skip-session-tagging: true
+#           role-to-assume: ${{ secrets.gitactions_eksadm_role }}
+#           role-external-id: ${{ secrets.gitactions_external_id }}
+#           role-duration-seconds: 3600 # session valid for 60 minutes
+#           role-session-name: github-actions
+#           role-skip-session-tagging: true
 
       - name: Install Ansible and dependencies
         run: |
