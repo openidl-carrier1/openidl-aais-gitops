@@ -31,21 +31,6 @@ on:
         default: ""
         required: false
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ansible-automation
-env:
-  cluster_name: ${{ secrets.blk_cluster_name }}
-  region: ${{ secrets.aws_region }}
-  access_id: ${{ secrets.baf_user_access_key }}
-  access_key: ${{ secrets.baf_user_secret_key }}
-  account: ${{ secrets.aws_account_number }}
-  repo_user: ${{ secrets.git_repo_user }}
-  repo_user_token: ${{ secrets.git_repo_user_token }}
-  repo_user_email: ${{ secrets.git_repo_user_email }}
-  registry: ghcr.io/${{ github.actor }}/openidl-org
-
 jobs:
   blk-cluster-pipeline:
     environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
@@ -55,6 +40,21 @@ jobs:
     permissions:
       packages: write
       contents: read
+    defaults:
+      run:
+        shell: bash
+        working-directory: ansible-automation
+        
+    env:
+      cluster_name: ${{ secrets.blk_cluster_name }}
+      region: ${{ secrets.aws_region }}
+      access_id: ${{ secrets.baf_user_access_key }}
+      access_key: ${{ secrets.baf_user_secret_key }}
+      account: ${{ secrets.aws_account_number }}
+      repo_user: ${{ secrets.git_repo_user }}
+      repo_user_token: ${{ secrets.git_repo_user_token }}
+      repo_user_email: ${{ secrets.git_repo_user_email }}
+      registry: ghcr.io/${{ github.actor }}/openidl-org
 
     steps:
       - name: Checkout code
@@ -63,14 +63,14 @@ jobs:
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.baf_user_access_key  }}
-          aws-secret-access-key: ${{ secrets.baf_user_secret_key }}
+          aws-access-key-id: ${{ secrets.gitactions_user_access_key  }}
+          aws-secret-access-key: ${{ secrets.gitactions_user_secret_key }}
           aws-region: ${{ secrets.aws_region }}
-#           role-to-assume: ${{ secrets.gitactions_eksadm_role }}
-#           role-external-id: ${{ secrets.gitactions_external_id }}
-#           role-duration-seconds: 3600 # session valid for 60 minutes
-#           role-session-name: github-actions
-#           role-skip-session-tagging: true
+          role-to-assume: ${{ secrets.gitactions_eksadm_role }}
+          role-external-id: ${{ secrets.gitactions_external_id }}
+          role-duration-seconds: 3600 # session valid for 60 minutes
+          role-session-name: github-actions
+          role-skip-session-tagging: true
 
       - name: Install Ansible and dependencies
         run: |
@@ -96,12 +96,12 @@ jobs:
         run: |
           pip3 install docker
 
-#      - name: Log into GitHub Docker Registry
-#        uses: docker/login-action@v1
-#        with:
-#          registry: ${{ env.registry }}
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Helm
         uses: azure/setup-helm@v1
@@ -114,7 +114,7 @@ jobs:
           ansible-playbook vault-setup.yml -i ./inventory/ansible_provisioners \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
             -e "region=${{ env.region }}" \
-            -e "registry=suryalnvs"
+            -e "registry=${{ env.registry }}"
 
       - name: Build and publish baf image
         if: github.event.inputs.action == 'baf_image'
