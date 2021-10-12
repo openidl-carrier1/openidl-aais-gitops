@@ -12,7 +12,7 @@ resource "random_password" "vault_password" {
 }
 #setting up vault secret in secret manager
 resource "aws_secretsmanager_secret" "vault_secret" {
-  name = "${var.aws_env}-${var.org_name}-vault
+  name = "${var.aws_env}-${var.org_name}-vault"
   description = "vault credentials for ${var.org_name} node"
   policy = <<POLICY
   {

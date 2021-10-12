@@ -140,7 +140,7 @@ output "public_app_bastion_fqdn" {
   value = var.domain_info.r53_public_hosted_zone_required == "yes" && var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_fqdn : null
 }
 output "public_app_bastion_dns_name" {
-  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputspublic_app_bastion_dns_name : null
+  value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_app_bastion_dns_name : null
 }
 output "public_blk_bastion_dns_name" {
   value = var.bastion_host_nlb_external ? data.terraform_remote_state.base_setup.outputs.public_blk_bastion_dns_name : null
