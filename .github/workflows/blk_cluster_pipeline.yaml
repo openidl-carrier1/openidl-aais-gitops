@@ -54,9 +54,8 @@ jobs:
       repo_user: ${{ secrets.git_repo_user }}
       repo_user_token: ${{ secrets.git_repo_user_token }}
       repo_user_email: ${{ secrets.git_repo_user_email }}
-     # registry: ghcr.io/${{ github.repository }}
-      registry: ghcr.io 
-      
+      registry: ghcr.io/${{ github.repository }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
@@ -128,8 +127,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ansible-automation/roles/baf/image
+          push: true 
           tags: |
-            ${{ env.registry }}/openidl-org/openidl-baf:latest
+            ${{ env.registry }}/openidl-baf:latest
             
       - name: Deploy network
         if: github.event.inputs.action == 'deploy_network'
