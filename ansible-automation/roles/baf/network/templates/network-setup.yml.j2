@@ -101,7 +101,7 @@ network:
   # If an organization is also hosting the root of the network (e.g. doorman, membership service, etc),
   # then these services should be listed in this section as well.
   organizations:
-{% if ( (action == 'new_org') or (action == 'reset' and network.ordererorg == 'false') ) %}
+{% if ( (action == 'new_org_prereq') or (action == 'reset' and network.ordererorg == 'false') ) %}
 {% else %}
     # Specification for the 1st organization. Each organization maps to a VPC and a separate k8s cluster
     - organization:
