@@ -129,7 +129,7 @@ jobs:
           context: ansible-automation/roles/baf/image
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ${{ env.REGISTRY }}/openidl-baf
+            ${{ env.REGISTRY }}/openidl-baf:latest
             
       - name: Deploy network
         if: github.event.inputs.action == 'deploy_network'
