@@ -38,7 +38,6 @@
     consensus: "{{ org.services.consensus }}"
     org_query: "organizations[?type=='orderer']"
     org: "{{ network | json_query(org_query) | first }}"
-  when: add_new_org is not defined or add_new_org == 'false'
   tags:
     - molecule-idempotence-notest
 
@@ -53,7 +52,6 @@
     component_type: "{{ item.type | lower }}"
     provider: "{{ network.env.proxy }}"
   loop: "{{ network['organizations'] }}"
-  when: add_new_org is defined or add_new_org == 'true'
   tags:
     - molecule-idempotence-notest
 
@@ -68,7 +66,7 @@
     component_ns: "{{ item.name | lower }}-net"
     provider: "{{ network.env.proxy }}"
   loop: "{{ network['organizations'] }}"
-  when: item.type == 'orderer' and (add_new_org is not defined or add_new_org == 'false')
+  when: item.type == 'orderer'
   tags:
     - molecule-idempotence-notest
 
@@ -82,7 +80,7 @@
     consensus: "{{ item.services.consensus }}"
     component_ns: "{{ item.name | lower }}-net"
   loop: "{{ network['organizations'] }}"
-  when: network.channels is defined and item.type == 'orderer' and (add_new_org is not defined or add_new_org == 'false')
+  when: network.channels is defined and item.type == 'orderer'
   tags:
     - molecule-idempotence-notest
 
