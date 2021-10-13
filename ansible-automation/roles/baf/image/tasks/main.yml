@@ -10,6 +10,6 @@
 - name: Push openidl-baf image
   community.docker.docker_image:
     name: openidl-baf
-    repository: "{{ registry }}/openidl-baf"
+    repository: "{{ registry }}/openidl-baf:latest"
     push: yes
     source: local
