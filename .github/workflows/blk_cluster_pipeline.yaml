@@ -122,14 +122,13 @@ jobs:
    #       ansible-playbook baf-image.yml -i ./inventory/ansible_provisioners \
    #         -e "registry=${{ env.registry }}"
 
-      - name: Build and push Docker image
+      - name: Build and push baf image
         if: github.event.inputs.action == 'baf_image' 
         uses: docker/build-push-action@v2
         with:
           context: ansible-automation/roles/baf/image
-          push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ${{ env.REGISTRY }}/openidl-baf:latest
+            ${{ env.registry }}/openidl-baf:latest
             
       - name: Deploy network
         if: github.event.inputs.action == 'deploy_network'
