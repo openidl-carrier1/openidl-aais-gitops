@@ -21,15 +21,15 @@ on:
       channel_name:
         description: "CHANNEL NAME"
         default: "defaultchannel"
-        required: true
+        required: false
       extra_vars:
         description: "EXTRA ARGUMENTS"
         default: ""
-        required: true
+        required: false
       org_json:
         description: "ORGANIZATION CREDENTIALS (when action=add_new_org) or ORDERER TLS CERTIFICATE (when action=new_org)"
         default: ""
-        required: true
+        required: false
 
 jobs:
   blk-cluster-pipeline:
