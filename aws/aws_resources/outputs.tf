@@ -93,9 +93,9 @@ output "cloudtrail_s3_bucket_name" {
 }
 #-----------------------------------------------------------------------------------------------------------------
 #secret manager entry
-output "secret_manager_vault_secret_arn" {
-  value = aws_secretsmanager_secret.vault_secret.arn
-}
+#output "secret_manager_vault_secret_arn" {
+#  value = aws_secretsmanager_secret.vault_secret.arn
+#}
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
 output "private_app_bastion_nlb_private_fqdn" {

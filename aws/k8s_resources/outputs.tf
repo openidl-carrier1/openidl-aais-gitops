@@ -118,9 +118,9 @@ output "cloudtrail_s3_bucket_name" {
 }
 #-----------------------------------------------------------------------------------------------------------------
 #secret manager entry
-output "secret_manager_vault_secret_arn" {
-  value = data.terraform_remote_state.base_setup.outputs.secret_manager_vault_secret_arn
-}
+#output "secret_manager_vault_secret_arn" {
+#  value = data.terraform_remote_state.base_setup.outputs.secret_manager_vault_secret_arn
+#}
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
 output "private_app_bastion_nlb_private_fqdn" {

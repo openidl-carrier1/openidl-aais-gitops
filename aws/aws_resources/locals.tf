@@ -92,7 +92,7 @@ locals {
   vault_secrets_set_non_prod = {
     url = "http://vault.${var.org_name}.${var.aws_env}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
     username = "config-${var.org_name}"
-    password = random_password.vault_password.result
+  # password = random_password.vault_password.result
     orgName = "${var.org_name}"
     vaultPath = "config-${var.org_name}"
     apiVersion = "v1"
@@ -100,7 +100,7 @@ locals {
   vault_secrets_set_prod = {
     url = "http://vault.${var.org_name}.internal.${var.domain_info.sub_domain_name}.${var.domain_info.domain_name}"
     username = "config-${var.org_name}"
-    password = random_password.vault_password.result
+  # password = random_password.vault_password.result
     orgName = "${var.org_name}"
     vaultPath = "config-${var.org_name}"
     apiVersion = "v1"

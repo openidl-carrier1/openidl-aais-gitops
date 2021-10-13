@@ -1,3 +1,4 @@
+/*
 #generating random string for vault credentials to set in secret manager
 resource "random_password" "vault_password" {
   length = 12
@@ -36,3 +37,4 @@ resource "aws_secretsmanager_secret_version" "vault_secret_version" {
   secret_id = aws_secretsmanager_secret.vault_secret.id
   secret_string = var.aws_env == "prod" ? jsonencode(local.vault_secrets_set_prod) : jsonencode(local.vault_secrets_set_non_prod)
 }
+*/

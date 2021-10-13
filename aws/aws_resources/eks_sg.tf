@@ -15,8 +15,8 @@ module "app_eks_control_plane_sg" {
       source_security_group_id = module.app_bastion_sg.security_group_id
     },
     {
-      from_port                = 433
-      to_port                  = 433
+      from_port                = 443
+      to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-443"
       source_security_group_id = module.app_bastion_sg.security_group_id
@@ -29,8 +29,8 @@ module "app_eks_control_plane_sg" {
       source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
     },
     {
-      from_port                = 433
-      to_port                  = 433
+      from_port                = 443
+      to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from nodegroup sg to eks control plane sg-443"
       source_security_group_id = module.app_eks_worker_node_group_sg.security_group_id
@@ -56,8 +56,8 @@ module "blk_eks_control_plane_sg" {
       source_security_group_id = module.blk_bastion_sg.security_group_id
     },
     {
-      from_port                = 433
-      to_port                  = 433
+      from_port                = 443
+      to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from bastion sg to eks control plane sg-443"
       source_security_group_id = module.blk_bastion_sg.security_group_id
@@ -70,8 +70,8 @@ module "blk_eks_control_plane_sg" {
       source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
     },
     {
-      from_port                = 433
-      to_port                  = 433
+      from_port                = 443
+      to_port                  = 443
       protocol                 = "tcp"
       description              = "Inbound from nodegroup sg to eks control plane sg-443"
       source_security_group_id = module.blk_eks_worker_node_group_sg.security_group_id
