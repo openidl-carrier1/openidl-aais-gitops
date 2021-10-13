@@ -56,9 +56,9 @@ network:
       name: "{{ network.ordererorg_name }}"
     participants:
     - organization:
-      name: "{{ network.org_name }}"
+      name: {{ network.org_name }}
       type: creator       # creator organization will create the channel and instantiate chaincode, in addition to joining the channel and install chaincode
-{% if action == 'deploy_network' or action == 'new_org' or action == "add_org_to_channel" %}
+{% if action == 'deploy_network' or action == 'new_org' %}
       org_status: new
 {% else %}
       org_status: existing
@@ -101,7 +101,8 @@ network:
   # If an organization is also hosting the root of the network (e.g. doorman, membership service, etc),
   # then these services should be listed in this section as well.
   organizations:
-{% if action != 'new_org' %}
+{% if ( (action == 'new_org') or (action == 'reset' and network.ordererorg == 'false') ) %}
+{% else %}
     # Specification for the 1st organization. Each organization maps to a VPC and a separate k8s cluster
     - organization:
       name: "{{ network.ordererorg_name }}"
