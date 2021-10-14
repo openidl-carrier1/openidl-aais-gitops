@@ -27,7 +27,7 @@ network:
       domain: "trv.techiething.com"
       org_status: "new"
   channels:
-  - name: analysis-trv
+  - name: analytics-trv
     chaincode:
       name: openidl-cc-aais-carriers
       version: 1
