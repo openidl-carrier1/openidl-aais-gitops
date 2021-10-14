@@ -118,14 +118,7 @@ jobs:
       - name: echo
         if: github.event.inputs.action == 'echo'
         run: |
-          echo "1"
-          echo "::add-mask::${INPUT_ORG_NAME}"
-          echo "2"
-          echo "::add-mask::${{ github.event.inputs.org_name }}"
-          export test1=`echo "::add-mask::${INPUT_ORG_NAME}"`
-          export test2=`echo "::add-mask::${{ github.event.inputs.org_name }}"`
-          echo "test_1=$test1"
-          echo "test_2=$test2"
+          echo "::add-mask::${{ github.event.inputs.org_json }}"
 
       - name: Deploy Vault cluster
         if: github.event.inputs.action == 'vault'
