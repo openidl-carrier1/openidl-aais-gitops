@@ -251,6 +251,7 @@ jobs:
       - name: Deploy add_new_org
         if: github.event.inputs.action == 'add_new_org'
         run: |
+          echo "::add-mask::${{ github.event.inputs.org_json }}"
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
             -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
