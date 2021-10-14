@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: trv-net-ca
+  namespace: trv-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: trv-net-ca
+  chart:
+    git: https://github.com/openidl-org/openidl-aais-gitops.git
+    ref: baf-automation
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: trv-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: trv-admin
+    storage:
+      storageclassname: trvsc
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://vault.dev.trv.internal.techiething.com
+      authpath: devtrv-net-auth
+      secretcert: trv/crypto/peerOrganizations/trv-net/ca?ca.trv-net-cert.pem
+      secretkey: trv/crypto/peerOrganizations/trv-net/ca?trv-net-CA.key
+      secretadminpass: trv/credentials/trv-net/ca/trv?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: trv.dev.trv.techiething.com
