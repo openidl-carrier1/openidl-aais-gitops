@@ -287,9 +287,9 @@ jobs:
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml"
       
       - name: Health-check
-        if: github.event.inputs.action == "health_check"
+        if: github.event.inputs.action == 'health_check'
         run: |
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
             -e "action=${{ github.event.inputs.action }}" \
-            -e "::add-mask::$INPUT_org_name"
+            -e "::add-mask::$INPUT_org_name" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml"
