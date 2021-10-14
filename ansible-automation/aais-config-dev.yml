@@ -22,10 +22,10 @@ network:
   organizations:
     - name: "analytics"
       domain: "analytics.techiething.com"
-      org_status: "existing"
+      org_status: "new"
     - name: "trv"
       domain: "trv.techiething.com"
-      org_status: "new"
+      org_status: "existing"
   channels:
   - name: analytics-trv
     chaincode:

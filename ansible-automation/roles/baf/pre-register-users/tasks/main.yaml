@@ -125,9 +125,14 @@
   debug:
     msg: '{{ pod_logs.stdout_lines }}'
 
+- name: delete ca user token to aws secrets manager
+  shell: |
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-user --force-delete-without-recovery
+  ignore_errors: yes
+
 - name: upload ca user token to aws secrets manager
   shell: |
-    aws secretsmanager update-secret --name {{ network.org_name }}-{{ env }}-ca-user --description "Ca User token" --secret-string {{ ca_user_token }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-user --description "Ca User token" --secret-string {{ ca_user_token }}
 
 - name: Delete user script pod
   community.kubernetes.k8s:
