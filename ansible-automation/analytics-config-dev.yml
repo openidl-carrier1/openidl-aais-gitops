@@ -24,6 +24,16 @@ network:
       domain: ""
       org_status: ""
   channels:
+  - name: analytics-trv
+    chaincode:
+      name: openidl-cc-aais-carriers
+      version: 1
+      repo_url: github.com/openidl-org/openidl-main.git
+      repo_branch: cognito-fabric-node14-helm
+      repo_path: openidl-chaincode/chaincode/openidl
+      collectionconfig:
+        name: "analytics_trv_pdc"
+        policy: "OR('analyticsMSP.member', 'trvMSP.member')"
   - name: analytics-aais
     chaincode:
       name: openidl-cc-aais-carriers
