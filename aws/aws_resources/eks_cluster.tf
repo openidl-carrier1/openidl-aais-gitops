@@ -64,6 +64,7 @@ module "app_eks_cluster" {
       name                          = "${local.std_name}-app-worker-group-1"
       instance_type                 = var.eks_worker_instance_type
       ami_id                        = data.aws_ami.eks_app_worker_nodes_ami.id
+      #ami_id = "ami-0ec218b58d82bbe76"
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -91,6 +92,7 @@ module "app_eks_cluster" {
       name                          = "${local.std_name}-app-worker-group-2"
       instance_type                 = var.eks_worker_instance_type
       ami_id                        = data.aws_ami.eks_app_worker_nodes_ami.id
+      #ami_id = "ami-0ec218b58d82bbe76"
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -207,6 +209,7 @@ module "blk_eks_cluster" {
       name                          = "${local.std_name}-blk-worker-group-1"
       instance_type                 = var.eks_worker_instance_type
       ami_id                        = data.aws_ami.eks_blk_worker_nodes_ami.id
+      #ami_id = "ami-0ec218b58d82bbe76"
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -234,6 +237,7 @@ module "blk_eks_cluster" {
       name                          = "${local.std_name}-blk-worker-group-2"
       instance_type                 = var.eks_worker_instance_type
       ami_id                        = data.aws_ami.eks_blk_worker_nodes_ami.id
+      #ami_id = "ami-0ec218b58d82bbe76"
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -261,6 +265,7 @@ module "blk_eks_cluster" {
       name                          = "${local.std_name}-blk-worker-group-3"
       instance_type                 = var.eks_worker_instance_type
       ami_id                        = data.aws_ami.eks_blk_worker_nodes_ami.id
+      #ami_id = "ami-0ec218b58d82bbe76"
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size

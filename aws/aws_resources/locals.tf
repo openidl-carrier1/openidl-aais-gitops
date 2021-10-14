@@ -18,7 +18,6 @@ locals {
     "stateCode",
     "stateName",
     "organizationId"]
-  #application cluster (eks) config-map (aws auth) - iam user to map
 
   app_def_sg_ingress = [{
     cidr_blocks = var.app_vpc_cidr
