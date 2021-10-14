@@ -22,6 +22,9 @@ network:
   organizations:
     - name: "analytics"
       domain: "analytics.techiething.com"
+      org_status: "existing"
+    - name: "trv"
+      domain: "trv.techiething.com"
       org_status: "new"
   channels:
   - name: analysis-trv
