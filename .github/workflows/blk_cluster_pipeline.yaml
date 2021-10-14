@@ -54,7 +54,7 @@ jobs:
       repo_user: ${{ secrets.git_repo_user }}
       repo_user_token: ${{ secrets.git_repo_user_token }}
       repo_user_email: ${{ secrets.git_repo_user_email }}
-      registry: suryalnvs
+      registry: ghcr.io/${{ github.repository }}
 
     steps:
       - name: Checkout code
@@ -96,12 +96,12 @@ jobs:
         run: |
           pip3 install docker
 
-#       - name: Log into GitHub Docker Registry
-#         uses: docker/login-action@v1
-#         with:
-#           registry: ${{ env.registry }}
-#           username: ${{ github.actor }}
-#           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log into GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Helm
         uses: azure/setup-helm@v1
@@ -116,12 +116,21 @@ jobs:
             -e "region=${{ env.region }}" \
             -e "registry=${{ env.registry }}"
 
-      - name: Build and publish baf image
-        if: github.event.inputs.action == 'baf_image'
-        run: |
-          ansible-playbook baf-image.yml -i ./inventory/ansible_provisioners \
-            -e "registry=${{ env.registry }}"
+   #   - name: Build and publish baf image
+   #     if: github.event.inputs.action == 'baf_image'
+   #     run: |
+   #       ansible-playbook baf-image.yml -i ./inventory/ansible_provisioners \
+   #         -e "registry=${{ env.registry }}"
 
+      - name: Build and push baf image
+        if: github.event.inputs.action == 'baf_image' 
+        uses: docker/build-push-action@v2
+        with:
+          context: ansible-automation/roles/baf/image
+          push: true 
+          tags: |
+            ${{ env.registry }}/openidl-baf:latest
+            
       - name: Deploy network
         if: github.event.inputs.action == 'deploy_network'
         run: |
@@ -243,6 +252,23 @@ jobs:
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "org_json=${{ github.event.inputs.org_json }}" \
             -e "add_org=true" \
+            -e "registry=${{ env.registry }}"
+
+      - name: Deploy join_peer
+        if: github.event.inputs.action == 'join_peer'
+        run: |
+          ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
+            -e "action=${{ github.event.inputs.action }}" \
+            -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
+            -e "cluster_name=${{ env.cluster_name }}" \
+            -e "region=${{ env.region }}" \
+            -e "access_id=${{ env.access_id }}" \
+            -e "access_key=${{ env.access_key }}" \
+            -e "account=${{ env.account }}" \
+            -e "gitops_repo_user=${{ env.repo_user }}" \
+            -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
+            -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
+            -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "registry=${{ env.registry }}"
 
       - name: Pre-register users for application
