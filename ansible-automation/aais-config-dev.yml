@@ -12,8 +12,9 @@ ordererorg_domain: "aais.techiething.com"
 domain: "aais.techiething.com"
 internal_domain: "aais.internal.techiething.com"
 env: "dev"
-add_org: false 
+add_org: "" 
 registry: ""
+chaincode_version: ""
 
 network:
   org_name: "aais"
@@ -22,15 +23,12 @@ network:
   organizations:
     - name: "analytics"
       domain: "analytics.techiething.com"
-      org_status: "new"
     - name: "trv"
       domain: "trv.techiething.com"
-      org_status: "existing"
   channels:
   - name: analytics-trv
     chaincode:
       name: openidl-cc-aais-carriers
-      version: 1
       repo_url: github.com/openidl-org/openidl-main.git
       repo_branch: cognito-fabric-node14-helm
       repo_path: openidl-chaincode/chaincode/openidl
@@ -40,7 +38,6 @@ network:
   - name: analytics-aais
     chaincode:
       name: openidl-cc-aais-carriers
-      version: 1
       repo_url: github.com/openidl-org/openidl-main.git
       repo_branch: cognito-fabric-node14-helm
       repo_path: openidl-chaincode/chaincode/openidl

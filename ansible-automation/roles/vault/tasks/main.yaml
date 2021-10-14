@@ -48,9 +48,14 @@
     src: "./vault-unseal-keys.txt"
   register: unsealkey
 
+- name: delete Vault unseal keys from aws secrets manager
+  shell: |
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --force-delete-without-recovery
+  ignore_errors: yes
+
 - name: upload Vault unseal keys to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key-3 --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-vault-unseal-key --description "Vault unseal root token" --secret-string {{ unsealkey['content'] | b64decode | regex_findall('Initial Root Token: (.*)')|last }}
 
 - name: Delete unseal keys file
   file:
@@ -73,6 +78,10 @@
 - name: Join Vault-1 to vault cluster
   shell: |
     kubectl -n vault exec vault-1 vault operator raft join http://vault-0.vault-internal:8200
+
+- name: Join Vault-1 to vault cluster
+  shell: |
+    kubectl -n vault exec vault-2 vault operator raft join http://vault-0.vault-internal:8200
 
 - name: Generate vault-add-user script
   template:
@@ -196,10 +205,16 @@
     vault_path: "config-{{ network.org_name }}"
     vault_user: "{{ vault_config_user }}"
     vault_user_token: "{{ vault_config_user_token }}"
+    vault_org_name: "config"
+
+- name: delete config user credentials from secrets manager
+  shell: |
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-config-vault --force-delete-without-recovery
+  ignore_errors: yes
 
 - name: Upload config user credentials to secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-config-vault --description "Vault Credentials for config user" --secret-string file://creds.json
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-config-vault --description "Vault Credentials for config user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file
   file:
@@ -214,10 +229,16 @@
     vault_path: "kvs-{{ network.org_name }}"
     vault_user: "{{ vault_kvs_user }}"
     vault_user_token: "{{ vault_kvs_user_token }}"
+    vault_org_name: "kvs"
 
-- name: Upload config user credentials to secrets manager
+- name: delete kvs user credentials from secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ env }}-{{ network.org_name }}-kvs-vault --description "Vault Credentials for kvs user" --secret-string file://creds.json
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-kvs-vault --force-delete-without-recovery
+  ignore_errors: yes
+
+- name: Upload kvs user credentials to secrets manager
+  shell: |
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-kvs-vault --description "Vault Credentials for kvs user" --secret-string file://creds.json
 
 - name: Delete config user credentials json file
   file:

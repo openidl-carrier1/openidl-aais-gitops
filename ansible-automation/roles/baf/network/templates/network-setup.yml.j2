@@ -45,7 +45,7 @@ network:
 {% for channellist in network.channels %}
 {% if channellist.name == channel_name %}
   - channel:
-{% if action == 'deploy_network' or action == 'add_new_channel' or action == 'add_org_to_channel' %}
+{% if action == 'deploy_network' or action == 'add_new_channel' %}
     channel_status: new
 {% else %}
     channel_status: existing
@@ -69,18 +69,20 @@ network:
         gossipAddress: peer0.{{ network.org_name }}-net.{{ network.org_name }}.{{ env }}.{{ domain }}:8443  # External or internal URI of the gossip peer
         peerAddress: peer0.{{ network.org_name }}-net.{{ network.org_name }}.{{ env }}.{{ domain }}:8443 # External URI of the peer
       ordererAddress: orderer1.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443             # External or internal URI of the orderer
-{% if add_org %}
+{% if add_org is defined and add_org != "" %}
 {% for org in network.organizations %}
+{% if org.name == add_org %}
     - organization:
       name: "{{ org.name }}"
       type: joiner       # creator organization will create the channel and instantiate chaincode, in addition to joining the channel and install chaincode
-      org_status: "{{ org.org_status }}"
+      org_status: new
       peers:
       - peer:
         name: peer0
         gossipAddress: peer0.{{ org.name }}-net.{{ org.name }}.{{ env }}.{{ org.domain }}:8443  # External or internal URI of the gossip peer
         peerAddress: peer0.{{ org.name }}-net.{{ org.name }}.{{ env }}.{{ org.domain }}:8443 # External URI of the peer
       ordererAddress: orderer1.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443             # External or internal URI of the orderer
+{% endif %}
 {% endfor %}
 {% endif %}
     endorsers:
@@ -277,7 +279,7 @@ network:
 {% for channellist in network.channels %}
 {% if channellist.name == channel_name %}
             name: "{{ channellist.chaincode.name }}" #This has to be replaced with the name of the chaincode
-            version: "{{ channellist.chaincode.version | default('1') }}" #This has to be replaced with the version of the chaincode
+            version: "{{ chaincode_version | default('1') }}" #This has to be replaced with the version of the chaincode
             maindirectory: "main"  #The main directory where chaincode is needed to be placed
             lang: "golang"  # The language in which the chaincode is written ( golang/java/node )
             repository:
@@ -299,8 +301,9 @@ network:
 {% endif %}
 {% endif %}
 {% endfor %}
-{% if add_org %}
+{% if add_org is defined and add_org != "" %}
 {% for org in network.organizations %}
+{% if org.name == add_org %}
     - organization:
       name: "{{ org.name }}"
       country: US
@@ -309,7 +312,7 @@ network:
       subject: "O={{ org.name }},OU={{ org.name }},L=Illinois,C=US"
       type: peer
       external_url_suffix: "{{ org.name }}.{{ env }}.{{ org.domain }}"
-      org_status: {{ org.org_status }}
+      org_status: new
       ca_data:
         url: ca.{{ org.name }}-net.{{ org.name }}.{{ env }}.{{ org.domain }}:8443
         certificate: file/server.crt
@@ -338,12 +341,12 @@ network:
         git_protocol: "https" # Option for git over https or ssh
         git_url: "https://{{ gitops_repo_url }}"         # Gitops https or ssh url for flux value files 
         branch: "{{ gitops_repo_branch }}"           # Git branch where release is being made
-        release_dir: "platforms/hyperledger-fabric/releases/{{ env }}-{{ network.org_name }}" # Relative Path in the Git repo for flux sync per environment. 
+        release_dir: "platforms/hyperledger-fabric/releases/{{ env }}-{{ org.name }}" # Relative Path in the Git repo for flux sync per environment. 
         chart_source: "blockchain-automation-framework/platforms/hyperledger-fabric/charts"     # Relative Path where the Helm charts are stored in Git repo
-        git_repo: "{{ gitops_repo_url }}"   # Gitops git repository URL for git push  (without https://)
-        username: "{{ gitops_repo_user }}"          # Git Service user who has rights to check-in in all branches
-        password: "{{ gitops_repo_user_token }}"          # Git Server user password/token (Optional for ssh; Required for https)
-        email: "{{ gitops_repo_user_email }}"                # Email to use in git config
+        git_repo: ""   # Gitops git repository URL for git push  (without https://)
+        username: ""          # Git Service user who has rights to check-in in all branches
+        password: ""          # Git Server user password/token (Optional for ssh; Required for https)
+        email: ""                # Email to use in git config
         private_key: ""          # Path to private key file which has write-access to the git repo (Optional for https; Required for ssh)
 
       # The participating nodes are peers
@@ -372,7 +375,7 @@ network:
 {% for channellist in network.channels %}
 {% if channellist.name == channel_name %}
             name: "{{ channellist.chaincode.name }}" #This has to be replaced with the name of the chaincode
-            version: "{{ channellist.chaincode.version | default('1') }}" #This has to be replaced with the version of the chaincode
+            version: "{{ chaincode_version | default('1') }}" #This has to be replaced with the version of the chaincode
             maindirectory: "main"  #The main directory where chaincode is needed to be placed
             lang: "golang"  # The language in which the chaincode is written ( golang/java/node )
             repository:
@@ -394,5 +397,6 @@ network:
 {% endif %}
 {% endif %}
 {% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
