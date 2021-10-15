@@ -1,0 +1,52 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: invoke-analytics-trv-openidl-cc-aais-carriers-1
+  namespace: trv-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: invoke-analytics-trv-openidl-cc-aais-carriers-1
+  chart:
+    git: https://github.com/openidl-org/openidl-aais-gitops.git
+    ref: baf-automation
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/invoke_chaincode
+  values:
+    metadata:
+      namespace: trv-net
+      network:
+        version: 2.2.3
+      add_organization: false
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.trv-net:7051
+      localmspid: trvMSP
+      loglevel: debug
+      tlsstatus: true
+    vault:
+      role: vault-role
+      address: http://vault.dev.trv.internal.techiething.com
+      authpath: devtrv-net-auth
+      adminsecretprefix: trv/crypto/peerOrganizations/trv-net/users/admin 
+      secretpath: trv
+      orderersecretprefix: trv/crypto/peerOrganizations/trv-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      tls: false
+    orderer:
+      address: orderer1.ordererorg.dev.aais.techiething.com:8443
+    chaincode:
+      builder: hyperledger/fabric-ccenv:2.2.3
+      name: openidl-cc-aais-carriers
+      version: 1
+      invokearguments: ''
+      endorsementpolicies:  ''
+    channel:
+      name: analytics-trv
+    endorsers:
+        creator: trv-net
+        name:  trv  
+        corepeeraddress:  peer0.trv-net.trv.dev.trv.techiething.com:8443 
