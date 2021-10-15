@@ -95,7 +95,7 @@
             -n ca.${ORG_NAME}-net \
             -o ${ORG_NAME} \
             -m ${ORG_NAME}MSP \
-            -U "openidl-aais-insurance-data-manager-ibp-2.0 openidl-aais-data-call-app-ibp-2.0 openidl-aais-data-call-processor-ibp-2.0" \
+            -U "openidl-${ORG_NAME}-insurance-data-manager-ibp-2.0 openidl-${ORG_NAME}-data-call-app-ibp-2.0 openidl-${ORG_NAME}-data-call-processor-ibp-2.0" \
             -V ${VAULT_URL} \
             -l ${VAULT_KVS_USER} \
             -t ${VAULT_KVS_USER_TOKEN} \
@@ -127,12 +127,12 @@
 
 - name: delete ca user token to aws secrets manager
   shell: |
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-user --force-delete-without-recovery
+    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
   ignore_errors: yes
 
 - name: upload ca user token to aws secrets manager
   shell: |
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-user --description "Ca User token" --secret-string {{ ca_user_token }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }}
 
 - name: Delete user script pod
   community.kubernetes.k8s:

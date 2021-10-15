@@ -6,6 +6,13 @@
     kind: Namespace
     state: present
 
+- name: Create a openidl k8s namespace
+  community.kubernetes.k8s:
+    name: openidl
+    api_version: v1
+    kind: Namespace
+    state: present
+
 - name: mongodb Helm chart repo
   shell: |
     helm repo add bitnami https://charts.bitnami.com/bitnami
