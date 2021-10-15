@@ -119,7 +119,7 @@
               ansible-playbook blockchain-automation-framework/platforms/shared/configuration/kubernetes-env-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/deploy-network.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=false" -e "no_ansible_log=true" $EXTRA_VARS
             elif [ $ACTION = "chaincode" ]; then
-              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true" $EXTRA_VARS
+              ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/chaincode-ops.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true" -e "add_peer=true" $EXTRA_VARS
             elif [ $ACTION = "reset" ]; then
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/reset-network.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true" $EXTRA_VARS
             elif [ $ACTION = "new_org_prereq" ]; then
