@@ -30,6 +30,14 @@ on:
         description: "ORGANIZATION CREDENTIALS (when action=add_new_org) or ORDERER TLS CERTIFICATE (when action=new_org)"
         default: ""
         required: false
+      chaincode_version:
+        description: "CHAINCODE VERSION (when action=chaincode) (FORMAT: MMDDTTTT)"
+        default: ""
+        required: false
+      add_org_name:
+        description: "ORGANIZATION NAME TO BE ADDED TO CHANNEL (when action=add_new_org)"
+        default: ""
+        required: false
 
 jobs:
   blk-cluster-pipeline:
@@ -107,7 +115,12 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: v3.6.3
-
+      - name: echo
+        if: github.event.inputs.action == 'echo'
+        run: |
+          export ORG_JSON=`echo "::add-mask::${{ github.event.inputs.org_json }}"`
+          echo $ORG_JSON
+         
       - name: Deploy Vault cluster
         if: github.event.inputs.action == 'vault'
         run: |
@@ -179,6 +192,7 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
+            -e "chaincode_version=${{ github.event.inputs.chaincode_version }}" \
             -e "registry=${{ env.registry }}"
 
       - name: Deploy new_org prerequisites
@@ -250,8 +264,8 @@ jobs:
             -e "gitops_repo_user_token=${{ env.repo_user_token }}" \
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
-            -e "org_json=${{ github.event.inputs.org_json }}" \
-            -e "add_org=true" \
+            -e "org_json=${{ github.event.inputs.add_org_json }}" \
+            -e "add_org=${{ github.event.inputs.add_org_name }}" \
             -e "registry=${{ env.registry }}"
 
       - name: Deploy join_peer
