@@ -26,10 +26,6 @@ on:
         description: "EXTRA ARGUMENTS"
         default: ""
         required: false
-      org_json:
-        description: "ORGANIZATION CREDENTIALS (when action=add_new_org) or ORDERER TLS CERTIFICATE (when action=new_org)"
-        default: ""
-        required: false
       chaincode_version:
         description: "CHAINCODE VERSION (when action=chaincode) (FORMAT: MMDDTTTT)"
         default: ""
