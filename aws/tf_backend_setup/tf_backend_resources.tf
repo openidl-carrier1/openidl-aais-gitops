@@ -300,20 +300,5 @@ resource "aws_dynamodb_table" "tf_state_lock" {
       enabled = true
     }
 }
-#object setup inside s3 bucket configured for terraform inputs
-/*
-resource "aws_s3_bucket_object" "aais_object" {
-  for_each = toset(["aais_node/dev/", "aais_node/test/", "aais_node/prod/",
-                  "carrier_node/dev/", "carrier_node/test/", "carrier_node/prod/",
-                  "analytics_node/dev/", "analytics_node/test/", "analytics_node/prod/"])
-  bucket = aws_s3_bucket.tf_inputs_s3_bucket.id
-  key = each.value
-  source = ""
-  kms_key_id = aws_kms_key.tf_inputs_s3_bucket_kms_key.arn
-  server_side_encryption = "aws:kms"
-  storage_class = "STANDARD"
-  tags = local.tags
-
-}*/
 
 

@@ -55,36 +55,10 @@ output "cognito_app_client_id" {
   value     = data.terraform_remote_state.base_setup.outputs.cognito_app_client_id
   sensitive = true
 }
-output "cognito_client_secret" {
-  value     = data.terraform_remote_state.base_setup.outputs.cognito_client_secret
-  sensitive = true
-}
 #-----------------------------------------------------------------------------------------------------------------
 #git actions user and baf automation user outputs
-output "git_actions_iam_user" {
-  value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user
-}
-output "git_actions_iam_user_access_key" {
-  value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user_access_key
-  sensitive = true
-}
-output "git_actions_iam_user_secret_key" {
-  value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user_secret_key
-  sensitive = true
-}
 output "git_actions_iam_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.git_actions_iam_user_arn
-}
-output "baf_automation_user" {
-  value = data.terraform_remote_state.base_setup.outputs.baf_automation_user
-}
-output "baf_automation_user_access_key" {
-  value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_access_key
-  sensitive = true
-}
-output "baf_automation_user_secret_key" {
-  value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_secret_key
-  sensitive = true
 }
 output "baf_automation_user_arn" {
   value = data.terraform_remote_state.base_setup.outputs.baf_automation_user_arn
@@ -116,12 +90,6 @@ output "blk_cluster_name" {
 output "cloudtrail_s3_bucket_name" {
   value = data.terraform_remote_state.base_setup.outputs.cloudtrail_s3_bucket_name
 }
-#-----------------------------------------------------------------------------------------------------------------
-#secret manager entry
-#output "secret_manager_vault_secret_arn" {
-#  value = data.terraform_remote_state.base_setup.outputs.secret_manager_vault_secret_arn
-#}
-#-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
 output "private_app_bastion_nlb_private_fqdn" {
   value = var.bastion_host_nlb_external ? null : data.terraform_remote_state.base_setup.outputs.private_app_bastion_nlb_private_fqdn
@@ -148,12 +116,8 @@ output "public_blk_bastion_dns_name" {
 #-----------------------------------------------------------------------------------------------------------------
 #KMS key related to vault unseal
 output "kms_key_arn_vault_unseal" {
-  value = data.terraform_remote_state.base_setup.outputs.kms_key_arn_vault_unseal
+  value = data.terraform_remote_state.base_setup.outputs.kms_key_arn_vault_unseal_arn
 }
 output "kms_key_id_vault_unseal" {
-  value = data.terraform_remote_state.base_setup.outputs.kms_key_id_vault_unseal
+  value = data.terraform_remote_state.base_setup.outputs.kms_key_id_vault_unseal_name
 }
-
-
-
-

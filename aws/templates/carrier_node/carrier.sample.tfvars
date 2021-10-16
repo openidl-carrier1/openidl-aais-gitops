@@ -111,20 +111,18 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
 app_cluster_version           = "1.20"
+app_worker_nodes_ami_id = "<ami_id_region_specific>"
 
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "blk-cluster"
 blk_cluster_version           = "1.20"
+blk_worker_nodes_ami_id = "<ami_id_region_specific>"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-logs"
-
-#--------------------------------------------------------------------------------------------------------------------
-#Setting a random value to this variable will rotate password in AWS secret manager which may further required to update in VAULT instance
-vault_password_reset = "set" #set a random string to this variable when password required to reset
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files
