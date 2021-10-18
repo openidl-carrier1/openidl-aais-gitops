@@ -89,37 +89,20 @@
             #!/bin/bash -e
             cd /home/
             apk add bash curl jq
-            if [ ${ORG_NAME} = "analytics" ]; then
-              ./config/pre-register-users.sh -N ${ORG_NAME}-admin \
-              -p ${CA_USER_TOKEN} \
-              -u ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}:8443 \
-              -n ca.${ORG_NAME}-net \
-              -o ${ORG_NAME} \
-              -m ${ORG_NAME}MSP \
-              -U "openidl-${ORG_NAME}-data-call-app-ibp-2.0 openidl-data-call-mood-listener-ibp-2.0 openidl-transactional-data-event-listener-ibp-2.0" \
-              -V ${VAULT_URL} \
-              -l ${VAULT_KVS_USER} \
-              -t ${VAULT_KVS_USER_TOKEN} \
-              -b kvs \
-              -q kvs-${ORG_NAME} \
-              -T ${VAULT_ROOT_TOKEN} \
-              -w vault
-            else
-              ./config/pre-register-users.sh -N ${ORG_NAME}-admin \
-              -p ${CA_USER_TOKEN} \
-              -u ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}:8443 \
-              -n ca.${ORG_NAME}-net \
-              -o ${ORG_NAME} \
-              -m ${ORG_NAME}MSP \
-              -U "openidl-${ORG_NAME}-insurance-data-manager-ibp-2.0 openidl-${ORG_NAME}-data-call-app-ibp-2.0 openidl-${ORG_NAME}-data-call-processor-ibp-2.0" \
-              -V ${VAULT_URL} \
-              -l ${VAULT_KVS_USER} \
-              -t ${VAULT_KVS_USER_TOKEN} \
-              -b kvs \
-              -q kvs-${ORG_NAME} \
-              -T ${VAULT_ROOT_TOKEN} \
-              -w vault
-            fi
+            ./config/pre-register-users.sh -N ${ORG_NAME}-admin \
+            -p ${CA_USER_TOKEN} \
+            -u ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}:8443 \
+            -n ca.${ORG_NAME}-net \
+            -o ${ORG_NAME} \
+            -m ${ORG_NAME}MSP \
+            -U "openidl-${ORG_NAME}-insurance-data-manager-ibp-2.0 openidl-${ORG_NAME}-data-call-processor-ibp-2.0 openidl-${ORG_NAME}-data-call-app-ibp-2.0 openidl-${ORG_NAME}-data-call-mood-listener-ibp-2.0 openidl-${ORG_NAME}-transactional-data-event-listener-ibp-2.0" \
+            -V ${VAULT_URL} \
+            -l ${VAULT_KVS_USER} \
+            -t ${VAULT_KVS_USER_TOKEN} \
+            -b kvs \
+            -q kvs-${ORG_NAME} \
+            -T ${VAULT_ROOT_TOKEN} \
+            -w vault
           volumeMounts:
           - name: vault-user-script
             mountPath: "/home/config/"
