@@ -2,8 +2,8 @@
 resource "aws_route53_record" "app_nlb_r53_record" {
   count   = var.domain_info.r53_public_hosted_zone_required == "yes" ? 1 : 0
   zone_id = data.aws_route53_zone.public_zone[0].zone_id
-   name    = "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${data.aws_route53_zone.public_zone[0].name}"
-    type    = "A"
+  name    = var.aws_env != "prod" ? "openidl.${var.aws_env}.${var.domain_info.sub_domain_name}.${data.aws_route53_zone.public_zone[0].name}" : "openidl.${var.domain_info.sub_domain_name}.${data.aws_route53_zone.public_zone[0].name}"
+  type    = "A"
   alias {
     name                   = data.aws_alb.app_nlb.dns_name
     zone_id                = data.aws_alb.app_nlb.zone_id

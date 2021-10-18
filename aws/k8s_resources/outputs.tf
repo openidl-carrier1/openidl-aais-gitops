@@ -11,12 +11,9 @@ output "private_vault_fqdn" {
 output "private_ordererorg_fqdn" {
   value = var.org_name == "aais" ? aws_route53_record.private_record_aais["*.ordererorg"].fqdn : null
 }
-output "private_ca-ordererorg-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["ca.ordererorg-net.ordererorg"].fqdn : null
-}
-output "private_ca-aais-net_fqdn" {
-  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["ca.aais-net.aais"].fqdn : null
-}
+#output "private_aais-net_fqdn" {
+#  value = var.org_name == "aais" ? aws_route53_record.private_record_aais["*.aais-net.aais"].fqdn : null
+#}
 output "private_common_fqdn" {
   value = aws_route53_record.private_record_common.fqdn
 }
