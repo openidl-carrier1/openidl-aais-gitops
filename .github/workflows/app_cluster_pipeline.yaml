@@ -2,7 +2,7 @@
 #Author: Surya Lanka
 #version: 1.0
 
-name: App Cluster Pipeline
+name: Deploy MongoDB on application cluster
 on:
   workflow_dispatch:
     inputs:

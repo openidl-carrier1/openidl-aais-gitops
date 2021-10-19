@@ -2,7 +2,7 @@
 #Author: Rajesh Sanjeevi
 #version: 1.0
 
-name: Blk Cluster Pipeline
+name: Deploy Blockchain Network and Vault on blockchain cluster
 on:
   workflow_dispatch:
     inputs:
