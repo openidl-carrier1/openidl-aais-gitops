@@ -20,3 +20,4 @@ aws/k8s_resources/.terraform.tfstate.lock.info
 ansible-automation/network-setup.yml
 ansible-automation/vault-values.yaml
 ansible-automation/baf.log
+ansible-automation/pre-register-users.sh

@@ -83,13 +83,15 @@
             value: "{{ env }}"
           - name: DOMAIN
             value: "{{ domain }}"
+          - name: NODE_TYPE
+            value: "{{ node_type }}"
           command: ["sh", "-c"]
           args: 
           - |-
             #!/bin/bash -e
             cd /home/
             apk add bash curl jq
-            if [ ${ORG_NAME} = "analytics" ]; then
+            if [ ${NODE_TYPE} = "analytics" ]; then
               ./config/pre-register-users.sh -N ${ORG_NAME}-admin \
               -p ${CA_USER_TOKEN} \
               -u ca.${ORG_NAME}-net.${ORG_NAME}.${ENV}.${DOMAIN}:8443 \
@@ -142,10 +144,10 @@
   debug:
     msg: '{{ pod_logs.stdout_lines }}'
 
-- name: delete ca user token to aws secrets manager
-  shell: |
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
-  ignore_errors: yes
+# - name: delete ca user token to aws secrets manager
+#   shell: |
+#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
+#   ignore_errors: yes
 
 - name: upload ca user token to aws secrets manager
   shell: |

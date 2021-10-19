@@ -15,6 +15,7 @@ env: "dev"
 add_org: "" 
 registry: ""
 chaincode_version: ""
+node_type: "analytics"
 
 network:
   org_name: "analytics"

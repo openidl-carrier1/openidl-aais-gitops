@@ -50,20 +50,20 @@
     - mongodb
     - mongodb-helm-repo
 
-- name: delete kvs user credentials from secrets manager
-  shell: |
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-user --force-delete-without-recovery
-  ignore_errors: yes
+# - name: delete kvs user credentials from secrets manager
+#   shell: |
+#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-user --force-delete-without-recovery
+#   ignore_errors: yes
 
-- name: delete kvs user credentials from secrets manager
-  shell: |
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-user-token --force-delete-without-recovery
-  ignore_errors: yes
+# - name: delete kvs user credentials from secrets manager
+#   shell: |
+#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-user-token --force-delete-without-recovery
+#   ignore_errors: yes
 
-- name: delete kvs user credentials from secrets manager
-  shell: |
-    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-root-token --force-delete-without-recovery
-  ignore_errors: yes
+# - name: delete kvs user credentials from secrets manager
+#   shell: |
+#     aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-mongodb-root-token --force-delete-without-recovery
+#   ignore_errors: yes
 
 - name: upload mongodb user to aws secrets manager
   shell: |
