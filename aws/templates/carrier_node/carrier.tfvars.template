@@ -117,40 +117,41 @@ cognito_domain               = "<cognito_domain_name>" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 
 #--------------------------------------------------------------------------------------------------------------------
-#Any additional application specific traffic to be allowed in app_vpc
+#Any additional traffic required to open to worker nodes in future, below are required to set (app cluster)
 app_eks_workers_app_sg_ingress = [
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<blk_vpc_cidr>"
+    cidr_blocks = "<cidr>"
   },
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<app_vpc_cidr>"
+    cidr_blocks = "<cidr>"
    }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
-#Any additional application specific traffic to be allowed in blk_vpc
+#Any additional traffic required to open to worker nodes in future, below are required to set (blk cluster)
 blk_eks_workers_app_sg_ingress = [
   {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<blk_vpc_cidr>"
+    cidr_blocks = "<cidr>"
   },
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<app_vpc_cidr>"
+    cidr_blocks = "<cidr>"
    }]
+blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 #--------------------------------------------------------------------------------------------------------------------
