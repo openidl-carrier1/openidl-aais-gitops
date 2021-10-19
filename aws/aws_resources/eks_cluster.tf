@@ -63,7 +63,7 @@ module "app_eks_cluster" {
     {
       name                          = "${local.std_name}-app-worker-group-1"
       instance_type                 = var.eks_worker_instance_type
-      ami_id                        = data.aws_ami.eks_app_worker_nodes_ami.id
+      ami_id                        = var.app_worker_nodes_ami_id == "" ? data.aws_ami.eks_app_worker_nodes_ami.id : var.app_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -90,7 +90,7 @@ module "app_eks_cluster" {
     {
       name                          = "${local.std_name}-app-worker-group-2"
       instance_type                 = var.eks_worker_instance_type
-      ami_id                        = data.aws_ami.eks_app_worker_nodes_ami.id
+      ami_id                        = var.app_worker_nodes_ami_id == "" ? data.aws_ami.eks_app_worker_nodes_ami.id : var.app_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -206,7 +206,7 @@ module "blk_eks_cluster" {
     {
       name                          = "${local.std_name}-blk-worker-group-1"
       instance_type                 = var.eks_worker_instance_type
-      ami_id                        = data.aws_ami.eks_blk_worker_nodes_ami.id
+      ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size
@@ -233,7 +233,34 @@ module "blk_eks_cluster" {
     {
       name                          = "${local.std_name}-blk-worker-group-2"
       instance_type                 = var.eks_worker_instance_type
-      ami_id                        = data.aws_ami.eks_blk_worker_nodes_ami.id
+      ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
+      platform                      = "linux"
+      additional_userdata           = local.worker_nodes_userdata
+      asg_min_size                  = var.wg_asg_min_size
+      asg_max_size                  = var.wg_asg_max_size
+      asg_desired_capacity          = var.wg_asg_desired_capacity
+      security_groups               = module.blk_eks_worker_node_group_sg.security_group_id
+      additional_security_group_ids = module.blk_eks_workers_app_traffic_sg.security_group_id
+      public_ip                     = var.eks_wg_public_ip
+      root_encrypted                = var.eks_wg_root_vol_encrypted
+      root_volume_size              = var.eks_wg_root_volume_size
+      root_volume_type              = var.eks_wg_root_volume_type
+      key_name                      = module.blk_eks_worker_nodes_key_pair_external.key_pair_key_name
+      subnet_id                     = module.aais_blk_vpc.private_subnets[1]
+      #target_group_arns             = module.blk_eks_nlb_public.target_group_arns
+      health_check_type             = var.eks_wg_health_check_type
+      ebs_optimized                 = var.wg_ebs_optimized
+      instance_refresh_enabled      = var.wg_instance_refresh_enabled
+      enable_monitoring             = true
+      iam_instance_profile_name     = aws_iam_instance_profile.eks_instance_profile["blk-node-group"].name
+      metadata_http_tokens          = "required"
+      metadata_http_endpoint        = "enabled"
+      metadata_http_put_response_hop_limit = 5
+  },
+  {
+      name                          = "${local.std_name}-blk-worker-group-3"
+      instance_type                 = var.eks_worker_instance_type
+      ami_id                        = var.blk_worker_nodes_ami_id == "" ? data.aws_ami.eks_blk_worker_nodes_ami.id : var.blk_worker_nodes_ami_id
       platform                      = "linux"
       additional_userdata           = local.worker_nodes_userdata
       asg_min_size                  = var.wg_asg_min_size

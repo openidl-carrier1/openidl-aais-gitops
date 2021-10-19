@@ -45,4 +45,3 @@ data aws_route53_zone "private_zone_internal" {
 data aws_route53_zone "private_zone" {
   zone_id = data.terraform_remote_state.base_setup.outputs.r53_private_hosted_zone_id
 }
-#fix the condition here when public zone does not exist

@@ -5,13 +5,13 @@ resource "helm_release" "app_haproxy" {
   cleanup_on_fail = true
   create_namespace = true
   name = "haproxy-ingress"
-  chart ="resources/helm/haproxy"
+  chart ="resources/haproxy-app-cluster"
   namespace = "app-ingress-controller"
   timeout = 600
   force_update = true
   wait = true
   wait_for_jobs = true
-  values = ["${file("resources/helm/haproxy/values.yaml")}"]
+  values = ["${file("resources/haproxy-app-cluster/values.yaml")}"]
 }
 #setting up ha proxy in blk cluster
 resource "helm_release" "blk_haproxy" {
@@ -20,11 +20,11 @@ resource "helm_release" "blk_haproxy" {
   cleanup_on_fail = true
   create_namespace = true
   name = "haproxy-ingress"
-  chart ="resources/helm/haproxy"
+  chart ="resources/haproxy-blk-cluster"
   namespace = "blk-ingress-controller"
   timeout = 600
   force_update = true
   wait = true
   wait_for_jobs = true
-  values = ["${file("resources/helm/haproxy/values.yaml")}"]
+  values = ["${file("resources/haproxy-blk-cluster/values.yaml")}"]
 }

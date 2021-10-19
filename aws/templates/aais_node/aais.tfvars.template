@@ -117,39 +117,39 @@ cognito_domain               = "<cognito_domain_name>" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 
 #--------------------------------------------------------------------------------------------------------------------
-#Any additional application specific traffic to be allowed in app_vpc
+#Any additional traffic required to open to worker nodes in future, below are required to set (app cluster)
 app_eks_workers_app_sg_ingress = [
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<blk_vpc_cidr>"
+    cidr_blocks = "<cidr>"
   },
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<app_vpc_cidr>"
+    cidr_blocks = "<cidr>"
    }]
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
-#Any additional application specific traffic to be allowed in blk_vpc
+#Any additional traffic required to open to worker nodes in future, below are required to set (blk cluster)
 blk_eks_workers_app_sg_ingress = [
   {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<blk_vpc_cidr>"
+    cidr_blocks = "<cidr>"
   },
    {
     from_port = 443
     to_port = 443
     protocol = "tcp"
     description = "inbound https traffic"
-    cidr_blocks = "<app_vpc_cidr>"
+    cidr_blocks = "<cidr>"
    }]
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
@@ -157,20 +157,17 @@ blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 # application cluster EKS specifications
 app_cluster_name              = "<app_cluster_name>"
 app_cluster_version           = "<version>"
-
+app_worker_nodes_ami_id       = "<ami_id_region_specific>"
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "<blk_cluster_name>"
 blk_cluster_version           = "<version>"
+blk_worker_nodes_ami_id       = "<ami_id_region_specific>"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related 
 cw_logs_retention_period = "<days>" #example 90 days
 s3_bucket_name_cloudtrail = <s3_bucket_name> #s3 bucket name to manage cloudtrail logs
-
-#--------------------------------------------------------------------------------------------------------------------
-#Setting a random value to this variable will rotate password in AWS secret manager which may further required to update in VAULT instance
-vault_password_reset = "set" #set a random string to this variable when password required to reset
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files

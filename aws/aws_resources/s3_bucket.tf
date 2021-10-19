@@ -104,7 +104,7 @@ resource "aws_kms_key" "s3_kms_key" {
         "Sid" : "AllowaccessforKeyAdministrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "${var.aws_user_arn}"
+          "AWS" : "${var.aws_role_arn}"
         },
         "Action" : [
           "kms:Create*",
@@ -120,17 +120,7 @@ resource "aws_kms_key" "s3_kms_key" {
           "kms:TagResource",
           "kms:UntagResource",
           "kms:ScheduleKeyDeletion",
-          "kms:CancelKeyDeletion"
-        ],
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "Allowuseofthekey",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "${var.aws_user_arn}"
-        },
-        "Action" : [
+          "kms:CancelKeyDeletion",
           "kms:Encrypt",
           "kms:Decrypt",
           "kms:ReEncrypt*",
@@ -162,6 +152,6 @@ resource "aws_kms_key" "s3_kms_key" {
 }
 #setting up an alias for the kms key used with s3 bucket data encryption
 resource "aws_kms_alias" "s3_kms_key" {
-  name          = "alias/s3_key_${local.std_name}-${var.s3_bucket_name_cloudtrail}"
+  name          = "alias/${local.std_name}-${var.s3_bucket_name_cloudtrail}"
   target_key_id = aws_kms_key.s3_kms_key.id
 }

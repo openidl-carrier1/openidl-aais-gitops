@@ -81,6 +81,29 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonEKSEBSCSIDriverPo
   policy_arn = aws_iam_policy.eks_worker_node_ebs_policy.arn
   role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
 }
+#iam policy for the worker nodes to get access to Describe KMS key
+resource "aws_iam_policy" "eks_worker_node_kms_policy" {
+  name   = "${local.std_name}-AmazonKMSKeyPolicy"
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowDescribeKMSKey",
+            "Effect": "Allow",
+            "Action": ["kms:DescribeKey"],
+            "Resource": "*"
+        }
+    ]
+})
+  tags = merge(local.tags,
+    { "Name" = "${local.std_name}-AmazonKMSKeyPolicy",
+  "Cluster_type" = "both" })
+}
+resource "aws_iam_role_policy_attachment" "eks_nodegroup_AmazonKMSKeyPolicy" {
+  for_each   = toset(["app-node-group", "blk-node-group"])
+  policy_arn = aws_iam_policy.eks_worker_node_kms_policy.arn
+  role       = aws_iam_role.eks_nodegroup_role["${each.value}"].id
+}
 #iam policy for eks admin role
 resource "aws_iam_policy" "eks_admin_policy" {
   name   = "${local.std_name}-AmazonEKSAdminPolicy"

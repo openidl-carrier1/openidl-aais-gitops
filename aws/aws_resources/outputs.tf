@@ -8,36 +8,10 @@ output "cognito_app_client_id" {
   value     = aws_cognito_user_pool_client.cognito_app_client.id
   sensitive = true
 }
-output "cognito_client_secret" {
-  value     = aws_cognito_user_pool_client.cognito_app_client.client_secret
-  sensitive = true
-}
 #-----------------------------------------------------------------------------------------------------------------
 #git actions user and baf automation user outputs
-output "git_actions_iam_user" {
-  value = aws_iam_user.git_actions_user.arn
-}
-output "git_actions_iam_user_access_key" {
-  value = aws_iam_access_key.git_actions_access_key.id
-  sensitive = true
-}
-output "git_actions_iam_user_secret_key" {
-  value = aws_iam_access_key.git_actions_access_key.secret
-  sensitive = true
-}
 output "git_actions_iam_user_arn" {
   value = aws_iam_user.git_actions_user.arn
-}
-output "baf_automation_user" {
-  value = aws_iam_user.baf_user.arn
-}
-output "baf_automation_user_access_key" {
-  value = aws_iam_access_key.baf_user_access_key.id
-  sensitive = true
-}
-output "baf_automation_user_secret_key" {
-  value = aws_iam_access_key.baf_user_access_key.secret
-  sensitive = true
 }
 output "baf_automation_user_arn" {
   value = aws_iam_user.baf_user.arn
@@ -56,14 +30,14 @@ output "app_cluster_endpoint" {
 output "app_cluster_name" {
   value = module.app_eks_cluster.cluster_id
 }
-output "app_cluster_certificate" {
-  value = module.app_eks_cluster.cluster_certificate_authority_data
-  sensitive = true
-}
-output "app_cluster_token" {
-  value = module.app_eks_cluster.aws_eks_cluster_auth[0].token
-  sensitive = true
-}
+#output "app_cluster_certificate" {
+#  value = module.app_eks_cluster.cluster_certificate_authority_data
+#  sensitive = true
+#}
+#output "app_cluster_token" {
+#  value = module.app_eks_cluster.aws_eks_cluster_auth[0].token
+#  sensitive = true
+#}
 output "app_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["app-node-group"].arn
 }
@@ -75,14 +49,14 @@ output "blk_cluster_endpoint" {
 output "blk_cluster_name" {
   value = module.blk_eks_cluster.cluster_id
 }
-output "blk_cluster_certificate" {
-  value = module.blk_eks_cluster.cluster_certificate_authority_data
-  sensitive = true
-}
-output "blk_cluster_token" {
-  value = module.blk_eks_cluster.aws_eks_cluster_auth[0].token
-  sensitive = true
-}
+#output "blk_cluster_certificate" {
+#  value = module.blk_eks_cluster.cluster_certificate_authority_data
+#  sensitive = true
+#}
+#output "blk_cluster_token" {
+#  value = module.blk_eks_cluster.aws_eks_cluster_auth[0].token
+#  sensitive = true
+#}
 output "blk_eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role["blk-node-group"].arn
 }
@@ -90,11 +64,6 @@ output "blk_eks_nodegroup_role_arn" {
 #cloudtrail related
 output "cloudtrail_s3_bucket_name" {
   value = aws_s3_bucket.s3_bucket.bucket
-}
-#-----------------------------------------------------------------------------------------------------------------
-#secret manager entry
-output "secret_manager_vault_secret_arn" {
-  value = aws_secretsmanager_secret.vault_secret.arn
 }
 #-----------------------------------------------------------------------------------------------------------------
 #Route53 entries
@@ -135,7 +104,11 @@ output "r53_private_hosted_zone_id"{
 output "r53_private_hosted_zone_internal_id" {
   value = aws_route53_zone.aais_private_zones_internal.zone_id
 }
-
-
-
-
+#-----------------------------------------------------------------------------------------------------------------
+#KMS key related to vault unseal
+output "kms_key_arn_vault_unseal_arn" {
+  value = aws_kms_key.vault_kms_key.arn
+}
+output "kms_key_id_vault_unseal_name" {
+  value = aws_kms_alias.vault_kms_key_alias.name
+}

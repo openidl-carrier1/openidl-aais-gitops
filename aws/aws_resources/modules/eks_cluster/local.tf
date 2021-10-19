@@ -110,7 +110,7 @@ locals {
     cpu_credits                          = "standard"                                                          # T2/T3 unlimited mode, can be 'standard' or 'unlimited'. Used 'standard' mode as default to avoid paying higher costs
     market_type                          = null
     metadata_http_endpoint               = "enabled"  # The state of the metadata service: enabled, disabled.
-    metadata_http_tokens                 = "optional" # If session tokens are required: optional, required.
+    metadata_http_tokens                 = "required" # If session tokens are required: optional, required.
     metadata_http_put_response_hop_limit = null       # The desired HTTP PUT response hop limit for instance metadata requests.
     # Settings for launch templates with mixed instances policy
     override_instance_types                  = ["m5.large", "m5a.large", "m5d.large", "m5ad.large"] # A list of override instance types for mixed instances policy
