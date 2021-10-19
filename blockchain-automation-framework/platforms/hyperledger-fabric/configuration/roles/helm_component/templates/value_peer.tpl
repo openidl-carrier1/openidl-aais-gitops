@@ -57,10 +57,10 @@ spec:
     storage:
       peer:
         storageclassname: {{ name }}sc
-        storagesize: 512Mi
+        storagesize: 50Gi
       couchdb:
         storageclassname: {{ name }}sc
-        storagesize: 1Gi
+        storagesize: 50Gi
 
     vault:
       role: vault-role

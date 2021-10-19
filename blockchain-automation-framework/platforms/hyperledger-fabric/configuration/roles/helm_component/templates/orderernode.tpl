@@ -50,7 +50,7 @@ spec:
 
     storage:
       storageclassname: {{ org_name }}sc
-      storagesize: 512Mi  
+      storagesize: 50Gi 
 
     service:
       servicetype: ClusterIP

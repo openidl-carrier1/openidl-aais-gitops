@@ -40,6 +40,30 @@ network:
       org_name: "{{ network.ordererorg_name }}"               #org_name should match one organization definition below in organizations: key            
       uri: orderer1.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443   # Can be external or internal URI for orderer which should be reachable by all peers
       certificate: /home/blockchain-automation-framework/build/orderer1.crt           # Ensure that the directory exists
+    - orderer:
+      type: orderer
+      name: orderer2
+      org_name: "{{ network.ordererorg_name }}"               #org_name should match one organization definition below in organizations: key            
+      uri: orderer2.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: /home/blockchain-automation-framework/build/orderer2.crt           # Ensure that the directory exists
+    - orderer:
+      type: orderer
+      name: orderer3
+      org_name: "{{ network.ordererorg_name }}"               #org_name should match one organization definition below in organizations: key            
+      uri: orderer3.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: /home/blockchain-automation-framework/build/orderer3.crt           # Ensure that the directory exists
+    - orderer:
+      type: orderer
+      name: orderer4
+      org_name: "{{ network.ordererorg_name }}"               #org_name should match one organization definition below in organizations: key            
+      uri: orderer4.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: /home/blockchain-automation-framework/build/orderer4.crt           # Ensure that the directory exists
+    - orderer:
+      type: orderer
+      name: orderer5
+      org_name: "{{ network.ordererorg_name }}"               #org_name should match one organization definition below in organizations: key            
+      uri: orderer5.{{ network.ordererorg_name }}.{{ env }}.{{ ordererorg_domain }}:8443   # Can be external or internal URI for orderer which should be reachable by all peers
+      certificate: /home/blockchain-automation-framework/build/orderer5.crt           # Ensure that the directory exists
 
   channels:
 {% for channellist in network.channels %}
@@ -197,6 +221,30 @@ network:
         # For RAFT consensus, have odd number (2n+1) of orderers for consensus agreement to have a majority.
         - orderer:
           name: orderer1
+          type: orderer
+          consensus: raft
+          grpc:
+            port: 7050
+        - orderer:
+          name: orderer2
+          type: orderer
+          consensus: raft
+          grpc:
+            port: 7050
+        - orderer:
+          name: orderer3
+          type: orderer
+          consensus: raft
+          grpc:
+            port: 7050
+        - orderer:
+          name: orderer4
+          type: orderer
+          consensus: raft
+          grpc:
+            port: 7050
+        - orderer:
+          name: orderer5
           type: orderer
           consensus: raft
           grpc:
