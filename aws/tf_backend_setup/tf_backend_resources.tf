@@ -1,4 +1,4 @@
-resource "aws_kms_key" "tf_backend_kms_key" {
+resource "aws_kms_key" "tf_backend_s3_bucket_kms_key" {
   description = "The KMS key used to encrypt S3 bucket managed to handle terraform.state files"
   deletion_window_in_days = 30
   key_usage = "ENCRYPT_DECRYPT"
@@ -67,10 +67,6 @@ resource "aws_kms_key" "tf_backend_kms_key" {
     ]
   })
 }
-resource "aws_kms_alias" "tf_backend_kms_key_alias" {
-  name          = "alias/${var.tf_backend_s3_bucket}"
-  target_key_id = aws_kms_key.tf_backend_kms_key.id
-}
 resource "aws_s3_bucket" "tf_backend_s3_bucket" {
   bucket = var.tf_backend_s3_bucket
   acl    = "private"
@@ -83,7 +79,7 @@ resource "aws_s3_bucket" "tf_backend_s3_bucket" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm = "aws:kms"
-        kms_master_key_id = aws_kms_key.tf_backend_kms_key.id
+        kms_master_key_id = aws_kms_key.tf_backend_s3_bucket_kms_key.id
       }
     }
   }
@@ -152,7 +148,7 @@ resource "aws_s3_bucket" "tf_inputs_s3_bucket" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm = "aws:kms"
-        kms_master_key_id = aws_kms_key.tf_backend_kms_key.id
+        kms_master_key_id = aws_kms_key.tf_backend_s3_bucket_kms_key.id
       }
     }
   }
@@ -208,8 +204,77 @@ resource "aws_s3_bucket_policy" "tf_inputs_s3_bucket_policy"{
     ]
   })
 }
+resource "aws_kms_key" "tf_dynamodb_table_kms_key" {
+  description = "The KMS key used to encrypt dynamodb tables used for terraform state locking"
+  deletion_window_in_days = 30
+  key_usage = "ENCRYPT_DECRYPT"
+  enable_key_rotation = true
+  tags = local.tags
+  policy = jsonencode({
+    "Id": "key-consolepolicy-3",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EnableIAMUserPermissions",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${var.aws_account_id}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowaccessforKeyAdministrators",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": [
+                "kms:Create*",
+                "kms:Describe*",
+                "kms:Enable*",
+                "kms:List*",
+                "kms:Put*",
+                "kms:Update*",
+                "kms:Revoke*",
+                "kms:Disable*",
+                "kms:Get*",
+                "kms:Delete*",
+                "kms:TagResource",
+                "kms:UntagResource",
+                "kms:ScheduleKeyDeletion",
+                "kms:CancelKeyDeletion",
+				"kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "Allowattachmentofpersistentresources",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "${var.aws_role_arn}"
+            },
+            "Action": [
+                "kms:CreateGrant",
+                "kms:ListGrants",
+                "kms:RevokeGrant"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "kms:GrantIsForAWSResource": "true"
+                }
+            }
+        }
+    ]
+  })
+}
 resource "aws_dynamodb_table" "tf_state_lock" {
-  for_each = toset(["${var.tf_backend_dynamodb_table_aws_resources}", "${var.tf_backend_dynamodb_table_k8s_resources}"])
+    for_each = toset(["${var.tf_backend_dynamodb_table_aws_resources}", "${var.tf_backend_dynamodb_table_k8s_resources}"])
     name = each.value
     billing_mode = "PROVISIONED"
     read_capacity = 5
@@ -218,7 +283,7 @@ resource "aws_dynamodb_table" "tf_state_lock" {
     hash_key = "LockID"
     server_side_encryption {
       enabled = true
-      kms_key_arn = aws_kms_key.tf_backend_kms_key.arn
+      kms_key_arn = aws_kms_key.tf_dynamodb_table_kms_key.arn
     }
     attribute {
       name = "LockID"
@@ -228,5 +293,3 @@ resource "aws_dynamodb_table" "tf_state_lock" {
       enabled = true
     }
 }
-
-
