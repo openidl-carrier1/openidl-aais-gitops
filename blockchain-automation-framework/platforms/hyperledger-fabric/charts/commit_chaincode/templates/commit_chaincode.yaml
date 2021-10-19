@@ -39,7 +39,7 @@ spec:
       {{ if .Values.chaincode.usecollectionconfig }}
       - name: collection-config
         configMap:
-          name: commit-chaincode-{{ $.Values.channel.name }}-collection-config
+          name: commit-chaincode-{{ $.Values.channel.name }}-collection-config-{{ $.Values.chaincode.version }}
       {{ end }}
       initContainers:
       - name: certificates-init

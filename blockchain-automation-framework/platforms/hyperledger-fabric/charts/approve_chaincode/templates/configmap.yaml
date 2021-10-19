@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: approve-chaincode-{{ $.Values.channel.name }}-collection-config
+  name: approve-chaincode-{{ $.Values.channel.name }}-collection-config-{{ $.Values.chaincode.version }}
   namespace: {{ $.Values.metadata.namespace }}
   labels:
-    app.kubernetes.io/name: approve-chaincode-{{ $.Values.channel.name }}-collection-config
+    app.kubernetes.io/name: approve-chaincode-{{ $.Values.channel.name }}-collection-config-{{ $.Values.chaincode.version }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
