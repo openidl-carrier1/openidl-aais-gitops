@@ -37,7 +37,7 @@ resource "aws_route53_record" "private_record_aais" {
 #setting up private dns entries common for all node types
 resource "aws_route53_record" "private_record_common" {
 # name = var.aws_env != "prod" ? "*.${var.org_name}-net.${var.org_name}.${var.aws_env}.${var.domain_info.sub_domain_name}" : "*.${var.org_name}-net.${var.org_name}.${var.domain_info.sub_domain_name}"
-  name = "*.${var.org_name}-net.aais"
+  name = "*.${var.org_name}-net.${var.org_name}"
   type = "A"
   zone_id = data.aws_route53_zone.private_zone.zone_id
   alias {
