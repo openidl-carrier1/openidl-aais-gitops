@@ -165,7 +165,7 @@ jobs:
     ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       id: init
-      run: terraform init -backend-config=tf_backends/s3_backend
+      run: terraform init -backend-config=tf_s3_backend/s3_backend
 
     # Sets up terraform workspace
     - name: Terraform Workspace if push event
@@ -328,7 +328,7 @@ jobs:
       ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config=tf_backends/s3_backend
+        run: terraform init -backend-config=tf_s3_backend/s3_backend
 
       # Sets up terraform workspace
       - name: Terraform Workspace if push event
@@ -492,7 +492,7 @@ jobs:
       ## Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config=tf_backends/s3_backend
+        run: terraform init -backend-config=tf_s3_backend/s3_backend
 
       # Sets up terraform workspace
       - name: Terraform Workspace if push event

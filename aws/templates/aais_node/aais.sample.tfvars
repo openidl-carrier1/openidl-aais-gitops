@@ -1,4 +1,5 @@
 
+#aais, analytics or aais dummy carrier should be carrier and for rest specify any org name: example for travelers: trv or travelers etc.
 org_name = "aais" # For aais set to aais, for analytics set to analytics, for carriers set their org name, ex: travelers
 aws_env = "dev" #set to dev|test|prod
 #--------------------------------------------------------------------------------------------------------------------
@@ -43,11 +44,11 @@ blk_bastion_sg_egress  = [
   {rule="ssh-tcp", cidr_blocks = "172.27.0.0/16"}] #additional ip_address|cidr_block should be included for ssh
 
 #--------------------------------------------------------------------------------------------------------------------
-#Route53 (PUBLIC) DNS domain related specifications (domain registrar: aws|others, registered: yes|no)
+#Route53 (PUBLIC) DNS domain related specifications
 domain_info = {
-  domain_registrar = "others", # alternate option: aws
-  domain_name = "aaisdemo.com", #primary domain registered
-  registered = "no" #registered already in aws: yes, otherwise: no
+  r53_public_hosted_zone_required = "yes", #Option: yes | no
+  domain_name = "aaisonline.com", #primary domain registered
+  sub_domain_name = "demo", #sub domain
   comments = "aais node dns name resolutions"
 }
 #-------------------------------------------------------------------------------------------------------------------
@@ -58,63 +59,41 @@ tgw_amazon_side_asn = "64532" #default is 64532
 #Cognito specifications
 userpool_name                = "openidl"
 client_app_name              = "openidl-client"
-client_callback_urls         = ["https://openidl.aais.dev.aaisdemo.com/callback", "https://openidl.aais.dev.aaisdemo.com/redirect"]
-client_default_redirect_url  = "https://openidl.aais.dev.aaisdemo.com/redirect"
-client_logout_urls           = ["https://openidl.aais.dev.aaisdemo.com/signout"]
-cognito_domain               = "aaisdemo" #unique domain name
+client_callback_urls         = ["https://openidl.aais.test.testaais.com/callback", "https://openidl.aais.test.testaais.com/redirect"]
+client_default_redirect_url  = "https://openidl.aais.test.testaais.com/redirect"
+client_logout_urls           = ["https://openidl.aais.test.testaais.com/signout"]
+cognito_domain               = "testaais" #unique domain name
 email_sending_account        = "COGNITO_DEFAULT" # Options: COGNITO_DEFAULT | DEVELOPER
 # COGNITO_DEFAULT - Uses cognito default and SES related inputs goes to empty in git secrets
 # DEVELOPER - Ensure inputs ses_email_identity and userpool_email_source_arn are setup in git secrets
 
 #--------------------------------------------------------------------------------------------------------------------
-#Any additional application specific traffic to be allowed in app_vpc
-app_eks_workers_app_sg_ingress = [
-  {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.27.0.0/16"
-  },
-   {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.26.0.0/16"
-   }]
+#Any additional traffic in future required to open to worker nodes, the below section needs to be set
+app_eks_workers_app_sg_ingress = [] #{from_port, to_port, protocol, description, cidr_blocks}
 app_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
-#Any additional application specific traffic to be allowed in blk_vpc
-blk_eks_workers_app_sg_ingress = [
-  {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.27.0.0/16"
-  },
-   {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    description = "inbound https traffic"
-    cidr_blocks = "172.26.0.0/16"
-  }]
+#Any additional traffic in future required to open to worker nodes, the below section needs to be set
+blk_eks_workers_app_sg_ingress = [] #{from_port, to_port, protocol, description, cidr_blocks}
 blk_eks_workers_app_sg_egress = [{rule = "all-all"}]
 
 #--------------------------------------------------------------------------------------------------------------------
 # application cluster EKS specifications
 app_cluster_name              = "app-cluster"
 app_cluster_version           = "1.20"
+app_worker_nodes_ami_id       = "<amiid_specific_to_region>"
+
 
 #--------------------------------------------------------------------------------------------------------------------
 # blockchain cluster EKS specifications
 blk_cluster_name              = "blk-cluster"
 blk_cluster_version           = "1.20"
+blk_worker_nodes_ami_id       = "<amiid_specific_to_region>"
 
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-logs"
 
+#--------------------------------------------------------------------------------------------------------------------
+#Name of the S3 bucket managing terraform state files
+terraform_state_s3_bucket_name = "aais-dev-tfstate-mgmt"

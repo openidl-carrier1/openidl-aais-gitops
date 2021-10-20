@@ -42,9 +42,13 @@ variable "tf_backend_s3_bucket" {
   type = string
   description = "The s3 bucket to store terraform state files"
 }
-variable "tf_backend_dynamodb_table" {
+variable "tf_backend_dynamodb_table_aws_resources" {
   type = string
-  description = "The dynamodb table to manage terraform state file locking"
+  description = "The dynamodb table to manage terraform state file locking for aws resources"
+}
+variable "tf_backend_dynamodb_table_k8s_resources" {
+  type = string
+  description = "The dynamodb table to manage terraform state file locking for k8s resources"
 }
 variable "tf_inputs_s3_bucket" {
   type = string

@@ -61,14 +61,15 @@ List of sensitive data to configure as secrets under git environment section.
 
 7. Clone the repository 
 8. Prepare input file for the specific node and specific environment, refer to directory "templates" for reference template.
-9. Once input file is prepared, upload to S3 under a relevant directory based on node type and environment type. Example of carrier node for dev, upload to the path as below. 
-    Path: S3://<bucket>/carrier_node/dev/carrier.tfvars
- 
-10. Commit the updates to a feature branch, ensure the name starts with base branch name (ex: for aais_dev, feature branch: aais_dev<*>)
-11. Push the feature branch to git repository
-12. Submit Pull request and upon review and approve submit merge to successfully get the code updates
-13. The pull request will trigger github actions to run terraform plan
-14. The merge request will trigger github actions to run terraform apply
+9. Once input file is prepared, upload to S3 bucket.  
+    Path: S3://<bucket>/carrier.tfvars
+10. There are two pipelines. One to provision AWS resources and other for K8s resources. 
+11. Hence it is required to trigger AWS resources pipeline first and once resources are provisioned, the second pipeline should be be executed as it has a dependency. 
+12. Commit the updates to a feature branch, ensure the name starts with base branch name (ex: for aais_dev, feature branch: aais_dev<*>)
+13. Push the feature branch to git repository
+14. Submit Pull request and upon review and approve submit merge to successfully get the code updates
+15. The pull request will trigger github actions to run terraform plan
+16. The merge request will trigger github actions to run terraform apply
 
 
 
