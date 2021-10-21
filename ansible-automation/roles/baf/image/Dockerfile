@@ -1,6 +1,6 @@
 FROM hyperledgerlabs/baf-build
 
-RUN apt-get install -y vim curl
+RUN apt-get install -y curl
 
 RUN curl -LO https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl \
     && mv kubectl /usr/local/bin/ \
