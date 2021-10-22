@@ -20,7 +20,7 @@
 
     - name: delete vault namespace
       community.kubernetes.k8s:
-        name: openidl-baf
+        name: vault
         api_version: v1
         kind: Namespace
         state: absent
