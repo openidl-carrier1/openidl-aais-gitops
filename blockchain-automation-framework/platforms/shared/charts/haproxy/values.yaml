@@ -12,6 +12,7 @@ image:
 
 service:
   type: LoadBalancer
-  ports: 
+  ports:
     http: 80
     https: 8443
+
