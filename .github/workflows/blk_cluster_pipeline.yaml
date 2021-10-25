@@ -22,23 +22,23 @@ on:
         description: "CHANNEL NAME"
         default: "defaultchannel"
         required: false
-      extra_vars:
-        description: "EXTRA ARGUMENTS"
-        default: ""
-        required: false
       chaincode_version:
         description: "CHAINCODE VERSION (when action=chaincode) (FORMAT: MMDDTTTT)"
         default: ""
         required: false
       add_org_name:
-        description: "ORGANIZATION NAME TO BE ADDED TO CHANNEL (when action=add_new_org)"
+        description: "NEW ORGANIZATION NAME TO BE ADDED TO CHANNEL (when action=add_new_org)"
+        default: ""
+        required: false
+      extra_vars:
+        description: "EXTRA ARGUMENTS"
         default: ""
         required: false
 
 jobs:
   blk-cluster-pipeline:
     environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
-    name: blk-cluster-pipeline
+    name: ${{ github.event.inputs.action }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -191,7 +191,7 @@ jobs:
             -e "gitops_repo_user_email=${{ env.repo_user_email }}" \
             -e "channel_name=${{ github.event.inputs.channel_name }}" \
             -e "extra_vars=${{ github.event.inputs.extra_vars }}" \
-            -e "chaincode_version=${{ github.event.inputs.chaincode_version }}" \
+            -e "chaincode_version=v${{ github.event.inputs.chaincode_version }}" \
             -e "registry=${{ env.registry }}"
 
       - name: Deploy new_org prerequisites
