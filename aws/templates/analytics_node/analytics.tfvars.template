@@ -168,7 +168,7 @@ blk_worker_nodes_ami_id = "<ami_id_region_specific>"
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related
 cw_logs_retention_period = "<days>" #example 90 days
-s3_bucket_name_cloudtrail = <s3_bucket_name> #s3 bucket name to manage cloudtrail logs
+s3_bucket_name_cloudtrail = "<s3_bucket_name>" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files
