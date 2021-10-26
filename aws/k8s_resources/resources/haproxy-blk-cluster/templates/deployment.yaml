@@ -54,6 +54,8 @@ spec:
         - --configmap=$(POD_NAMESPACE)/haproxy-ingress
         - --sort-backends
         ports:
+        - name: http
+          containerPort: 80
         - name: https
           containerPort: 443
         livenessProbe:
