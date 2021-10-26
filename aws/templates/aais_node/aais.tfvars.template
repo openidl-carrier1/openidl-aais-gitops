@@ -51,10 +51,10 @@ app_private_subnets    = ["", ""]
 
 #--------------------------------------------------------------------------------------------------------------------
 #Blockchain cluster VPC specifications
-app_vpc_cidr           = "<blk_vpc_cidr>"
-app_availability_zones = ["", ""]
-app_public_subnets     = ["", ""]
-app_private_subnets    = ["", ""]
+blk_vpc_cidr           = "<blk_vpc_cidr>"
+blk_availability_zones = ["", ""]
+blk_public_subnets     = ["", ""]
+blk_private_subnets    = ["", ""]
 
 #--------------------------------------------------------------------------------------------------------------------
 #Bastion host specifications
@@ -68,7 +68,7 @@ bastion_host_nlb_external = "true"
 #application cluster bastion host specifications
 app_bastion_sg_ingress =  [
     {rule="ssh-tcp", cidr_blocks = "<app_vpc_cidr>"},
-    {rule="ssh-tcp, cidr_blocks = "<cidr_allowed_to_ssh_inbound>"}
+    {rule="ssh-tcp", cidr_blocks = "<cidr_allowed_to_ssh_inbound>"}
     ]
 app_bastion_sg_egress =   [
     {rule="https-443-tcp", cidr_blocks = "0.0.0.0/0"},
@@ -167,7 +167,7 @@ blk_worker_nodes_ami_id       = "<ami_id_region_specific>"
 #--------------------------------------------------------------------------------------------------------------------
 #cloudtrail related 
 cw_logs_retention_period = "<days>" #example 90 days
-s3_bucket_name_cloudtrail = <s3_bucket_name> #s3 bucket name to manage cloudtrail logs
+s3_bucket_name_cloudtrail = "<s3_bucket_name>" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
 #Name of the S3 bucket managing terraform state files
