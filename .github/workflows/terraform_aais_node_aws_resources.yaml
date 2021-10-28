@@ -72,6 +72,7 @@ jobs:
         role-external-id: ${{ secrets.aws_external_id }}
         role-duration-seconds: 3600 # session valid for 30 minutes
         role-session-name: terraform-session
+        role-skip-session-tagging: true
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout Code
@@ -176,6 +177,7 @@ jobs:
         role-external-id: ${{ secrets.aws_external_id }}
         role-duration-seconds: 3600 # session valid for 30 minutes
         role-session-name: terraform-session
+        role-skip-session-tagging: true
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout Code
@@ -280,6 +282,7 @@ jobs:
         role-external-id: ${{ secrets.aws_external_id }}
         role-duration-seconds: 3600 # session valid for 30 minutes
         role-session-name: terraform-session
+        role-skip-session-tagging: true
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout Code
