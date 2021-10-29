@@ -215,7 +215,7 @@ jobs:
       - name: Deploy new_org
         if: github.event.inputs.action == 'new_org'
         run: |
-          export ORDERER_TLS_CERT=$(aws secretsmanager get-secret-value --secret-id ${{ github.event.inputs.environment }}-orderer-tls)
+          export ORDERER_TLS_CERT=$(aws secretsmanager get-secret-value --secret-id ${{ github.event.inputs.environment }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString)
           ansible-playbook fabric-network.yml -i ./inventory/ansible_provisioners \
             -e "action=${{ github.event.inputs.action }}" \
             -e "@./${{ github.event.inputs.org_name }}-config-${{ github.event.inputs.environment }}.yml" \
