@@ -38,7 +38,7 @@ on:
 jobs:
   blk-cluster-pipeline:
     environment: ${{ github.event.inputs.org_name }}_${{ github.event.inputs.environment }}
-    name: ${{ github.event.inputs.action }}
+    name: ${{ github.event.inputs.action }}, org:${{ github.event.inputs.org_name }}, env:${{ github.event.inputs.environment }}, chan:${{ github.event.inputs.channel_name }}, other org:${{ github.event.inputs.add_org_name }}, xvars:${{ github.event.inputs.extra_vars }}, ccv:${{ github.event.inputs.chaincode_version }}
     runs-on: ubuntu-latest
 
     permissions:
