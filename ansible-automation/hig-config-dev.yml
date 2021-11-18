@@ -18,8 +18,8 @@ gitops_repo_user: ""
 gitops_repo_user_token: ""
 # github user email id
 gitops_repo_user_email: ""
-# domain name of ordererorg
-ordererorg_domain: "hig.aaisdirect.com"
+# domain name of ordererorg common across all nodes
+ordererorg_domain: "openidl.aaisdirect.com"
 # domain name of organization
 domain: "carrier.hig.aaisdirect.com"
 # internal domain name from internal private hosted zone in route53
@@ -37,7 +37,7 @@ node_type: "carrier"
 
 network:
     # organization name to be used
-    org_name: "trv"
+    org_name: "hig"
     # if true, this would deploy orderer organization
     # this would be true for aais and false for rest of the orgs
     ordererorg: "false"
@@ -48,7 +48,7 @@ network:
     # the network with action=add_new_org
     organizations:
         # name of the new organization
-        - name: "trv"
+        - name: "hig"
           # domain name of the new organization
           domain: "carrier.hig.aaisdirect.com"
         # name of the new organization
@@ -67,7 +67,7 @@ network:
               repo_branch: "develop"
               repo_path: openidl-chaincode/chaincode/openidl
         # name of the channel between analytics and carrier
-        - name: anal-trv
+        - name: anal-hig
           # chaincode details to be used to install and commit in the channel
           chaincode:
               # chaincode name
@@ -81,6 +81,6 @@ network:
               # private data collection to be used while approving an committing the chaincode
               collectionconfig:
                   # name of the private data collection
-                  name: "analytics_trv_pdc"
+                  name: "analytics_hig_pdc"
                   # policy to be used in private data collection
-                  policy: "OR('analyticsMSP.member', 'trvMSP.member')"
+                  policy: "OR('analyticsMSP.member', 'higMSP.member')"
