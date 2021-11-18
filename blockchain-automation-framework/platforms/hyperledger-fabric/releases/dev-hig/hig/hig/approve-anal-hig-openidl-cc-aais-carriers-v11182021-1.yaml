@@ -1,0 +1,51 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: approve-anal-hig-openidl-cc-aais-carriers-v11182021-1
+  namespace: hig-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: approve-anal-hig-openidl-cc-aais-carriers-v11182021-1
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops
+    ref: carrier_dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/approve_chaincode
+  values:
+    metadata:
+      namespace: hig-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.hig-net:7051
+      localmspid: higMSP
+      loglevel: debug
+      tlsstatus: true
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.hig.aaisdirect.com
+      authpath: devhig-net-auth
+      adminsecretprefix: hig/crypto/peerOrganizations/hig-net/users/admin 
+      orderersecretprefix: hig/crypto/peerOrganizations/hig-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      tls: false
+    orderer:
+      address: orderer1.ordererorg.dev.openidl.aaisdirect.com:8443
+    chaincode:
+      builder: hyperledger/fabric-ccenv:2.2.3
+      name: openidl-cc-aais-carriers
+      version: v11182021
+      sequence: 1
+      commitarguments: ''
+      endorsementpolicies:  ''
+      collectionconfig: |-
+        WwogIHsKICAgICJuYW1lIjogImFuYWx5dGljc19oaWdfcGRjIiwKICAgICJwb2xpY3kiOiAiT1Io
+        J2FuYWx5dGljc01TUC5tZW1iZXInLCAnaGlnTVNQLm1lbWJlcicpIiwKICAgICJyZXF1aXJlZFBl
+        ZXJDb3VudCI6IDAsCiAgICAibWF4UGVlckNvdW50IjogMCwKICAgICJibG9ja1RvTGl2ZSI6IDAK
+        ICB9Cl0KCg==
+      usecollectionconfig: true
+    channel:
+      name: anal-hig
