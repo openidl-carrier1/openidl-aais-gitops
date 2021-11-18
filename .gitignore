@@ -23,3 +23,5 @@ ansible-automation/baf.log
 ansible-automation/pre-register-users.sh
 .DS_Store
 docs/~$C-GitHub-Actions.doc
+ansible-automation/orderer.pem
+ansible-automation/orderer.base64.pem
