@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: hig1-net-ca
+  namespace: hig1-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: hig1-net-ca
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops
+    ref: carrier_dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: hig1-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: hig1-admin
+    storage:
+      storageclassname: hig1sc
+      storagesize: 20Gi
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.hig1.aaisdirect.com
+      authpath: devhig1-net-auth
+      secretcert: hig1/crypto/peerOrganizations/hig1-net/ca?ca.hig1-net-cert.pem
+      secretkey: hig1/crypto/peerOrganizations/hig1-net/ca?hig1-net-CA.key
+      secretadminpass: hig1/credentials/hig1-net/ca/hig1?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: hig1.dev.carrier.hig1.aaisdirect.com
