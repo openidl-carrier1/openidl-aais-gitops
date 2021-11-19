@@ -1,0 +1,52 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: install-openidl-cc-default-v10251448
+  namespace: hig1-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: install-openidl-cc-default-v10251448
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops
+    ref: carrier_dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/install_chaincode
+  values:
+    metadata:
+      namespace: hig1-net
+      network:
+        version: 2.2.3
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.hig1-net:7051
+      localmspid: hig1MSP
+      loglevel: debug
+      tlsstatus: true
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.hig1.aaisdirect.com
+      authpath: devhig1-net-auth
+      adminsecretprefix: hig1/crypto/peerOrganizations/hig1-net/users/admin 
+      orderersecretprefix: hig1/crypto/peerOrganizations/hig1-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      secretgitprivatekey: hig1/credentials/hig1-net/git?git_password
+      tls: false
+    orderer:
+      address: orderer5.ordererorg.dev.openidl.aaisdirect.com:8443
+    chaincode:
+      builder: hyperledger/fabric-ccenv:2.2.3
+      name: openidl-cc-default
+      version: v10251448
+      lang: golang
+      maindirectory: main
+      repository:
+        hostname: "github.com"
+        git_username: ""
+        url: github.com/openidl-org/openidl-main.git
+        branch: develop
+        path: openidl-chaincode/chaincode/openidl
+      endorsementpolicies:  ''
