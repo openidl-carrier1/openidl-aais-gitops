@@ -25,3 +25,5 @@ ansible-automation/pre-register-users.sh
 docs/~$C-GitHub-Actions.doc
 ansible-automation/orderer.pem
 ansible-automation/orderer.base64.pem
+aws/tf_backend_setup/.terraform.lock.hcl
+aws/tf_s3_backend/aws_resources.hig
