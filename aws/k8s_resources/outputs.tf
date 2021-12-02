@@ -1,4 +1,4 @@
-#Route53 private entries
+Route53 private entries
 output "private_data_call_service_fqdn" {
   value = aws_route53_record.private_record_services["data-call-app-service"].fqdn
 }
