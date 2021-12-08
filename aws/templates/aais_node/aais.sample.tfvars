@@ -99,5 +99,5 @@ s3_bucket_name_cloudtrail = "cloudtrail-logs"
 terraform_state_s3_bucket_name = "aais-dev-tfstate-mgmt"
 
 #Applicable when Terraform Cloud/Enterprise is used
-tfc_org_name = "openidl-hig"
-tfc_workspace_name_aws_resources = "hig-openidl-aws-resources"
+tfc_org_name = "openidl"
+tfc_workspace_name_aws_resources = "openidl-aws-resources"
