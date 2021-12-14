@@ -81,6 +81,10 @@ network:
               # private data collection to be used while approving an committing the chaincode
               collectionconfig:
                   # name of the private data collection
-                  name: "analytics_hig1_pdc"
+                  - name: "analytics_hig1_pdc"
                   # policy to be used in private data collection
-                  policy: "OR('analyticsMSP.member', 'hig1MSP.member')"
+                    policy: "OR('analyticsMSP.member', 'hig1MSP.member')"
+                  # name of the private data collection
+                  - name: "anal_hig1_pdc"
+                  # policy to be used in private data collection
+                    policy: "OR('analyticsMSP.member', 'hig1MSP.member')"
