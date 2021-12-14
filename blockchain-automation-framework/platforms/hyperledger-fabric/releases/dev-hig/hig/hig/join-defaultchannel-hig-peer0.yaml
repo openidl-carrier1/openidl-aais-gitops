@@ -1,0 +1,40 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: join-defaultchannel-hig-peer0
+  namespace: hig-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: join-defaultchannel-hig-peer0
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops
+    ref: carrier_dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/join_channel
+  values:
+    metadata:
+      namespace: hig-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.hig-net.hig.dev.carrier.hig.aaisdirect.com:8443
+      localmspid: higMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.hig.aaisdirect.com
+      authpath: devhig-net-auth
+      adminsecretprefix: hig/crypto/peerOrganizations/hig-net/users/admin
+      orderersecretprefix: hig/crypto/peerOrganizations/hig-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: defaultchannel      
+    orderer:
+      address: orderer1.ordererorg.dev.openidl.aaisdirect.com:8443

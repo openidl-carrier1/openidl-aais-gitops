@@ -1,0 +1,63 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: hig-peer0
+  namespace: hig-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: hig-peer0
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops
+    ref: carrier_dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/peernode    
+  values:
+    metadata:
+      namespace: hig-net
+      images:
+        couchdb: couchdb:3.1
+        peer: hyperledger/fabric-peer:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        
+    peer:
+      name: peer0
+      gossippeeraddress: peer0.hig-net.hig.dev.carrier.hig.aaisdirect.com:8443
+      gossipexternalendpoint: peer0.hig-net.hig.dev.carrier.hig.aaisdirect.com:8443
+      localmspid: higMSP
+      loglevel: info
+      tlsstatus: true
+      builder: hyperledger/fabric-ccenv:2.2.3
+      couchdb:
+        username: hig-user
+
+    storage:
+      peer:
+        storageclassname: higsc
+        storagesize: 50Gi
+      couchdb:
+        storageclassname: higsc
+        storagesize: 50Gi
+
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.hig.aaisdirect.com
+      authpath: devhig-net-auth
+      secretprefix: hig/crypto/peerOrganizations/hig-net/peers/peer0.hig-net
+      secretambassador: hig/crypto/peerOrganizations/hig-net/ambassador
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      secretcouchdbpass: hig/credentials/hig-net/couchdb/hig?user
+
+    service:
+      servicetype: ClusterIP
+      ports:
+        grpc:
+          clusteripport: 7051
+        events:
+          clusteripport: 7053
+        couchdb:
+          clusteripport: 5984
+          
+    proxy:
+      provider: "haproxy"
+      external_url_suffix: hig.dev.carrier.hig.aaisdirect.com
