@@ -669,3 +669,7 @@ variable "aws_external_id" {
   default = "terraform"
   description = "External Id setup while setting up IAM user and and its relevant roles"
 }
+variable "s3_bucket_name_hds_analytics" {
+  type = string
+  description = "The name of s3 bucket for reporting relevant only to carrier and analytics node"
+}

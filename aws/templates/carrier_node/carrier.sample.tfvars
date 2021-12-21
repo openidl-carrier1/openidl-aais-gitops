@@ -100,9 +100,6 @@ s3_bucket_name_cloudtrail = "cloudtrail-logs"
 #Name of the S3 bucket managing terraform state files
 terraform_state_s3_bucket_name = "trv-dev-tfstate-mgmt"
 
-#Name of the S3 bucket managing terraform state files - applicable when s3 is used as backend
-terraform_state_s3_bucket_name = "carrier-s3-backend-bucket"
-
-#Applicable when Terraform Cloud/Enterprise is used
-tfc_org_name = "openidl"
-tfc_workspace_name_aws_resources = "openidl-aws-resources"
+#Name of the S3 bucket used to store the data extracted from HDS for analytics
+#Applicable for carrier and analytics node only
+s3_bucket_name_hds_analytics = "<s3_bucket_name_hds_data_analytics>"
