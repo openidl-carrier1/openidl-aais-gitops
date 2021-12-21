@@ -171,11 +171,9 @@ cw_logs_retention_period = "<days>" #example 90 days
 s3_bucket_name_cloudtrail = "<s3_bucket_name>" #s3 bucket name to manage cloudtrail logs
 
 #--------------------------------------------------------------------------------------------------------------------
-#Applicable when S3 is used for backend. Name of the S3 bucket managing terraform state files
+#Name of the S3 bucket managing terraform state files
 terraform_state_s3_bucket_name = "<s3_bucket_terraform_state>"
 
-#Applicable when Terraform Cloud/Enterprise is used. TFC/TFE organisation name and AWS resources workspace name 
-tfc_org_name = "<TF_org_name>"
-tfc_workspace_name_aws_resources = "<TF_Workspace_name_setup_for_AWS_resources>"
-
-
+#Name of the S3 bucket used to store the data extracted from HDS for analytics
+#Applicable for carrier and analytics node only
+s3_bucket_name_hds_analytics = "<s3_bucket_name_hds_data_analytics>"

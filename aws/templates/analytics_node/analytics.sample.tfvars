@@ -93,9 +93,9 @@ cw_logs_retention_period = 90
 s3_bucket_name_cloudtrail = "cloudtrail-logs"
 
 #--------------------------------------------------------------------------------------------------------------------
-#Applicable when S3 is used for backend. Name of the S3 bucket managing terraform state files
+#Name of the S3 bucket managing terraform state files
 terraform_state_s3_bucket_name = "analytics-dev-tfstate-mgmt"
 
-#Applicable when Terraform Cloud/Enterprise is used. TFC/TFE organisation name and AWS resources workspace name 
-tfc_org_name = "openidl"
-tfc_workspace_name_aws_resources = "openidl-aws-resources"
+#Name of the S3 bucket used to store the data extracted from HDS for analytics
+#Applicable for carrier and analytics node only
+s3_bucket_name_hds_analytics = "<s3_bucket_name_hds_data_analytics>"
