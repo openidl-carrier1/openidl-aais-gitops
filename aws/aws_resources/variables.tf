@@ -624,11 +624,6 @@ variable "org_name" {
   description = "The name of the organization"
   default = ""
 }
-variable "vault_password_reset" {
-  type = string
-  description = "A random string to be set/changed when password vault password in AWS secrets manager required to reset"
-  default = ""
-}
 variable "terraform_state_s3_bucket_name" {
   type = string
   description = "The name of the s3 bucket will manage terraform state files"
