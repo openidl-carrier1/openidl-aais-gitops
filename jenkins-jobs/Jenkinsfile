@@ -1,12 +1,23 @@
 #!groovy
 import groovy.json.JsonSlurper
+    properties([
+        parameters([
+            string(defaultValue: '', description: 'Terraform endpoint', name: 'TF_ADDRESS'),
+            password(defaultValue: '', description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN'),
+            string(defaultValue: '', description: 'TF Organization', name: 'TF_ORG_NAME'),
+            string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE'),
+            string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE'),
+            string(defaultValue: '', description: 'GitHub URL', name: 'GITHUB_URL'),
+            string(defaultValue: '', description: 'GitHub Branch', name: 'GITHUB_BRANCH'),
+        ])
+	])
 node('slave') {
     checkout()
     buildInfra()
 }
 def checkout() {
     stage('Checkout Code') {
-        git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: 'https://github.com/rajeshsanjeevi/openidl-iaac.git'
+        git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
             cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
@@ -41,7 +52,7 @@ def getWorkspaceId(workspace) {
                 [ name: "Authorization", value: "Bearer " + "${env.TF_BEARER_TOKEN}" ],
                 [ name: "Content-Type", value: "application/vnd.api+json" ]
             ],
-        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/organizations/" + "${params.TF_ORGNAME}" + "/workspaces/" + "${workspace}"
+        url: "https://" + "${params.TF_ADDRESS}" + "/api/v2/organizations/" + "${params.TF_ORG_NAME}" + "/workspaces/" + "${workspace}"
     )
     def data = new JsonSlurper().parseText(response.content)
     println("Workspace Id: " + data.data.id)
