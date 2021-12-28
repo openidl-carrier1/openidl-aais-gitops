@@ -1,0 +1,61 @@
+pipeline {
+    agent {
+        node {
+            label 'slave'
+        }
+    }
+    tools {
+        git 'git'
+    }
+    parameters {
+        string description: 'Organization name of the node', name: 'org_name', trim: true
+        string description: 'Environment (dev | test | prod)', name: 'env', trim: true
+        string description: 'AWS region', name: 'aws_region', trim: true
+        string description: 'Name of the blockchain cluster(EKS)', name: 'blk_cluster_name', trim: true
+        string description: 'Domain', name: 'domain', trim: true
+        string description: 'Internal Domain', name: 'internal_domain', trim: true
+        string description: 'Node Type', name: 'node_type', trim: true
+        string description: 'Registry', name: 'registry', trim: true
+        }
+    stages{
+        stage('Preregister-Users'){
+           steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-preregister-users",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        aws_region: '${params.aws_region}'
+                        blk_cluster_name: '${params.blk_cluster_name}'
+                        registry: '${params.registry}'
+                        env: '${params.env}'
+                        internal_domain: '${params.internal_domain}'
+                        domain: '${params.domain}'
+                        node_type: '${params.node_type}'
+                        network:
+                            org_name: '${params.org_name}'
+                        """
+                        )
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo "The preregister users action is successful"
+
+        }
+        failure {
+            echo "The preregister users action is failed, Please investigate"
+
+        }
+    }
+}
+

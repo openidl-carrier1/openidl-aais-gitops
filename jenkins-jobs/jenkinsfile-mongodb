@@ -1,0 +1,84 @@
+pipeline {
+    agent {
+        node {
+            label 'slave'
+        }
+    }
+    tools {
+        git 'git'
+    }
+    parameters {
+        string description: 'Organization name of the node', name: 'org_name', trim: true
+        string description: 'Environment (dev | test | prod)', name: 'env', trim: true
+        choice choices: ['setup', 'cleanup'], description: 'Choose setup/clean mongodb instance', name: 'action'
+        string description: 'AWS region', name: 'aws_region', trim: true
+        string description: 'Name of the application cluster(EKS)', name: 'app_cluster_name', trim: true
+        }
+    stages{
+        stage('MongoDB-Setup'){
+            when {
+                expression { "${params.action}" == "setup" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-mongodb-setup",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        removeColor: false,
+                        async: false,
+                        importTowerLogs: true,
+                        extraVars: """---
+                        aws_region: '${params.aws_region}'
+                        app_cluster_name: '${params.app_cluster_name}'
+                        env: '${params.env}'
+                        network:
+                            org_name: '${params.org_name}'
+                        """
+                        )
+                }
+            }
+        }
+        stage('MongoDB-Cleanup'){
+            when {
+                expression { "${params.action}" == "cleanup" }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+                    ansibleTower(
+                        towerServer: 'AWX',
+                        towerCredentialsId: 'AWX',
+                        templateType: 'job',
+                        jobTemplate: "openidl-mongodb-cleanup",
+                        jobType: "run",
+                        towerLogLevel: 'full',
+                        importTowerLogs: true,
+                        removeColor: false,
+                        async: false,
+                        extraVars: """---
+                        aws_region: '${params.aws_region}'
+                        app_cluster_name: '${params.app_cluster_name}'
+                        env: '${params.env}'
+                        network:
+                            org_name: '${params.org_name}'
+                        """
+                        )
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo "The mongodb action is successful"
+
+        }
+        failure {
+            echo "The mongodb action is failed, Please investigate"
+
+        }
+    }
+}
+
