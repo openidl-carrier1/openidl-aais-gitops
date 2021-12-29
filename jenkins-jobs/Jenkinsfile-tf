@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
     properties([
         parameters([
             string(defaultValue: '', description: 'Terraform endpoint', name: 'TF_ADDRESS'),
-            password(defaultValue: '', description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN'),
+            password(description: 'TF Bearer Token', name: 'TF_BEARER_TOKEN'),
             string(defaultValue: '', description: 'TF Organization', name: 'TF_ORG_NAME'),
             string(defaultValue: '', description: 'AWS resources workspace', name: 'TF_AWS_WORKSPACE'),
             string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE'),
