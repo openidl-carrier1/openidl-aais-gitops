@@ -17,7 +17,7 @@ node('slave') {
 }
 def checkout() {
     stage('Checkout Code') {
-        git credentialsId: 'github', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
+        git credentialsId: 'kens-aais-github', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
             cp ./aws/carrier.tfvars ./aws/aws_resources/carrier.auto.tfvars
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
