@@ -43,5 +43,5 @@
         vault_kvs_user: "{{ vault_user.stdout }}"
         vault_kvs_user_token: "{{ vault_user_token.stdout }}"
         ca_user_token: "{{ ca_user_password }}"
-	cluster_name: "{{ blk_cluster_name }}"
+        cluster_name: "{{ blk_cluster_name }}"
 
