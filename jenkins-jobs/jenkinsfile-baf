@@ -47,7 +47,7 @@ def neworgPrepare(){
                 towerServer: 'AWX',
                 towerCredentialsId: 'AWX',
                 templateType: 'job',
-                jobTemplate: "${org}-${params.env}-openidl-baf-deploy",
+                jobTemplate: "${org}-${params.env}-openidl-baf",
                 jobType: "run",
                 towerLogLevel: 'full',
                 removeColor: false,
