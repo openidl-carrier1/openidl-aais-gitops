@@ -1,15 +1,18 @@
-- hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
-  gather_facts: no
+- hosts: ansible_provisioners
+  gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
+  vars_files:
+    - "./{{ org_name }}-config-{{ env }}.yml"
+
   tasks:
     - include_role:
-        name: "prereqs"
+        name: "prerun-job"
       vars:
-        aws_access_key: "{{ gitactions_user_access_key }}"
-        aws_secret_key: "{{ gitactions_user_secret_key }}"
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
         aws_region: "{{ aws_region }}"
-        aws_external_id: "{{ gitactions_user_external_id }}"
-        aws_iam_role: "{{ gitactions_user_iam_role }}"
+        aws_external_id: "{{ aws_external_id }}"
+        aws_iam_role: "{{ aws_iam_role }}"
         cluster_name: "{{ blk_cluster_name }}"
 
     - name: Get vault root token
@@ -18,19 +21,38 @@
         aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT | jq -r .SecretString
       register: vault
 
+    - name: Export Orderer TLS Cert
+      shell: |
+        export AWS_PROFILE=cicd-role
+        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
+      register: orgjson
+      when: deploy_action == "new_org"
+
+    - name: Export ORG_MSP
+      shell: |
+        export AWS_PROFILE=cicd-role
+        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
+      register: orgjson
+      when: deploy_action == "add_new_org"
+
     - include_role:
         name: "baf/network"
       vars:
         vault_token: "{{ vault.stdout }}"
         cluster_name: "{{ blk_cluster_name }}"
         action: "{{ deploy_action }}"
+        account: "{{ aws_account_number }}"
         region: "{{ aws_region }}"
         access_id: "{{ baf_user_access_key }}"
         access_key: "{{ baf_user_secret_key }}"
-        account: "{{ aws_account_number }}"
-        registry: "ghcr.io/{{ baf_image_repo }}"
+        gitops_repo_user: "{{ gitops_repo_user }}"
+        gitops_repo_user_token: "{{ gitops_repo_user_token }}"
+        gitops_repo_user_email: "{{ gitops_repo_user_email }}"
+        channel_name: "{{ channel_name }}"
+        chaincode_version: "${{ chaincode_version }}"
+        org_json: "{{ orgjson.stdout | default('') }}"
+        registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"
-
-
-
+        env: "{{ env }}"
+        org_name: "{{ org_name }}"
 

@@ -1,9 +1,12 @@
-- hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
-  gather_facts: no
+- hosts: ansible_provisioners
+  gather_facts: yes
   no_log: "{{ no_ansible_log | default(true) }}"
+  vars_files:
+    - "./{{ org_name }}-config-{{ env }}.yml"
+
   tasks:
     - include_role:
-        name: "prereqs"
+        name: "prerun-job"
       vars:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
@@ -40,3 +43,5 @@
         vault_kvs_user: "{{ vault_user.stdout }}"
         vault_kvs_user_token: "{{ vault_user_token.stdout }}"
         ca_user_token: "{{ ca_user_password }}"
+	cluster_name: "{{ blk_cluster_name }}"
+

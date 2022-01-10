@@ -1,3 +1,7 @@
+---
+- name: "Include pre-tasks"
+  include_tasks: "pre-tasks.yaml"
+
 - name: Delete k8s namespace
   community.kubernetes.k8s:
     name: openidl-baf
@@ -98,11 +102,11 @@
           - |-
             #!/bin/bash -e
             set -x
-            git clone https://{{ gitops_repo_url }} -b {{ gitops_repo_branch }}
+            git clone https://{{ gitops_repo_url }} -b {{ gitops_repo_branch }} /home/gitrepo
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
-            cd /home/openidl-aais-gitops/
+            cd /home/gitrepo
             ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
             if [ ${ACTION} != "deploy_network" ] || [ ${ACTION} != "reset" ] || [ ${ACTION} != "new_org" ]; then
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
@@ -186,3 +190,8 @@
     kind: Namespace
     state: absent
     wait: yes
+
+- name: Delete network-setup.yml file
+  file:
+    state: absent
+    path: ./network-setup.yml

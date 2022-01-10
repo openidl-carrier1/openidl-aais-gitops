@@ -1,26 +1,12 @@
-- hosts: ec2-18-119-105-48.us-east-2.compute.amazonaws.com
-  gather_facts: no
+- hosts: ansible_provisioners
+  gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
+  vars_files:
+    - "./{{ org_name }}-config-{{ env }}.yml"
+
   tasks:
-    - name: Get KMS ID
-      shell: |
-        export AWS_PROFILE=cicd-role; aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
-      register: output
-    
-    - set_fact:
-        config_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
-
-    - set_fact:
-        config_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
-
-    - set_fact:
-        kvs_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
-
-    - set_fact:
-        kvs_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
-
     - include_role:
-        name: "prereqs"
+        name: "prerun-job"
       vars:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
@@ -28,6 +14,29 @@
         aws_external_id: "{{ aws_external_id }}"
         aws_iam_role: "{{ aws_iam_role }}"
         cluster_name: "{{ blk_cluster_name }}"
+
+    - name: Get KMS ID
+      shell: |
+        export AWS_PROFILE=cicd-role
+        aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
+      register: output
+      when: deploy_action == "vault-deploy"
+
+    - set_fact:
+        config_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+      when: deploy_action == "vault-deploy"
+
+    - set_fact:
+        config_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
+      when: deploy_action == "vault-deploy"
+
+    - set_fact:
+        kvs_user: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
+      when: deploy_action == "vault-deploy"
+
+    - set_fact:
+        kvs_user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
+      when: deploy_action == "vault-deploy"
 
     - include_role:
         name: "vault"
@@ -37,3 +46,8 @@
         vault_config_user_token: "{{ config_user_token }}"
         vault_kvs_user: "kvs-{{ network.org_name }}-{{ config_user }}"
         vault_kvs_user_token: "{{ kvs_user_token }}"
+        registry: "{{ baf_image_repo }}"
+        cluster_name: "{{ blk_cluster_name }}"
+        deploy_action: "{{ deploy_action }}"
+
+

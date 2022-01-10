@@ -1,3 +1,7 @@
+---
+- name: "Include pre-tasks"
+  include_tasks: "pre-tasks.yaml"
+
 - name: Generate pre-register-users script
   template:
     src: templates/pre-register-user.sh.j2
