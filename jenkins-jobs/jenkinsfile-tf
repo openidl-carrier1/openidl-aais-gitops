@@ -8,9 +8,8 @@ import groovy.json.JsonSlurper
             string(defaultValue: '', description: 'K8s resources workspace', name: 'TF_K8S_WORKSPACE', trim: true),
             string(defaultValue: 'https://github.com/rajeshsanjeevi/openidl-iaac.git', description: 'GitHub URL', name: 'GITHUB_URL', trim: true),
             string(defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH', trim: true),
-            string(defaultValue: '', description: 'Terraform Input File', name: 'TF_INPUT_FILE', trim: true),
         ])
-	])
+    ])
 node('openidl') {
     withCredentials([string(credentialsId: 'TF_BEARER_TOKEN', variable: 'TF_BEARER_TOKEN')])
     {
@@ -22,10 +21,8 @@ def checkout() {
     stage('Checkout Code') {
         git credentialsId: 'openidl-aais-gitops', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
-            cp ./aws/${TF_INPUT_FILE} ./aws/aws_resources/input.auto.tfvars
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
             echo "Successfully prepared the AWS resources code bundle"
-            cp ./aws/${TF_INPUT_FILE} ./aws/k8s_resources/input.auto.tfvars
             tar -czf k8s-content.tar.gz -C aws/k8s_resources --exclude .git .
             echo "Successfully prepared the K8s resources code bundle"
         '''
