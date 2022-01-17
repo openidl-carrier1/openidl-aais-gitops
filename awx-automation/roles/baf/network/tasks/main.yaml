@@ -1,7 +1,4 @@
 ---
-- name: "Include pre-tasks"
-  include_tasks: "pre-tasks.yaml"
-
 - name: Delete k8s namespace
   community.kubernetes.k8s:
     name: openidl-baf
@@ -10,11 +7,29 @@
     state: absent
     wait: yes
 
-- name: Generate network config file
+- name: Generate network config file (defaultchannel)
   template:
     src: templates/network-setup.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
+  when: channel_name == "defaultchannel"
+
+- name: Generate network config file (non defaultchannel/join_peer action)
+  template:
+    src: templates/network-setup-baf-automation.yml.j2
+    dest: "./network-setup.yml"
+    mode: 0755
+  when: ((channel_name != "defaultchannel") and ((action != "add_new_org") and (action != "add_new_channel") and (action != "join_peer") and (action != "chaincode")))
+
+- name: Generate network config file (non defaultchannel/non join_peer action)
+  template:
+    src: templates/network-setup-develop.yml.j2
+    dest: "./network-setup.yml"
+    mode: 0755
+  when: ((channel_name != "defaultchannel") and ((action =="add_new_org") or (action == "add_new_channel") or (action == "join_peer") or (action == "chaincode")))
+
+# chaincode for non default channel works for network-develop file
+# add_new_channel - works with network-develop file
 
 - name: Create a k8s namespace
   community.kubernetes.k8s:
@@ -102,21 +117,22 @@
           - |-
             #!/bin/bash -e
             set -x
-            git clone https://{{ gitops_repo_url }} -b {{ gitops_repo_branch }} /home/gitrepo
+            export LOCAL_PATH=/home/gitrepo
+            git clone https://{{gitops_repo_user|urlencode()}}:{{gitops_repo_user_token|urlencode()}}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
-            cd /home/gitrepo
+            cd $LOCAL_PATH
             ansible-playbook blockchain-automation-framework/platforms/shared/configuration/environment-setup.yaml -e "@/home/config/network-setup.yml" -e "no_ansible_log=true"
             if [ ${ACTION} != "deploy_network" ] || [ ${ACTION} != "reset" ] || [ ${ACTION} != "new_org" ]; then
               POD_NAME=$(kubectl -n ${ORG_NAME}-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
-              mkdir -p /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts
-              kubectl -n ${ORG_NAME}-net cp $POD_NAME:/crypto-config /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config
-              cp /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/peerOrganizations/${ORG_NAME}-net/peers/peer0.${ORG_NAME}-net/msp/cacerts/ca-${ORG_NAME}-net-${ORG_NAME}.${ENV}.${DOMAIN}-8443.pem /home/blockchain-automation-framework/build/${ORG_NAME}-ca.crt
+              mkdir -p $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts
+              kubectl -n ${ORG_NAME}-net cp $POD_NAME:/crypto-config $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config
+              cp $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/peerOrganizations/${ORG_NAME}-net/peers/peer0.${ORG_NAME}-net/msp/cacerts/ca-${ORG_NAME}-net-${ORG_NAME}.${ENV}.${DOMAIN}-8443.pem /home/blockchain-automation-framework/build/${ORG_NAME}-ca.crt
               if [ -z $ORDERERORG ]; then
                 POD_NAME=$(kubectl -n ordererorg-net get pods --selector=name=ca-tools --output=jsonpath={.items..metadata.name})
                 kubectl -n ordererorg-net cp $POD_NAME:/crypto-config /home/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config
-                cp /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/ordererOrganizations/ordererorg-net/orderers/orderer1.ordererorg-net/tls/ca.crt /home/blockchain-automation-framework/build/orderer1.crt
+                cp $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/crypto-config/ordererOrganizations/ordererorg-net/orderers/orderer1.ordererorg-net/tls/ca.crt /home/blockchain-automation-framework/build/orderer1.crt
               fi              
             fi
             if [ $ACTION = "deploy_network" ]; then
@@ -136,7 +152,7 @@
               cat /home/credentials/org.creds > /home/blockchain-automation-framework/build/orderer5.crt
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/launch-new-organization.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" -e "no_ansible_log=true" $EXTRA_VARS
             elif [ $ACTION = "add_new_org" ]; then
-              cat /home/credentials/org.creds > /home/openidl-aais-gitops/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts/${CHANNEL_NAME}.json
+              cat /home/credentials/org.creds > $LOCAL_PATH/blockchain-automation-framework/platforms/hyperledger-fabric/configuration/build/channel-artifacts/${CHANNEL_NAME}.json
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/syschannel-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" -e "no_ansible_log=true" $EXTRA_VARS
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/creator-fetch-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" -e "no_ansible_log=true" $EXTRA_VARS
               ansible-playbook blockchain-automation-framework/platforms/hyperledger-fabric/configuration/creator-sign-update-add-org.yaml -e "@/home/config/network-setup.yml" -e "add_new_org=true" -e "no_ansible_log=true" $EXTRA_VARS

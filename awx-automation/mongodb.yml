@@ -13,7 +13,10 @@
         aws_region: "{{ aws_region }}"
         aws_external_id: "{{ aws_external_id }}"
         aws_iam_role: "{{ aws_iam_role }}"
-        cluster_name: "{{ app_cluster_name }}"
+
+    - name: Update kubeconfig and set context to openidl EKS cluster
+      shell: |
+        export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ app_cluster_name }}
 
     - set_fact:
         user_token: "{{ lookup('password', '/dev/null chars=ascii_uppercase,ascii_lowercase,digits length=40') }}"
@@ -34,7 +37,6 @@
         mongodb_user: "{{ network.org_name }}-{{ env }}-{{ user }}"
         mongodb_root_token: "{{ root_token }}"
         mongodb_database: "openidl-offchain-db"
-        cluster_name: "{{ app_cluster_name }}"
         deploy_action: "{{ deploy_action }}"
 
 

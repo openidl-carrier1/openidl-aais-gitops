@@ -1,7 +1,4 @@
 ---
-- name: "Include pre-tasks"
-  include_tasks: "pre-tasks.yaml"
-
 - name: Generate pre-register-users script
   template:
     src: templates/pre-register-user.sh.j2
@@ -24,6 +21,13 @@
     api_version: v1
     kind: ConfigMap
     state: absent
+
+- name: Create a k8s namespace
+  community.kubernetes.k8s:
+    name: vault
+    api_version: v1
+    kind: Namespace
+    state: present
 
 - name: Create configmap for network configuration file
   shell: |
@@ -127,20 +131,20 @@
     kubectl -n vault logs -f pre-register-user-script
   register: pod_logs
 
-- name: Pod logs 
-  debug:
-    msg: '{{ pod_logs.stdout_lines }}'
+#- name: Pod logs
+#  debug:
+#    msg: '{{ pod_logs.stdout_lines }}'
 
 #- name: delete ca user token to aws secrets manager
 #  shell: |
 #    export AWS_PROFILE=cicd-role
-#    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --force-delete-without-recovery
+#    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --region {{ aws_region }} --force-delete-without-recovery
 #  ignore_errors: yes
 
 - name: upload ca user token to aws secrets manager
   shell: |
     export AWS_PROFILE=cicd-role
-    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }}
+    aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }} --region {{ aws_region }}
 
 - name: Delete user script pod
   community.kubernetes.k8s:

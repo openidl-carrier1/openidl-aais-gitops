@@ -13,7 +13,10 @@
         aws_region: "{{ aws_region }}"
         aws_external_id: "{{ aws_external_id }}"
         aws_iam_role: "{{ aws_iam_role }}"
-        cluster_name: "{{ blk_cluster_name }}"
+
+    - name: Update kubeconfig and set context to openidl EKS cluster
+      shell: |
+        export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ blk_cluster_name }}
 
     - name: Get KMS ID
       shell: |
@@ -47,7 +50,6 @@
         vault_kvs_user: "kvs-{{ network.org_name }}-{{ config_user }}"
         vault_kvs_user_token: "{{ kvs_user_token }}"
         registry: "{{ baf_image_repo }}"
-        cluster_name: "{{ blk_cluster_name }}"
         deploy_action: "{{ deploy_action }}"
 
 
