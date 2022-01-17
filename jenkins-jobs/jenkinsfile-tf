@@ -9,7 +9,7 @@ import groovy.json.JsonSlurper
             string(defaultValue: 'https://github.com/rajeshsanjeevi/openidl-iaac.git', description: 'GitHub URL', name: 'GITHUB_URL', trim: true),
             string(defaultValue: 'hig-carrier', description: 'GitHub Branch', name: 'GITHUB_BRANCH', trim: true),
         ])
-	])
+    ])
 node('openidl') {
     withCredentials([string(credentialsId: 'TF_BEARER_TOKEN', variable: 'TF_BEARER_TOKEN')])
     {
