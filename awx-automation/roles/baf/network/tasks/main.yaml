@@ -14,7 +14,7 @@
 #    mode: 0755
 #  when: channel_name == "defaultchannel"
 
-- name: Generate network config file (non defaultchannel/non join_peer action)
+- name: Generate network config file
   template:
     src: templates/network-setup-develop.yml.j2
     dest: "./network-setup.yml"
