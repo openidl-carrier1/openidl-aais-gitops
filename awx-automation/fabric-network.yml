@@ -2,7 +2,7 @@
   gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
   vars_files:
-    - "./{{ org_name }}-config-{{ env }}.yml"
+    - "./config/{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
     - include_role:

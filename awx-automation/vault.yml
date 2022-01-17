@@ -2,7 +2,7 @@
   gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
   vars_files:
-    - "./{{ org_name }}-config-{{ env }}.yml"
+    - "./config/{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
     - include_role:
@@ -21,7 +21,7 @@
     - name: Get KMS ID
       shell: |
         export AWS_PROFILE=cicd-role
-        aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey | jq -r .KeyMetadata.KeyId
+        aws kms describe-key --key-id alias/{{ network.org_name[:4] }}-{{ env }}-vault-kmskey --region {{ aws_region }} | jq -r .KeyMetadata.KeyId
       register: output
       when: deploy_action == "vault-deploy"
 
