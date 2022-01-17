@@ -19,7 +19,7 @@ node('openidl') {
 }
 def checkout() {
     stage('Checkout Code') {
-        git credentialsId: 'openidl-aais-gitops1', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
+        git credentialsId: 'openidl-aais-gitops', branch: "${params.GITHUB_BRANCH}", url: "${params.GITHUB_URL}"
         sh '''
             tar -czf aws-content.tar.gz -C aws/aws_resources --exclude .git .
             echo "Successfully prepared the AWS resources code bundle"
