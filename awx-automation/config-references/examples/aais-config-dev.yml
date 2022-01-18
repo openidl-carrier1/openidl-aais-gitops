@@ -1,8 +1,6 @@
 ordererorg_domain: "aais.thetech.digital"
 domain: "aais.thetech.digital"
 internal_domain: "aais.internal.thetech.digital"
-add_org: ""
-chaincode_version: ""
 node_type: "aais"
 network:
   org_name: "aais"
