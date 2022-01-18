@@ -2,4 +2,4 @@
 local
 
 [local]
-localhost ansible_connection=local
+172.32.2.241
