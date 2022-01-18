@@ -2,7 +2,7 @@
   gather_facts: yes
   no_log: "{{ no_ansible_log | default(false) }}"
   vars_files:
-    - "./{{ org_name }}-config-{{ env }}.yml"
+    - "./config/{{ org_name }}-config-{{ env }}.yml"
 
   tasks:
     - include_role:
@@ -13,25 +13,28 @@
         aws_region: "{{ aws_region }}"
         aws_external_id: "{{ aws_external_id }}"
         aws_iam_role: "{{ aws_iam_role }}"
-        cluster_name: "{{ blk_cluster_name }}"
+
+    - name: Update kubeconfig and set context to openidl EKS cluster
+      shell: |
+        export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ blk_cluster_name }}
 
     - name: Get vault root token
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ network.org_name }}-{{ env }}-vault-unseal-key --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: vault
 
     - name: Export Orderer TLS Cert
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ env }}-orderer-tls --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "new_org"
 
     - name: Export ORG_MSP
       shell: |
         export AWS_PROFILE=cicd-role
-        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT | jq -r .SecretString
+        aws secretsmanager get-secret-value --secret-id {{ env }}-{{ add_org_name }}-msp --version-stage AWSCURRENT --region {{ aws_region }} | jq -r .SecretString
       register: orgjson
       when: deploy_action == "add_new_org"
 
@@ -49,7 +52,7 @@
         gitops_repo_user_token: "{{ gitops_repo_user_token }}"
         gitops_repo_user_email: "{{ gitops_repo_user_email }}"
         channel_name: "{{ channel_name }}"
-        chaincode_version: "${{ chaincode_version }}"
+        chaincode_version: "{{ chaincode_version }}"
         org_json: "{{ orgjson.stdout | default('') }}"
         registry: "{{ baf_image_repo }}"
         add_org: "{{ add_org_name }}"

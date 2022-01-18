@@ -8,11 +8,11 @@ pipeline {
     parameters {
         string description: 'Organization name of the node', name: 'org_name', trim: true
         string description: 'Environment (dev | test | prod)', name: 'env', trim: true
-        choice choices: ['deploy_network', 'reset', 'chaincode', 'new_org', 'add_new_channel', 'add_new_org', 'join_peer'], description: 'Choose blockchain network deployment action', name: 'deploy_action'
+        choice choices: ['deploy_network', 'reset', 'chaincode', 'new_org', 'add_new_channel', 'add_new_org', 'join_peer', 'register_users', 'health_check'], description: 'Choose blockchain network deployment action', name: 'deploy_action'
         string description: 'Channel name', name: 'channel_name', trim: true
         string description: 'Chaincode version', name: 'chaincode_version', trim: true
-        string description: 'New organization name to be added to channel(when action=add_new_org)', name: 'add_org_name', trim: true
-        booleanParam defaultValue: false, description: 'Adding new org', name: 'add_new_org'
+        string description: 'New organization name to be added to channel(when action=add_new_org)', name: 'new_org_name', trim: true
+        string description: 'ExtraVars', name: 'extra_vars', trim: true
         }
     stages {
         stage('Prepare') {
@@ -23,6 +23,9 @@ pipeline {
                         buildType = "${params.deploy_action}"
                         neworgPrepare()
                         deployBAF(buildType)
+                    } else if("${params.deploy_action}" == "register_users") {
+                        buildType = "${params.deploy_action}"
+                        registerUsers(buildType)
                     } else {
                         buildType = "${params.deploy_action}"
                         deployBAF(buildType)
@@ -59,9 +62,8 @@ def neworgPrepare(){
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
-                add_org_name: '${params.add_org_name}'
-                org_json: '${params.org_json}'
-                add_new_org: '${params.add_new_org}'
+                add_org_name: '${params.new_org_name}'
+                extra_vars: '${params.extra_vars}'
                 """
             )
         }
@@ -86,13 +88,34 @@ def deployBAF(thestage){
                 deploy_action: '${params.deploy_action}'
                 channel_name: '${params.channel_name}'
                 chaincode_version: '${params.chaincode_version}'
-                add_org_name: '${params.add_org_name}'
-                org_json: '${params.org_json}'
-                add_new_org: '${params.add_new_org}'
+                add_org_name: '${params.new_org_name}'
+                extra_vars: '${params.extra_vars}'
                 """
             )
         }
     }
 }
-
+def registerUsers(thestage){
+    stage(thestage){
+        wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
+            ansibleTower(
+                towerServer: 'AWX',
+                towerCredentialsId: 'AWX',
+                templateType: 'job',
+                jobTemplate: "${org}-${params.env}-openidl-register-users",
+                jobType: "run",
+                towerLogLevel: 'full',
+                removeColor: false,
+                async: false,
+                importTowerLogs: true,
+                extraVars: """---
+                org_name: '${org}'
+                env: '${params.env}'
+                network:
+                    org_name: '${params.org_name}'
+                """
+            )
+        }
+    }
+}
 
