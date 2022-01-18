@@ -52,9 +52,9 @@ network:
       # private data collection to be used while approving an committing the chaincode
       collectionconfig:
         # name of the private data collection
-        name: "${ANALYTICS_ORGNAME}_${CARRIER_ORGNAME}_pdc"
+        - name: "${ANALYTICS_ORGNAME}_${CARRIER_ORGNAME}_pdc"
         # policy to be used in private data collection
-        policy: "OR('${ANALYTICS_ORGNAME}MSP.member', '${CARRIER_ORGNAME}MSP.member')"
+          policy: "OR('${ANALYTICS_ORGNAME}MSP.member', '${CARRIER_ORGNAME}MSP.member')"
     # channel for analytics and aais
   - name: ${ANAYTICS_AAIS_CHANNEL_NAME}
     # chaincode to be installed on analytics-aais channel
@@ -64,6 +64,6 @@ network:
       repo_branch: "${CHAINCODE_REPO_BRANCH}"
       repo_path: openidl-chaincode/chaincode/openidl
       collectionconfig:
-        # private data collection for analytics and aais
-        name: "${ANALYTICS_ORGNAME}_${AAIS_ORGNAME}_pdc"
-        policy: "OR('${ANALYTICS_ORGNAME}MSP.member', '${AAIS_ORGNAME}MSP.member')"
+          # private data collection for analytics and aais
+        - name: "${ANALYTICS_ORGNAME}_${AAIS_ORGNAME}_pdc"
+          policy: "OR('${ANALYTICS_ORGNAME}MSP.member', '${AAIS_ORGNAME}MSP.member')"
