@@ -1,16 +1,16 @@
 ordererorg_domain: "aais.thetech.digital"
 domain: "carrier.thetech.digital"
 internal_domain: "carrier.internal.thetech.digital"
-add_org: "" 
 node_type: "carrier"
 network:
   org_name: "carrier"
   ordererorg: "false"
   ordererorg_name: "ordererorg"
   organizations:
-    - name: ""
-      domain: ""
-      org_status: ""
+    - name: "carrier"
+      domain: "carrier.thetech.digital"
+    - name: "analytics"
+      name: "analytics.thetech.digital"
   channels:
   - name: defaultchannel
     chaincode:
