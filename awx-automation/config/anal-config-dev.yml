@@ -1,5 +1,5 @@
 ordererorg_domain: ""
-domain: "l"
+domain: ""
 internal_domain: ""
 node_type: "analytics"
 network:
@@ -9,7 +9,6 @@ network:
   organizations:
     - name: ""
       domain: ""
-      org_status: ""
   channels:
   - name: ""
     chaincode:
