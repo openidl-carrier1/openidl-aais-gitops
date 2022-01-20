@@ -1,0 +1,27 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: caru-net-ca-tools
+  namespace: caru-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: caru-net-ca-tools
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops.git
+    ref: caru-dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/catools
+  values:
+    metadata:
+      namespace: caru-net
+      name: ca-tools
+    replicaCount: 1
+
+    image:
+      repository: hyperledger/fabric-ca-tools
+      tag: 1.2.1
+      pullPolicy: IfNotPresent
+      
+    storage:
+      storageclassname: carusc
+      storagesize: 10Gi
