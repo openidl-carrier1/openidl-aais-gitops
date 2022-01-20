@@ -33,7 +33,7 @@ network:
       # chaincode name to be used for installing and committing chaincode
       name: openidl-cc-default
       repo_url: github.com/openidl-org/openidl-main.git
-      repo_branch: "caru-test"
+      repo_branch: "caru-dev"
       repo_path: openidl-chaincode/chaincode/openidl
   # name of the channel between analytics and carrier
   - name: anal-caru
@@ -44,7 +44,7 @@ network:
       # github repo url from which the chaincode should be installed (public repository)
       repo_url: github.com/openidl-org/openidl-main.git
       # github repo branch from which the chaincode should be picked
-      repo_branch: "caru-test"
+      repo_branch: "caru-dev"
       # chaincode directory path in the github repo 
       repo_path: openidl-chaincode/chaincode/openidl
       # private data collection to be used while approving an committing the chaincode
