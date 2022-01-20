@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: caru-net-ca
+  namespace: caru-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: caru-net-ca
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops.git
+    ref: caru-dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: caru-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: caru-admin
+    storage:
+      storageclassname: carusc
+      storagesize: 20Gi
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.caru.aaisdirect.com
+      authpath: devcaru-net-auth
+      secretcert: caru/crypto/peerOrganizations/caru-net/ca?ca.caru-net-cert.pem
+      secretkey: caru/crypto/peerOrganizations/caru-net/ca?caru-net-CA.key
+      secretadminpass: caru/credentials/caru-net/ca/caru?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: caru.dev.carrier.caru.aaisdirect.com
