@@ -1,7 +1,6 @@
 ordererorg_domain: ""
 domain: ""
 internal_domain: ""
-add_org: "" 
 node_type: "carrier"
 network:
   org_name: ""
@@ -10,7 +9,6 @@ network:
   organizations:
     - name: ""
       domain: ""
-      org_status: ""
   channels:
   - name: ""
     chaincode:

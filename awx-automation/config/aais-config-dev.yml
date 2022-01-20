@@ -1,8 +1,6 @@
 ordererorg_domain: ""
 domain: ""
 internal_domain: ""
-add_org: ""
-chaincode_version: ""
 node_type: "aais"
 network:
   org_name: ""
