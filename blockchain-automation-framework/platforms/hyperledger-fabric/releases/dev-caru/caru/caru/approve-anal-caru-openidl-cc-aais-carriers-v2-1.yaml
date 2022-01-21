@@ -1,0 +1,54 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: approve-anal-caru-openidl-cc-aais-carriers-v2-1
+  namespace: caru-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: approve-anal-caru-openidl-cc-aais-carriers-v2-1
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops.git
+    ref: caru-dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/approve_chaincode
+  values:
+    metadata:
+      namespace: caru-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.caru-net:7051
+      localmspid: caruMSP
+      loglevel: debug
+      tlsstatus: true
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.caru.aaisdirect.com
+      authpath: devcaru-net-auth
+      adminsecretprefix: caru/crypto/peerOrganizations/caru-net/users/admin 
+      orderersecretprefix: caru/crypto/peerOrganizations/caru-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      tls: false
+    orderer:
+      address: orderer1.ordererorg.dev.openidl.aaisdirect.com:8443
+    chaincode:
+      builder: hyperledger/fabric-ccenv:2.2.3
+      name: openidl-cc-aais-carriers
+      version: v2
+      sequence: 1
+      commitarguments: ''
+      endorsementpolicies:  ''
+      collectionconfig: |-
+        WwogIHsKICAgICJuYW1lIjogImFuYWx5dGljc19jYXJ1X3BkYyIsCiAgICAicG9saWN5IjogIk9S
+        KCdhbmFseXRpY3NNU1AubWVtYmVyJywgJ2NhcnVNU1AubWVtYmVyJykiLAogICAgInJlcXVpcmVk
+        UGVlckNvdW50IjogMCwKICAgICJtYXhQZWVyQ291bnQiOiAwLAogICAgImJsb2NrVG9MaXZlIjog
+        MAogIH0sCiAgewogICAgIm5hbWUiOiAiYW5hbF9jYXJ1X3BkYyIsCiAgICAicG9saWN5IjogIk9S
+        KCdhbmFseXRpY3NNU1AubWVtYmVyJywgJ2NhcnVNU1AubWVtYmVyJykiLAogICAgInJlcXVpcmVk
+        UGVlckNvdW50IjogMCwKICAgICJtYXhQZWVyQ291bnQiOiAwLAogICAgImJsb2NrVG9MaXZlIjog
+        MAogIH0KXQoK
+      usecollectionconfig: true
+    channel:
+      name: anal-caru
