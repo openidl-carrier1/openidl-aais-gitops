@@ -49,6 +49,9 @@ network:
       repo_path: openidl-chaincode/chaincode/openidl
       # private data collection to be used while approving an committing the chaincode
       collectionconfig:
+        - name: "analytics_caru_pdc"
+          # policy to be used in private data collection
+          policy: "OR('analyticsMSP.member', 'caruMSP.member')"
         - name: "anal_caru_pdc"
           # policy to be used in private data collection
           policy: "OR('analyticsMSP.member', 'caruMSP.member')"
