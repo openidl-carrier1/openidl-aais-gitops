@@ -61,7 +61,7 @@ def neworgPrepare(){
                 env: '${params.env}'
                 deploy_action: "new_org_prereq"
                 channel_name: '${params.channel_name}'
-                chaincode_version: '${params.chaincode_version}'
+                chaincode_version: 'v${params.chaincode_version}'
                 add_org_name: '${params.new_org_name}'
                 extra_vars: '${params.extra_vars}'
                 """
@@ -87,7 +87,7 @@ def deployBAF(thestage){
                 env: '${params.env}'
                 deploy_action: '${params.deploy_action}'
                 channel_name: '${params.channel_name}'
-                chaincode_version: '${params.chaincode_version}'
+                chaincode_version: 'v${params.chaincode_version}'
                 add_org_name: '${params.new_org_name}'
                 extra_vars: '${params.extra_vars}'
                 """

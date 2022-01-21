@@ -16,7 +16,7 @@
 
 - name: Generate network config file
   template:
-    src: templates/network-setup-develop.yml.j2
+    src: templates/network-setup.yml.j2
     dest: "./network-setup.yml"
     mode: 0755
 
