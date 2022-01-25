@@ -47,6 +47,19 @@
         ID: "{{ access_id | b64encode }}"
         KEY: "{{ access_key | b64encode }}"
 
+- name: Create secret for github token
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      type: Opaque
+      metadata:
+        name: openidl-github-pat
+        namespace: openidl-baf
+      data:
+        PAT: "{{ gitops_repo_user_token | b64encode }}"
+
 - name: Create configmap for network configuration file
   shell: |
     kubectl -n openidl-baf create configmap network-setup --from-file=network-setup.yml=./network-setup.yml
@@ -78,6 +91,11 @@
               secretKeyRef:
                 name: openidl-baf-aws
                 key: KEY
+          - name: PAT
+            valueFrom:
+              secretKeyRef:
+                name: openidl-github-pat
+                key: PAT
           - name: AWS_REGION
             value: "{{ region }}"
           - name: ACTION
@@ -98,9 +116,8 @@
           args: 
           - |-
             #!/bin/bash -e
-            set -x
             export LOCAL_PATH=/home/gitrepo
-            git clone https://{{gitops_repo_user|urlencode()}}:{{gitops_repo_user_token|urlencode()}}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
+            git clone https://{{gitops_repo_user|urlencode()}}:${PAT}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
