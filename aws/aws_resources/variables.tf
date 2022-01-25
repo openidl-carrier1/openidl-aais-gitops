@@ -667,4 +667,9 @@ variable "aws_external_id" {
 variable "s3_bucket_name_hds_analytics" {
   type = string
   description = "The name of s3 bucket for reporting relevant only to carrier and analytics node"
+  default = ""
+}
+variable "s3_bucket_name_logos" {
+  type = string
+  description = "The name of s3 bucket used to manage logos (public s3 bucket)"
 }
