@@ -117,7 +117,7 @@
           - |-
             #!/bin/bash -e
             export LOCAL_PATH=/home/gitrepo
-            git clone https://{{gitops_repo_user|urlencode()}}:${PAT}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
+            git clone https://{{ gitops_repo_user }}:${PAT}@{{ gitops_repo_url }} -b {{ gitops_repo_branch }} $LOCAL_PATH
             mkdir /home/blockchain-automation-framework/build
             touch /home/blockchain-automation-framework/build/orderer1.crt
             aws eks --region {{ region }} update-kubeconfig --name {{ cluster_name }}
