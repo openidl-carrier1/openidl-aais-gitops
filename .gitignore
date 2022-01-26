@@ -25,3 +25,9 @@ ansible-automation/pre-register-users.sh
 docs/~$C-GitHub-Actions.doc
 ansible-automation/orderer.pem
 ansible-automation/orderer.base64.pem
+openidl-config/aais-dev-config-secrets.json
+openidl-config/config/*
+!openidl-config/config/placeholder.txt
+openidl-config/analytics-dev-config-secrets.json
+openidl-config/carrier-dev-config-secrets.json
+openidl-config/carrier-dev-config-secrets.json.hig
