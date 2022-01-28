@@ -17,7 +17,7 @@
         app_cluster_name: "{{ app_cluster_name }}"
         aws_region: "{{ aws_region }}"
         gitrepo_name: "{{ gitops_repo_url }}"
-        gitepo_branch: "{{ gitops_repo_branch }}"
+        gitrepo_branch: "{{ gitops_repo_branch }}"
         gitrepo_username: "{{ gitops_repo_user }}"
         gitrepo_password: "{{ gitops_repo_user_token }}"
 

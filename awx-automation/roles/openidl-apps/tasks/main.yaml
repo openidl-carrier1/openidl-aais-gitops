@@ -12,7 +12,7 @@
 
 - name: Download git repository content
   git:
-    repo: "https://{{gitrepo_username|urlencode()}}:{{gitrepo_password|urlencode()}}@{{ gitrepo_name }}"
+    repo: "https://{{ gitrepo_username|urlencode() }}:{{ gitrepo_password|urlencode() }}@{{ gitrepo_name }}"
     dest: /tmp/openidl
     force: yes
     single_branch: yes
