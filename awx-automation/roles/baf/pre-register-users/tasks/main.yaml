@@ -4,6 +4,14 @@
     src: templates/pre-register-user.sh.j2
     dest: ./pre-register-users.sh
     mode: 0755
+  when: register_action != "enroll-user"
+
+- name: Generate pre-register-users script
+  template:
+    src: templates/enroll-user.sh.j2
+    dest: ./pre-register-users.sh
+    mode: 0755
+  when: register_action == "enroll-user"
 
 - name: Delete user script pod
   community.kubernetes.k8s:
@@ -141,10 +149,11 @@
 #    aws secretsmanager delete-secret --secret-id {{ network.org_name }}-{{ env }}-ca-app-user-token --region {{ aws_region }} --force-delete-without-recovery
 #  ignore_errors: yes
 
-- name: upload ca user token to aws secrets manager
+- name: upload ca user token to aws secrets manager when register user
   shell: |
     export AWS_PROFILE=cicd-role
     aws secretsmanager create-secret --name {{ network.org_name }}-{{ env }}-ca-app-user-token --description "Ca App User token" --secret-string {{ ca_user_token }} --region {{ aws_region }}
+  when: register_action != "enroll-user"
 
 - name: Delete user script pod
   community.kubernetes.k8s:
