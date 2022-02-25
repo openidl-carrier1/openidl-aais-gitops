@@ -109,7 +109,6 @@ def registerUsers(thestage){
                 async: false,
                 importTowerLogs: true,
                 extraVars: """---
-                register_action: '${params.extra_vars}'
                 org_name: '${org}'
                 env: '${params.env}'
                 network:
