@@ -1,0 +1,40 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: join-anal-caru-caru-peer0
+  namespace: caru-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: join-anal-caru-caru-peer0
+  chart:
+    git: https://github.com/openidl-carrier1/openidl-aais-gitops.git
+    ref: caru-dev
+    path: blockchain-automation-framework/platforms/hyperledger-fabric/charts/join_channel
+  values:
+    metadata:
+      namespace: caru-net
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.3
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.caru-net.caru.dev.carrier.caru.aaisdirect.com:8443
+      localmspid: caruMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.dev.carrier.internal.caru.aaisdirect.com
+      authpath: devcaru-net-auth
+      adminsecretprefix: caru/crypto/peerOrganizations/caru-net/users/admin
+      orderersecretprefix: caru/crypto/peerOrganizations/caru-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: anal-caru      
+    orderer:
+      address: orderer1.ordererorg.dev.openidl.aaisdirect.com:8443
