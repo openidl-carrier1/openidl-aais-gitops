@@ -17,6 +17,7 @@
     - name: Update kubeconfig and set context to openidl EKS cluster
       shell: |
         export AWS_PROFILE=cicd-role; aws eks update-kubeconfig --region {{ aws_region }} --name {{ blk_cluster_name }}
+        
     - name: Get vault root token
       shell: |
         export AWS_PROFILE=cicd-role
