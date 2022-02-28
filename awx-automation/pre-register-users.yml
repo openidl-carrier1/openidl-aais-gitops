@@ -49,7 +49,7 @@
       register: ca_user_password_aws_sm
       when: ca_token_status.stdout != "null"
 
-    - name: Setting ca-user-password to enroll-user
+    - name: Setting ca-user-password to enroll-user only
       set_fact:
         ca_user_password: "{{ ca_user_password_aws_sm.stdout }}"
       when: ca_token_status.stdout != "null"
