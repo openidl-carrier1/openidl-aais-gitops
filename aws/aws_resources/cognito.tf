@@ -1,4 +1,5 @@
 #setting up congnito user pool
+
 resource "aws_cognito_user_pool" "user_pool" {
   name = "${local.std_name}-${var.userpool_name}"
   dynamic "account_recovery_setting" {

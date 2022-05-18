@@ -133,7 +133,7 @@ jobs:
     - name: Terraform Apply
       id: apply
       if: github.ref == 'refs/heads/carrier_dev' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var-file=../carrier_dev.tfvars -compact-warnings
+      run: terraform destroy -auto-approve -var-file=../carrier_dev.tfvars -compact-warnings
 
   carrier_node_test-aws_resources:
     environment: carrier_test
